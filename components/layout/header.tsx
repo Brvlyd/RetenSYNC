@@ -28,7 +28,6 @@ type Theme = 'light' | 'dark' | 'system';
 export default function Header() {
   const router = useRouter();
   const { theme, setTheme, isDarkMode } = useTheme();
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,7 +48,9 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    // Add logout logic here
+    // Clear user data from localStorage
+    localStorage.removeItem('user');
+    // Redirect to login page
     router.push('/auth/login');
   };
 
@@ -275,14 +276,10 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Profile */}
-        <div className="relative">
-          <motion.button
-            onClick={() => setIsProfileOpen(!isProfileOpen)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 border border-gray-200 dark:border-gray-700"
-          >
+        {/* User Profile with Logout */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* User Info */}
+          <div className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl border border-gray-200 dark:border-gray-700">
             <div className="relative">
               <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xs sm:text-sm">
@@ -295,78 +292,26 @@ export default function Header() {
               <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{userData.name}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">{userData.role}</p>
             </div>
-            <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 dark:text-gray-500 hidden sm:block" />
+          </div>
+
+          {/* Logout Button */}
+          <motion.button
+            onClick={handleLogout}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-700 flex items-center justify-center transition-all duration-300 text-red-600 dark:text-red-400"
+            title="Logout"
+          >
+            <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
           </motion.button>
-
-          {/* Profile Dropdown */}
-          {isProfileOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute right-0 mt-2 w-56 sm:w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
-            >
-              {/* Profile Header */}
-              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center space-x-3">
-                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold">
-                      {getInitials(userData.name)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">{userData.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{userData.email}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{userData.role}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Menu Items */}
-              <div className="py-2">
-                {[
-                  { icon: User, label: 'My Profile', action: () => router.push('/profile') },
-                  { icon: Settings, label: 'Settings', action: () => router.push('/settings') },
-                  { icon: HelpCircle, label: 'Help & Support', action: () => router.push('/help') }
-                ].map((item, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      item.action();
-                      setIsProfileOpen(false);
-                    }}
-                    className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <item.icon className="h-4 w-4 mr-3" />
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Logout */}
-              <div className="border-t border-gray-100 dark:border-gray-700 py-2">
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsProfileOpen(false);
-                  }}
-                  className="w-full flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  Log out
-                </button>
-              </div>
-            </motion.div>
-          )}
         </div>
       </div>
 
       {/* Click outside to close dropdowns */}
-      {(isProfileOpen || isThemeOpen || isNotificationOpen) && (
+      {(isThemeOpen || isNotificationOpen) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
-            setIsProfileOpen(false);
             setIsThemeOpen(false);
             setIsNotificationOpen(false);
           }}

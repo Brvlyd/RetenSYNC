@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
@@ -41,6 +41,7 @@ interface SidebarProps {
 
 export default function Sidebar({ onCollapseChange }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { isDarkMode } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -56,6 +57,13 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
     // Notify parent component about collapse state
     onCollapseChange?.(!isSidebarExpanded);
   }, [isSidebarExpanded, onCollapseChange]);
+
+  const handleLogout = () => {
+    // Clear user data from localStorage
+    localStorage.removeItem('user');
+    // Redirect to login page
+    router.push('/auth/login');
+  };
 
   // Modern animation variants with proper types
   const sidebarVariants: Variants = {
@@ -134,7 +142,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                 variants={textVariants}
                 className="ml-4"
               >
-                <h1 className="font-bold text-xl text-gray-900 dark:text-white">SmartRetention</h1>
+                <h1 className="font-bold text-xl text-gray-900 dark:text-white">Smart-en</h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Performance Platform</p>
               </motion.div>
             </div>
@@ -236,6 +244,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
               whileTap={{ scale: 0.98 }}
             >
               <button
+                onClick={handleLogout}
                 className="w-full flex items-center px-4 py-4 rounded-xl text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 group relative overflow-hidden"
               >
                 <LogOut className="w-6 h-6 transition-transform group-hover:-translate-x-1 flex-shrink-0" />

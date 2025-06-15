@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import Sidebar from './sidebar';
 import Header from './header';
@@ -11,6 +12,26 @@ interface LayoutWrapperProps {
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Check if current route is an auth route
+  const isAuthRoute = pathname?.startsWith('/auth');
+
+  useEffect(() => {
+    // Only check authentication for non-auth routes
+    if (!isAuthRoute) {
+      const user = localStorage.getItem('user');
+      if (!user) {
+        router.push('/auth/login');
+      }
+    }
+  }, [router, isAuthRoute]);
+
+  // If it's an auth route, render children without layout
+  if (isAuthRoute) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative transition-colors duration-300">
