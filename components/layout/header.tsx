@@ -48,8 +48,10 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    // Add logout logic here
-    console.log('Logging out...');
+    // Clear user data from localStorage
+    localStorage.removeItem('user');
+    // Redirect to login page
+    router.push('/auth/login');
   };
 
   const getThemeIcon = () => {
