@@ -33,8 +33,8 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const userData = {
-    name: 'Tasya Salsabila',
-    email: 'tasya.salsabila@company.com',
+    name: 'Human Resources',
+    email: 'admin@company.com',
     role: 'Senior Developer',
     avatar: null
   };
