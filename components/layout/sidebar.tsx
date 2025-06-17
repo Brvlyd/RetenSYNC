@@ -21,51 +21,71 @@ import {
   Settings,
   Bell,
   LogOut,
-  Sparkles
+  Sparkles,
+  Building,
+  User,
+  UserPlus
 } from 'lucide-react';
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
-  { name: 'Feedback', href: '/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500' },
-  { name: 'Performance Review', href: '/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
-  { name: 'Goals & OKRs', href: '/goals', icon: Target, color: 'from-violet-500 to-purple-500' },
-  { name: '1-on-1 Meetings', href: '/1on1', icon: Users, color: 'from-pink-500 to-rose-500' },
-  { name: 'Shoutouts', href: '/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500' },
-  { name: 'Learning', href: '/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
-  { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
-];
-
-interface SidebarProps {
-  onCollapseChange?: (collapsed: boolean) => void;
-}
-
-export default function Sidebar({ onCollapseChange }: SidebarProps) {
+export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (collapsed: boolean) => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isDarkMode } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Close mobile menu when route changes
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  // Base navigation items
+  const baseNavigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
+    { name: 'Feedback', href: '/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500' },
+    { name: 'Performance Review', href: '/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
+    { name: 'Goals & OKRs', href: '/goals', icon: Target, color: 'from-violet-500 to-purple-500' },
+    { name: '1-on-1 Meetings', href: '/1on1', icon: Users, color: 'from-pink-500 to-rose-500' },
+    { name: 'Shoutouts', href: '/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500' },
+    { name: 'Learning', href: '/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
+    { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
+  ];
+
+  // Admin-only navigation items
+  const adminNavigation = [
+    { name: 'User Management', href: '/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' },
+    { name: 'Departments', href: '/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
+  ];
+
+  // User-only navigation items
+  const userNavigation = [
+    { name: 'My Profile', href: '/profile', icon: User, color: 'from-emerald-500 to-teal-500' },
+  ];
+
+  // Combine navigation based on user role
+  const navigation = [
+    ...baseNavigation,
+    ...(user?.role === 'admin' ? adminNavigation : userNavigation)
+  ];
+
+  useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    // Notify parent component about collapse state
     onCollapseChange?.(!isSidebarExpanded);
   }, [isSidebarExpanded, onCollapseChange]);
 
   const handleLogout = () => {
-    // Clear user data from localStorage
     localStorage.removeItem('user');
-    // Redirect to login page
     router.push('/auth/login');
   };
 
-  // Modern animation variants with proper types
   const sidebarVariants: Variants = {
     expanded: {
       width: "18rem",
@@ -129,7 +149,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
         onHoverEnd={() => setIsSidebarExpanded(false)}
       >
         <div className="flex flex-col h-full">
-          {/* Modern Logo Section - Dark mode support */}
+          {/* Modern Logo Section */}
           <div className="h-24 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60">
             <div className="flex items-center justify-center w-full">
               <div className="relative">
@@ -148,7 +168,29 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
             </div>
           </div>
 
-          {/* Modern Menu Items - Dark mode support */}
+          {/* User Info Section */}
+          <motion.div
+            variants={textVariants}
+            className="px-4 py-4 border-b border-gray-200/60 dark:border-gray-700/60"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                <span className="text-sm font-bold text-white">
+                  {user?.name?.split(' ').map((n: string) => n[0]).join('') || 'U'}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  {user?.name || 'User'}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                  {user?.role || 'Employee'}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Modern Menu Items */}
           <div className="flex-1 py-6 px-4 space-y-3">
             {navigation.map((item, index) => {
               const isActive = pathname === item.href;
@@ -192,6 +234,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                               item.color.includes('pink') ? 'text-pink-600 dark:text-pink-400' :
                               item.color.includes('amber') ? 'text-amber-600 dark:text-amber-400' :
                               item.color.includes('green') ? 'text-green-600 dark:text-green-400' :
+                              item.color.includes('purple') ? 'text-purple-600 dark:text-purple-400' :
                               'text-red-600 dark:text-red-400'} group-hover:text-blue-600 dark:group-hover:text-blue-400`
                       )} />
                       
@@ -216,7 +259,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
             })}
           </div>
 
-          {/* Quick Actions Section - Dark mode support */}
+          {/* Quick Actions Section */}
           <motion.div 
             variants={textVariants}
             className="mt-6 pt-6 border-t border-gray-200/60 dark:border-gray-700/60 px-4"
@@ -237,7 +280,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
             </div>
           </motion.div>
 
-          {/* Enhanced User Profile Section - Dark mode logout button */}
+          {/* Enhanced User Profile Section - Logout button */}
           <div className="p-4 mb-6">
             <motion.div
               whileHover={{ scale: 1.02 }}

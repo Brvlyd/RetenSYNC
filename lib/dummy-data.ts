@@ -30,7 +30,7 @@ export const engagementHeatmapData = [
   { team: 'Marketing', engagement: 8.1, stress: 2.9, size: 28 },
   { team: 'HR', engagement: 8.9, stress: 2.5, size: 12 },
   { team: 'Finance', engagement: 7.2, stress: 3.8, size: 18 },
-  { team: 'Operations', engagement: 7.9, stress: 3.5, size: 22 },
+  {team: 'Operations', engagement: 7.9, stress: 3.5, size: 22 },
   { team: 'Product', engagement: 8.7, stress: 3.0, size: 19 },
   { team: 'Customer Support', engagement: 7.5, stress: 4.2, size: 25 }
 ];
@@ -60,7 +60,7 @@ export const feedbackData = [
     id: 3,
     type: 'self',
     from: 'You',
-    to: 'Putri Aulia',
+    to: 'Putri Aulia Simanjuntak',
     project: 'Process Improvement',
     content: 'I implemented automated testing which reduced deployment time by 40%.',
     date: '2024-01-10',
@@ -139,7 +139,7 @@ export const goalsData: Goal[] = [
     dueDate: "2024-10-31",
     status: "completed",
     priority: "medium",
-    owner: "Emily Davis",
+    owner: "Putri Aulia Simanjuntak",
     keyResults: [
       { description: "Design learning curriculum", completed: true },
       { description: "Launch mentorship program", completed: true },
@@ -154,7 +154,7 @@ export const goalsData: Goal[] = [
     dueDate: "2024-12-31",
     status: "in-progress",
     priority: "high",
-    owner: "Alex Rivera",
+    owner: "Tasya Salsabila",
     keyResults: [
       { description: "Identify three new market segments", completed: true },
       { description: "Launch two new product lines", completed: false },
@@ -187,8 +187,8 @@ export const oneOnOneData = [
 export const shoutoutsData = [
   {
     id: 1,
-    from: 'Alex Rivera',
-    to: 'Emma Thompson',
+    from: 'Putri Aulia Simanjuntak',
+    to: 'Tasya Salsabila',
     message: 'Amazing work on the client presentation! Your research was thorough and the delivery was flawless.',
     values: ['Excellence', 'Collaboration'],
     emoji: '🌟',
@@ -197,13 +197,23 @@ export const shoutoutsData = [
   },
   {
     id: 2,
-    from: 'David Kim',
-    to: 'Team Engineering',
+    from: 'Bravely Dirgayuska',
+    to: 'Engineering Team',
     message: 'Thank you for the quick turnaround on the bug fixes. Your dedication kept our customers happy!',
     values: ['Customer Focus', 'Teamwork'],
     emoji: '🚀',
     date: '2024-01-14',
     likes: 8
+  },
+  {
+    id: 3,
+    from: 'Dzikri Razzan Athallah',
+    to: 'Annisa Azalia Maulana',
+    message: 'The new design system is incredible! It will make our development process so much more efficient.',
+    values: ['Innovation', 'Excellence'],
+    emoji: '🎨',
+    date: '2024-01-13',
+    likes: 15
   }
 ];
 
@@ -213,7 +223,7 @@ export const learningData = [
     title: 'Effective Remote Leadership',
     type: 'micro-learning',
     duration: '5 min',
-    content: 'Learn key strategies for leading distributed teams effectively...',
+    content: 'Learn key strategies for leading distributed teams effectively in the modern workplace...',
     completed: false,
     helpful: 0
   },
@@ -222,9 +232,27 @@ export const learningData = [
     title: 'Data-Driven Decision Making',
     type: 'article',
     duration: '8 min',
-    content: 'How to use analytics to improve business outcomes...',
+    content: 'How to use analytics and data insights to improve business outcomes and make informed decisions...',
     completed: true,
     helpful: 5
+  },
+  {
+    id: 3,
+    title: 'Advanced Communication Skills',
+    type: 'micro-learning',
+    duration: '7 min',
+    content: 'Master the art of clear, concise, and impactful communication in professional settings...',
+    completed: false,
+    helpful: 0
+  },
+  {
+    id: 4,
+    title: 'Project Management Fundamentals',
+    type: 'course',
+    duration: '15 min',
+    content: 'Essential project management principles and methodologies for successful project delivery...',
+    completed: true,
+    helpful: 8
   }
 ];
 
@@ -233,21 +261,98 @@ export const performanceReviewData = {
     achievements: [
       'Led successful migration to new tech stack',
       'Mentored 3 junior developers',
-      'Improved code quality metrics by 35%'
+      'Improved code quality metrics by 35%',
+      'Delivered 5 major features ahead of schedule'
     ],
     challenges: [
       'Time management during peak periods',
-      'Need better cross-team communication'
+      'Need better cross-team communication',
+      'Balancing technical debt with new features'
     ],
     goals: [
       'Obtain AWS certification',
-      'Lead larger projects',
-      'Improve public speaking skills'
+      'Lead larger cross-functional projects',
+      'Improve public speaking skills',
+      'Contribute to open source projects'
     ]
   },
   managerFeedback: {
-    strengths: ['Technical expertise', 'Team collaboration', 'Problem solving'],
-    improvements: ['Project planning', 'Time estimation', 'Documentation'],
+    strengths: ['Technical expertise', 'Team collaboration', 'Problem solving', 'Mentorship', 'Innovation'],
+    improvements: ['Project planning', 'Time estimation', 'Documentation', 'Stakeholder communication'],
     rating: 4.2
   }
 };
+
+// Additional data for enhanced features
+export const userData = [
+  {
+    id: 1,
+    employeeId: 'EMP001',
+    name: 'Dzikri Razzan Athallah',
+    email: 'dzikri.razzan@company.com',
+    position: 'Senior Software Engineer',
+    department: 'Engineering',
+    joinDate: '2023-01-15',
+    status: 'active',
+    phone: '+62 812-3456-7890',
+    location: 'Jakarta',
+    manager: 'Bravely Dirgayuska',
+    role: 'user'
+  },
+  {
+    id: 2,
+    employeeId: 'EMP002',
+    name: 'Bravely Dirgayuska',
+    email: 'bravely.dirgayuska@company.com',
+    position: 'Engineering Manager',
+    department: 'Engineering',
+    joinDate: '2022-08-20',
+    status: 'active',
+    phone: '+62 813-4567-8901',
+    location: 'Bandung',
+    manager: 'CTO',
+    role: 'admin'
+  },
+  {
+    id: 3,
+    employeeId: 'EMP003',
+    name: 'Putri Aulia Simanjuntak',
+    email: 'putri.aulia@company.com',
+    position: 'Product Manager',
+    department: 'Product',
+    joinDate: '2023-03-10',
+    status: 'active',
+    phone: '+62 814-5678-9012',
+    location: 'Jakarta',
+    manager: 'VP Product',
+    role: 'user'
+  },
+  {
+    id: 4,
+    employeeId: 'EMP004',
+    name: 'Tasya Salsabila',
+    email: 'tasya.salsabila@company.com',
+    position: 'Senior Developer',
+    department: 'Engineering',
+    joinDate: '2022-11-05',
+    status: 'active',
+    phone: '+62 815-6789-0123',
+    location: 'Surabaya',
+    manager: 'Bravely Dirgayuska',
+    role: 'user'
+  },
+  {
+    id: 5,
+    employeeId: 'EMP005',
+    name: 'Annisa Azalia Maulana',
+    email: 'annisa.azalia@company.com',
+    position: 'UX Designer',
+    department: 'Design',
+    joinDate: '2023-06-12',
+    status: 'active',
+    phone: '+62 816-7890-1234',
+    location: 'Jakarta',
+    manager: 'Design Lead',
+    role: 'user'
+  }
+];
