@@ -295,7 +295,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                   variants={textVariants}
                   className="ml-4 font-semibold text-sm"
                 >
-                  Logout
+                  LogoutA
                 </motion.span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-50/50 dark:via-red-900/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </button>
