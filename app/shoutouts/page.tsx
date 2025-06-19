@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { shoutoutsData } from '@/lib/dummy-data';
-import { Award, Heart, Send, Slack, MessageSquare, X, Users, TrendingUp, Sparkles, Zap } from 'lucide-react';
+import { Award, Heart, Send, Slack, MessageSquare, Target, TrendingUp, Users, X, Sparkles, Zap } from 'lucide-react';
 
 const companyValues = [
   'Excellence', 'Collaboration', 'Innovation', 'Customer Focus', 
@@ -17,6 +17,11 @@ export default function Shoutouts() {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [animateCards, setAnimateCards] = useState(false);
   const [likedShoutouts, setLikedShoutouts] = useState<number[]>([]);
+  const [formData, setFormData] = useState({
+    recipient: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setAnimateCards(true);
@@ -36,6 +41,30 @@ export default function Shoutouts() {
         ? prev.filter(id => id !== shoutoutId)
         : [...prev, shoutoutId]
     );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.recipient || !formData.message) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      alert('Shoutout sent successfully!');
+      setFormData({
+        recipient: '',
+        message: ''
+      });
+      setSelectedValues([]);
+      setSelectedEmoji('🌟');
+      setShowShoutoutForm(false);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
@@ -102,15 +131,19 @@ export default function Shoutouts() {
               </button>
             </div>
             
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Recognize</label>
-                <select className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white">
-                  <option>Select person or team...</option>
-                    <option>Bravely</option>
-                    <option>Dzikri</option>
-                  <option>Engineering Team</option>
-                  <option>Marketing Team</option>
+                <select 
+                  value={formData.recipient}
+                  onChange={(e) => setFormData({...formData, recipient: e.target.value})}
+                  className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white"
+                >
+                  <option value="">Select person or team...</option>
+                  <option value="Bravely">Bravely</option>
+                  <option value="Dzikri">Dzikri</option>
+                  <option value="Engineering Team">Engineering Team</option>
+                  <option value="Marketing Team">Marketing Team</option>
                 </select>
               </div>
               
@@ -166,6 +199,8 @@ export default function Shoutouts() {
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Message</label>
                 <textarea
                   rows={4}
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
                   placeholder="Share what made their work exceptional..."
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 resize-none text-gray-900 dark:text-white"
                 />
@@ -181,10 +216,15 @@ export default function Shoutouts() {
                 </button>
                 <button
                   type="submit"
-                  className="group px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-2xl hover:from-amber-700 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold"
+                  disabled={isSubmitting}
+                  className="group px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-2xl hover:from-amber-700 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Send className="h-5 w-5 mr-2 group-hover:translate-x-1 transition-transform" />
-                  Send Shoutout
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  ) : (
+                    <Send className="h-5 w-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                  )}
+                  {isSubmitting ? 'Sending...' : 'Send Shoutout'}
                 </button>
               </div>
             </form>

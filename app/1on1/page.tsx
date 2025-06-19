@@ -7,10 +7,41 @@ import { Calendar, Clock, User, Plus, Video, MessageSquare, Target, TrendingUp, 
 export default function OneOnOne() {
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [animateCards, setAnimateCards] = useState(false);
+  const [formData, setFormData] = useState({
+    type: 'Peer Feedback',
+    recipient: '',
+    project: '',
+    notes: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setAnimateCards(true);
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.recipient || !formData.project) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      alert('Meeting scheduled successfully!');
+      setFormData({
+        type: 'Peer Feedback',
+        recipient: '',
+        project: '',
+        notes: ''
+      });
+      setShowScheduleForm(false);
+      setIsSubmitting(false);
+    }, 1000);
+  };
 
   return (
     <div className="space-y-6 lg:space-y-8">
@@ -61,13 +92,17 @@ export default function OneOnOne() {
               </button>
             </div>
             
-            <form className="space-y-4 sm:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
-                    Feedback Type
+                    Meeting Type
                   </label>
-                  <select className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base">
+                  <select 
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                    className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                  >
                     <option>Peer Feedback</option>
                     <option>Upward Feedback</option>
                     <option>Self Assessment</option>
@@ -75,13 +110,17 @@ export default function OneOnOne() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
-                    Recipient
+                    Participant
                   </label>
-                  <select className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base">
-                    <option>Select recipient...</option>
-                    <option>Aulia</option>
-                    <option>Tasya</option>
-                    <option>Annisa</option>
+                  <select 
+                    value={formData.recipient}
+                    onChange={(e) => setFormData({...formData, recipient: e.target.value})}
+                    className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                  >
+                    <option value="">Select participant...</option>
+                    <option value="Aulia">Aulia</option>
+                    <option value="Tasya">Tasya</option>
+                    <option value="Annisa">Annisa</option>
                   </select>
                 </div>
               </div>
@@ -92,6 +131,8 @@ export default function OneOnOne() {
                 </label>
                 <input
                   type="text"
+                  value={formData.project}
+                  onChange={(e) => setFormData({...formData, project: e.target.value})}
                   placeholder="e.g., Q4 Product Launch"
                   className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                 />
@@ -103,6 +144,8 @@ export default function OneOnOne() {
                 </label>
                 <textarea
                   rows={3}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
                   placeholder="Share agenda and talking points..."
                   className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 resize-none text-gray-900 dark:text-white text-sm sm:text-base"
                 />
@@ -111,16 +154,22 @@ export default function OneOnOne() {
               <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4">
                 <button
                   type="button"
+                  onClick={() => setShowScheduleForm(false)}
                   className="px-4 sm:px-6 py-2 sm:py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl lg:rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-semibold text-sm sm:text-base w-full sm:w-auto"
                 >
-                  Save Draft
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl lg:rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold text-sm sm:text-base w-full sm:w-auto justify-center"
+                  disabled={isSubmitting}
+                  className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl lg:rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold text-sm sm:text-base w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:scale-110 transition-transform" />
-                  Schedule Meeting
+                  {isSubmitting ? (
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  ) : (
+                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:scale-110 transition-transform" />
+                  )}
+                  {isSubmitting ? 'Scheduling...' : 'Schedule Meeting'}
                 </button>
               </div>
             </form>
