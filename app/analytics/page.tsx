@@ -9,7 +9,6 @@ import { useTheme } from '@/contexts/theme-context';
 
 export default function Analytics() {
   const router = useRouter();
-  const { isDarkMode } = useTheme();
   const [animateProgress, setAnimateProgress] = useState(false);
 
   useEffect(() => {
@@ -36,69 +35,6 @@ export default function Analytics() {
 
   const handleEmployeeClick = (employee: any) => {
     router.push(`/analytics/employee/${employee.id}`);
-  };
-
-  // Custom Tooltip for Monthly Risk Trend that adapts text color based on theme
-  const CustomRiskTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div
-          className={`rounded-2xl shadow-xl px-4 py-3`}
-          style={{
-            background: isDarkMode ? '#1e293b' : '#fff',
-            color: isDarkMode ? '#e5e7eb' : '#334155',
-            border: 'none',
-            fontSize: '12px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          }}
-        >
-          <div className="font-semibold mb-1" style={{ color: isDarkMode ? '#fff' : '#1e293b' }}>
-            {label}
-          </div>
-          {payload.map((entry: any, idx: number) => (
-            <div key={idx} style={{
-              color: isDarkMode
-                ? entry.dataKey === 'risk'
-                  ? '#f87171'
-                  : '#34d399'
-                : entry.dataKey === 'risk'
-                  ? '#ef4444'
-                  : '#10b981'
-            }}>
-              {entry.name}: <span className="font-bold">{entry.value}</span>
-            </div>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Custom Tooltip for Team Engagement vs Stress that adapts text color based on theme
-  const CustomEngagementTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div
-          className={`rounded-2xl shadow-xl px-4 py-3`}
-          style={{
-            background: isDarkMode ? '#1e293b' : '#fff',
-            color: isDarkMode ? '#e5e7eb' : '#334155',
-            border: 'none',
-            fontSize: '12px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          }}
-        >
-          <div className="font-semibold mb-1" style={{ color: isDarkMode ? '#fff' : '#1e293b' }}>
-            {`Engagement: ${data.engagement}`}
-          </div>
-          <div style={{ color: isDarkMode ? '#fbbf24' : '#b45309' }}>
-            Stress: <span className="font-bold">{data.stress}</span>
-          </div>
-        </div>
-      );
-    }
-    return null;
   };
 
   return (
@@ -334,7 +270,7 @@ export default function Analytics() {
                         borderColor: getRiskColor(employee.risk) + '30'
                       }}
                     >
-                      {employee.risk.toUpperCase()}  
+                      {employee.risk.toUpperCase()}
                     </span>
                   </td>
                 </tr>
