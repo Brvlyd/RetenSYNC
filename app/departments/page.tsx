@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Building, Users, Plus, Edit, Trash2, X, UserPlus, TrendingUp } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Building, Users, Plus, Edit, Trash2, X, UserPlus, TrendingUp, BarChart3, Target, Award } from 'lucide-react';
 
 interface Department {
   id: number;
@@ -11,6 +12,10 @@ interface Department {
   employeeCount: number;
   budget: string;
   location: string;
+  performanceScore: number;
+  engagementScore: number;
+  satisfactionScore: number;
+  riskLevel: 'low' | 'medium' | 'high';
 }
 
 interface Position {
@@ -23,6 +28,7 @@ interface Position {
 }
 
 export default function DepartmentsPage() {
+  const router = useRouter();
   const [departments, setDepartments] = useState<Department[]>([
     {
       id: 1,
@@ -31,7 +37,11 @@ export default function DepartmentsPage() {
       head: 'Bravely Dirgayuska',
       employeeCount: 45,
       budget: '$2.5M',
-      location: 'Jakarta'
+      location: 'Jakarta',
+      performanceScore: 8.7,
+      engagementScore: 8.2,
+      satisfactionScore: 8.5,
+      riskLevel: 'low'
     },
     {
       id: 2,
@@ -40,7 +50,11 @@ export default function DepartmentsPage() {
       head: 'Putri Aulia Simanjuntak',
       employeeCount: 19,
       budget: '$1.2M',
-      location: 'Jakarta'
+      location: 'Jakarta',
+      performanceScore: 8.1,
+      engagementScore: 7.8,
+      satisfactionScore: 8.0,
+      riskLevel: 'low'
     },
     {
       id: 3,
@@ -49,7 +63,11 @@ export default function DepartmentsPage() {
       head: 'Annisa Azalia Maulana',
       employeeCount: 12,
       budget: '$800K',
-      location: 'Bandung'
+      location: 'Bandung',
+      performanceScore: 8.4,
+      engagementScore: 8.6,
+      satisfactionScore: 8.3,
+      riskLevel: 'low'
     },
     {
       id: 4,
@@ -58,7 +76,11 @@ export default function DepartmentsPage() {
       head: 'Dzikri Razzan Athallah',
       employeeCount: 28,
       budget: '$1.8M',
-      location: 'Jakarta'
+      location: 'Jakarta',
+      performanceScore: 7.2,
+      engagementScore: 6.8,
+      satisfactionScore: 7.0,
+      riskLevel: 'medium'
     },
     {
       id: 5,
@@ -67,7 +89,11 @@ export default function DepartmentsPage() {
       head: 'Tasya Salsabila',
       employeeCount: 32,
       budget: '$2.1M',
-      location: 'Surabaya'
+      location: 'Surabaya',
+      performanceScore: 7.8,
+      engagementScore: 7.5,
+      satisfactionScore: 7.6,
+      riskLevel: 'medium'
     }
   ]);
 
@@ -141,7 +167,11 @@ export default function DepartmentsPage() {
     const dept: Department = {
       id: departments.length + 1,
       ...newDepartment,
-      employeeCount: 0
+      employeeCount: 0,
+      performanceScore: 7.5,
+      engagementScore: 7.5,
+      satisfactionScore: 7.5,
+      riskLevel: 'low'
     };
     setDepartments([...departments, dept]);
     setNewDepartment({ name: '', description: '', head: '', budget: '', location: '' });
@@ -188,6 +218,20 @@ export default function DepartmentsPage() {
     });
   };
 
+  const getRiskColor = (risk: string) => {
+    switch (risk) {
+      case 'low': return 'text-green-600 bg-green-100 border-green-200';
+      case 'medium': return 'text-amber-600 bg-amber-100 border-amber-200';
+      case 'high': return 'text-red-600 bg-red-100 border-red-200';
+      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+    }
+  };
+
+  const handleViewAnalytics = (departmentId: number) => {
+    // Navigate to department-specific analytics
+    router.push(`/analytics?department=${departmentId}`);
+  };
+
   return (
     <div className="space-y-6 lg:space-y-8">
       {/* Header */}
@@ -202,10 +246,32 @@ export default function DepartmentsPage() {
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
                 Departments & Positions
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Manage organizational structure and job roles</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Manage organizational structure and performance insights</p>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Department Overview Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        {[
+          { label: 'Total Departments', value: departments.length, icon: Building, color: 'from-blue-500 to-cyan-500' },
+          { label: 'Total Employees', value: departments.reduce((sum, dept) => sum + dept.employeeCount, 0), icon: Users, color: 'from-emerald-500 to-teal-500' },
+          { label: 'Avg Performance', value: (departments.reduce((sum, dept) => sum + dept.performanceScore, 0) / departments.length).toFixed(1), icon: TrendingUp, color: 'from-purple-500 to-violet-500' },
+          { label: 'High Risk Depts', value: departments.filter(d => d.riskLevel === 'high').length, icon: Target, color: 'from-amber-500 to-orange-500' }
+        ].map((stat, index) => (
+          <div key={stat.label} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-4 lg:p-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}>
+                <stat.icon className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                {stat.value}
+              </div>
+            </div>
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">{stat.label}</div>
+          </div>
+        ))}
       </div>
 
       {/* Tabs */}
@@ -247,10 +313,10 @@ export default function DepartmentsPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {departments.map((dept, index) => (
-              <div key={dept.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 p-6">
-                <div className="flex items-start justify-between mb-4">
+              <div key={dept.id} className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 p-6 lg:p-8">
+                <div className="flex items-start justify-between mb-6">
                   <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl">
                     <Building className="h-6 w-6 text-white" />
                   </div>
@@ -271,9 +337,25 @@ export default function DepartmentsPage() {
                 </div>
                 
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{dept.name}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{dept.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">{dept.description}</p>
                 
-                <div className="space-y-2 text-sm">
+                {/* Performance Metrics */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">{dept.performanceScore}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Performance</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">{dept.engagementScore}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Engagement</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">{dept.satisfactionScore}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">Satisfaction</div>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-sm mb-6">
                   <div className="flex justify-between">
                     <span className="text-gray-500 dark:text-gray-400">Head:</span>
                     <span className="font-medium text-gray-900 dark:text-white">{dept.head}</span>
@@ -290,7 +372,22 @@ export default function DepartmentsPage() {
                     <span className="text-gray-500 dark:text-gray-400">Location:</span>
                     <span className="font-medium text-gray-900 dark:text-white">{dept.location}</span>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 dark:text-gray-400">Risk Level:</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRiskColor(dept.riskLevel)}`}>
+                      {dept.riskLevel.toUpperCase()}
+                    </span>
+                  </div>
                 </div>
+
+                {/* Action Button */}
+                <button
+                  onClick={() => handleViewAnalytics(dept.id)}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                  <BarChart3 className="h-5 w-5 mr-2" />
+                  View Analytics
+                </button>
               </div>
             ))}
           </div>
