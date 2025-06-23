@@ -7,18 +7,12 @@ import { useTheme } from '@/contexts/theme-context';
 import {
   Bell,
   Search,
-  Settings,
-  User,
   LogOut,
-  HelpCircle,
   Moon,
   Sun,
   Monitor,
   Palette,
   Command,
-  Calendar,
-  MessageSquare,
-  TrendingUp,
   ChevronDown,
   Menu
 } from 'lucide-react';
@@ -33,9 +27,9 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const userData = {
-    name: 'Tasya Salsabila',
-    email: 'tasya.salsabila@company.com',
-    role: 'Senior Developer',
+    name: 'Admin',
+    email: 'admin@company.com',
+    role: 'Administrator',
     avatar: null
   };
 
@@ -89,12 +83,6 @@ export default function Header() {
     }
   ];
 
-  const quickActions = [
-    { icon: Calendar, label: 'Schedule 1-on-1', action: () => router.push('/1on1') },
-    { icon: MessageSquare, label: 'Give Feedback', action: () => router.push('/feedback') },
-    { icon: TrendingUp, label: 'View Analytics', action: () => router.push('/analytics') }
-  ];
-
   return (
     <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm relative z-30">
       {/* Left Section */}
@@ -136,22 +124,6 @@ export default function Header() {
         >
           <Search className="h-4 w-4" />
         </motion.button>
-
-        {/* Quick Actions - Hidden on mobile */}
-        <div className="hidden lg:flex items-center space-x-2">
-          {quickActions.map((action, index) => (
-            <motion.button
-              key={index}
-              onClick={action.action}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all duration-300 group"
-              title={action.label}
-            >
-              <action.icon className="h-5 w-5" />
-            </motion.button>
-          ))}
-        </div>
 
         {/* Theme Toggle */}
         <div className="relative">
@@ -276,7 +248,7 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Profile with Logout */}
+        {/* User Profile (without Logout Button) */}
         <div className="flex items-center space-x-2 sm:space-x-3">
           {/* User Info */}
           <div className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -293,17 +265,6 @@ export default function Header() {
               <p className="text-xs text-gray-500 dark:text-gray-400">{userData.role}</p>
             </div>
           </div>
-
-          {/* Logout Button */}
-          <motion.button
-            onClick={handleLogout}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-700 flex items-center justify-center transition-all duration-300 text-red-600 dark:text-red-400"
-            title="Logout"
-          >
-            <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
-          </motion.button>
         </div>
       </div>
 

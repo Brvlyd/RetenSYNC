@@ -1,17 +1,28 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell } from 'recharts';
 import { engagementHeatmapData, turnoverRiskData } from '@/lib/dummy-data';
 import { TrendingUp, Users, AlertTriangle, Target, BarChart3, PieChart } from 'lucide-react';
+import { useTheme } from '@/contexts/theme-context';
 
 export default function Analytics() {
+  const router = useRouter();
+  const { isDarkMode } = useTheme();
+  const [animateProgress, setAnimateProgress] = useState(false);
+
+  useEffect(() => {
+    setAnimateProgress(true);
+  }, []);
+
   const performanceData = [
-    { name: 'Bravely Dirgayuska', performance: 9.2, engagement: 8.8, feedback: 9.1, risk: 'low' },
-    { name: 'Dzikri Razzan Athallah', performance: 7.5, engagement: 6.2, feedback: 7.8, risk: 'medium' },
-    { name: 'Tasya Salsabila', performance: 8.9, engagement: 9.1, feedback: 8.7, risk: 'low' },
-    { name: 'Annisa', performance: 6.8, engagement: 5.9, feedback: 6.5, risk: 'high' },
-    { name: 'Putri Aulia', performance: 8.1, engagement: 8.3, feedback: 8.0, risk: 'low' },
-    { name: 'Zenith', performance: 7.2, engagement: 6.8, feedback: 7.1, risk: 'medium' },
+    { id: 1, name: 'Bravely Dirgayuska', performance: 9.2, engagement: 8.8, feedback: 9.1, satisfaction: 8.9, risk: 'low' },
+    { id: 2, name: 'Dzikri Razzan Athallah', performance: 7.5, engagement: 6.2, feedback: 7.8, satisfaction: 6.5, risk: 'medium' },
+    { id: 3, name: 'Tasya Salsabila', performance: 8.9, engagement: 9.1, feedback: 8.7, satisfaction: 8.8, risk: 'low' },
+    { id: 4, name: 'Annisa', performance: 6.8, engagement: 5.9, feedback: 6.5, satisfaction: 6.2, risk: 'high' },
+    { id: 5, name: 'Putri Aulia', performance: 8.1, engagement: 8.3, feedback: 8.0, satisfaction: 8.2, risk: 'low' },
+    { id: 6, name: 'Zenith', performance: 7.2, engagement: 6.8, feedback: 7.1, satisfaction: 7.0, risk: 'medium' },
   ];
 
   const getRiskColor = (risk: string) => {
@@ -21,6 +32,73 @@ export default function Analytics() {
       case 'high': return '#ef4444';
       default: return '#6b7280';
     }
+  };
+
+  const handleEmployeeClick = (employee: any) => {
+    router.push(`/analytics/employee/${employee.id}`);
+  };
+
+  // Custom Tooltip for Monthly Risk Trend that adapts text color based on theme
+  const CustomRiskTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className={`rounded-2xl shadow-xl px-4 py-3`}
+          style={{
+            background: isDarkMode ? '#1e293b' : '#fff',
+            color: isDarkMode ? '#e5e7eb' : '#334155',
+            border: 'none',
+            fontSize: '12px',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          }}
+        >
+          <div className="font-semibold mb-1" style={{ color: isDarkMode ? '#fff' : '#1e293b' }}>
+            {label}
+          </div>
+          {payload.map((entry: any, idx: number) => (
+            <div key={idx} style={{
+              color: isDarkMode
+                ? entry.dataKey === 'risk'
+                  ? '#f87171'
+                  : '#34d399'
+                : entry.dataKey === 'risk'
+                  ? '#ef4444'
+                  : '#10b981'
+            }}>
+              {entry.name}: <span className="font-bold">{entry.value}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Custom Tooltip for Team Engagement vs Stress that adapts text color based on theme
+  const CustomEngagementTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div
+          className={`rounded-2xl shadow-xl px-4 py-3`}
+          style={{
+            background: isDarkMode ? '#1e293b' : '#fff',
+            color: isDarkMode ? '#e5e7eb' : '#334155',
+            border: 'none',
+            fontSize: '12px',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          }}
+        >
+          <div className="font-semibold mb-1" style={{ color: isDarkMode ? '#fff' : '#1e293b' }}>
+            {`Engagement: ${data.engagement}`}
+          </div>
+          <div style={{ color: isDarkMode ? '#fbbf24' : '#b45309' }}>
+            Stress: <span className="font-bold">{data.stress}</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -125,14 +203,7 @@ export default function Analytics() {
                   className="text-gray-600 dark:text-gray-400"
                 />
                 <Tooltip 
-                  cursor={{ strokeDasharray: '3 3' }}
-                  contentStyle={{
-                    backgroundColor: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                    fontSize: '12px'
-                  }}
+                  content={CustomEngagementTooltip}
                 />
                 <Scatter dataKey="engagement">
                   {engagementHeatmapData.map((entry, index) => (
@@ -169,13 +240,7 @@ export default function Analytics() {
                   className="text-gray-600 dark:text-gray-400"
                 />
                 <Tooltip 
-                  contentStyle={{
-                    backgroundColor: 'white',
-                    border: 'none',
-                    borderRadius: '12px',
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                    fontSize: '12px'
-                  }}
+                  content={CustomRiskTooltip}
                 />
                 <Bar dataKey="risk" fill="url(#riskGradient)" name="Predicted Risk" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="actual" fill="url(#actualGradient)" name="Actual Turnover" radius={[4, 4, 0, 0]} />
@@ -199,21 +264,27 @@ export default function Analytics() {
       <div className="modern-card overflow-hidden">
         <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-b border-gray-200/50 dark:border-gray-700/50">
           <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Individual Performance Matrix</h3>
-          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">Comprehensive view of team member performance metrics</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">Click on any employee to view detailed analytics</p>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
               <tr>
                 <th className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Employee</th>
-                <th className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">Performance Score</th>
+                <th className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">Performance</th>
                 <th className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Engagement</th>
+                <th className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Satisfaction</th>
                 <th className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Risk Level</th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
               {performanceData.map((employee, index) => (
-                <tr key={employee.name} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-colors duration-200" style={{animationDelay: `${index * 0.1}s`}}>
+                <tr 
+                  key={employee.name} 
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer" 
+                  style={{animationDelay: `${index * 0.1}s`}}
+                  onClick={() => handleEmployeeClick(employee)}
+                >
                   <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
@@ -227,8 +298,8 @@ export default function Analytics() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
-                    <div className="text-lg font-bold text-gray-900 mb-2">{employee.performance}</div>
+                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden sm:table-cell">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.performance}</div>
                     <div className="progress-bar">
                       <div 
                         className="progress-fill" 
@@ -236,8 +307,8 @@ export default function Analytics() {
                       />
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
-                    <div className="text-lg font-bold text-gray-900 mb-2">{employee.engagement}</div>
+                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden md:table-cell">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.engagement}</div>
                     <div className="progress-bar">
                       <div 
                         className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full transition-all duration-700 ease-out" 
@@ -245,12 +316,12 @@ export default function Analytics() {
                       />
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
-                    <div className="text-lg font-bold text-gray-900 mb-2">{employee.feedback}</div>
+                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden lg:table-cell">
+                    <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.satisfaction}</div>
                     <div className="progress-bar">
                       <div 
-                        className="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full transition-all duration-700 ease-out" 
-                        style={{ width: `${(employee.feedback / 10) * 100}%` }}
+                        className="h-full bg-gradient-to-r from-amber-500 to-orange-600 rounded-full transition-all duration-700 ease-out" 
+                        style={{ width: `${(employee.satisfaction / 10) * 100}%` }}
                       />
                     </div>
                   </td>
@@ -263,7 +334,7 @@ export default function Analytics() {
                         borderColor: getRiskColor(employee.risk) + '30'
                       }}
                     >
-                      {employee.risk.toUpperCase()}
+                      {employee.risk.toUpperCase()}  
                     </span>
                   </td>
                 </tr>

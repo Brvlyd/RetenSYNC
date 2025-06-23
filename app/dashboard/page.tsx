@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import StatCard from '@/components/ui/stat-card';
 import { organizationStats, turnoverRiskData, engagementHeatmapData } from '@/lib/dummy-data';
 import { TrendingDown, TrendingUp, Users, Heart, AlertTriangle, DollarSign, Target, Award, Zap, UserPlus, Settings, BarChart3 } from 'lucide-react';
+import { useTheme } from '@/contexts/theme-context';
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -15,6 +17,69 @@ export default function Dashboard() {
       setUser(JSON.parse(userData));
     }
   }, []);
+
+  // Custom Tooltip for Turnover Risk Prediction chart
+  const CustomTurnoverTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className="rounded-2xl shadow-xl px-4 py-3"
+          style={{
+            background: isDarkMode ? '#1e293b' : '#fff',
+            color: isDarkMode ? '#e5e7eb' : '#334155',
+            border: 'none',
+            fontSize: '12px',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+          }}
+        >
+          <div className="font-semibold mb-1" style={{ color: isDarkMode ? '#fff' : '#1e293b' }}>
+            {label}
+          </div>
+          {payload.map((entry: any, idx: number) => (
+            <div key={idx} style={{
+              color: isDarkMode
+                ? entry.dataKey === 'risk'
+                  ? '#f87171'
+                  : '#34d399'
+                : entry.dataKey === 'risk'
+                  ? '#ef4444'
+                  : '#10b981'
+            }}>
+              {entry.name}: <span className="font-bold">{entry.value}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Custom Tooltip for Team Engagement Overview chart
+  const CustomEngagementTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div
+          className="rounded-2xl shadow-xl px-4 py-3"
+          style={{
+            background: isDarkMode ? '#1e293b' : '#fff',
+            color: isDarkMode ? '#e5e7eb' : '#334155',
+            border: 'none',
+            fontSize: '12px',
+            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+          }}
+        >
+          <div className="font-semibold mb-1" style={{ color: isDarkMode ? '#fff' : '#1e293b' }}>
+            {data.team}
+          </div>
+          <div style={{ color: isDarkMode ? '#3b82f6' : '#1d4ed8' }}>
+            Engagement: <span className="font-bold">{data.engagement}</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   // Admin Dashboard
   if (user?.role === 'admin') {
@@ -51,18 +116,6 @@ export default function Dashboard() {
               <div>
                 <div className="font-bold text-gray-900 dark:text-white text-lg">View Reports</div>
                 <div className="text-gray-600 dark:text-gray-400 text-sm">Detailed analytics and insights</div>
-              </div>
-            </div>
-          </button>
-
-          <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border border-purple-200 dark:border-purple-700">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 text-white group-hover:scale-110 transition-transform duration-200">
-                <Settings className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900 dark:text-white text-lg">System Settings</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Configure system preferences</div>
               </div>
             </div>
           </button>
@@ -168,15 +221,7 @@ export default function Dashboard() {
                     tick={{ fontSize: 10, fill: 'currentColor' }} 
                     className="text-gray-600 dark:text-gray-400"
                   />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                      fontSize: '12px'
-                    }}
-                  />
+                  <Tooltip content={CustomTurnoverTooltip} />
                   <Area
                     type="monotone" 
                     dataKey="risk" 
@@ -227,15 +272,7 @@ export default function Dashboard() {
                     tick={{ fontSize: 10, fill: 'currentColor' }} 
                     className="text-gray-600 dark:text-gray-400"
                   />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                      fontSize: '12px'
-                    }}
-                  />
+                  <Tooltip content={CustomEngagementTooltip} />
                   <Bar 
                     dataKey="engagement" 
                     fill="url(#engagementGradient)" 
@@ -253,9 +290,9 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
+        </div>
+      );
+    }
 
   // User Dashboard
   return (
