@@ -75,7 +75,7 @@ export default function EmployeeAnalyticsClient({ id }: { id: string }) {
         factor: 'Workload Stress',
         impact: 'medium',
         description: 'High project load in recent quarters'
-      },
+      }, 
       {
         factor: 'Team Dynamics',
         impact: 'low',

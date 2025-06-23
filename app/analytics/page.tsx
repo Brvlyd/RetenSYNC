@@ -7,6 +7,35 @@ import { engagementHeatmapData, turnoverRiskData } from '@/lib/dummy-data';
 import { TrendingUp, Users, AlertTriangle, Target, BarChart3, PieChart } from 'lucide-react';
 import { useTheme } from '@/contexts/theme-context';
 
+// Custom tooltip for Risk Trend
+function CustomRiskTooltip({ active, payload }: any) {
+  if (active && payload && payload.length) {
+    const { month, risk, actual } = payload[0].payload;
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
+        <div className="font-semibold text-gray-900 dark:text-white mb-1">{month}</div>
+        <div className="text-gray-600 dark:text-gray-300">Predicted Risk: {risk}</div>
+        <div className="text-gray-600 dark:text-gray-300">Actual Turnover: {actual}</div>
+      </div>
+    );
+  }
+  return null;
+}
+
+// Custom tooltip for Engagement Heatmap
+function CustomEngagementTooltip({ active, payload }: any) {
+  if (active && payload && payload.length) {
+    const { engagement, stress } = payload[0].payload;
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 border border-gray-200 dark:border-gray-700">
+        <div className="font-semibold text-gray-900 dark:text-white mb-1">Engagement: {engagement}</div>
+        <div className="text-gray-600 dark:text-gray-300">Stress: {stress}</div>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function Analytics() {
   const router = useRouter();
   const [animateProgress, setAnimateProgress] = useState(false);
@@ -125,7 +154,6 @@ export default function Analytics() {
               <ScatterChart data={engagementHeatmapData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:stroke-gray-700" />
                 <XAxis 
-                  dataKey="engagement" 
                   name="Engagement Score"
                   domain={[0, 10]}
                   tick={{ fontSize: 10, fill: 'currentColor' }}
