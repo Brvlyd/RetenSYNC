@@ -248,7 +248,11 @@ export default function Header() {
           )}
         </div>
 
+<<<<<<< HEAD
         {/* User Profile (without Logout Button) */}
+=======
+        {/* User Profile with Logout */}
+>>>>>>> refs/remotes/origin/main
         <div className="flex items-center space-x-2 sm:space-x-3">
           {/* User Info */}
           <div className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl border border-gray-200 dark:border-gray-700">
@@ -265,6 +269,20 @@ export default function Header() {
               <p className="text-xs text-gray-500 dark:text-gray-400">{userData.role}</p>
             </div>
           </div>
+<<<<<<< HEAD
+=======
+
+          {/* Logout Button */}
+          <motion.button
+            onClick={handleLogout}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-700 flex items-center justify-center transition-all duration-300 text-red-600 dark:text-red-400"
+            title="Logout"
+          >
+            <LogOut className="h-4 w-4 sm:h-5 sm:w-5" />
+          </motion.button>
+>>>>>>> refs/remotes/origin/main
         </div>
       </div>
 

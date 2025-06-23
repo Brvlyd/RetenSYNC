@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+<<<<<<< HEAD
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import StatCard from '@/components/ui/stat-card';
 import { organizationStats, turnoverRiskData, engagementHeatmapData } from '@/lib/dummy-data';
@@ -10,6 +11,15 @@ import { useTheme } from '@/contexts/theme-context';
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const { isDarkMode } = useTheme();
+=======
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from 'recharts';
+import StatCard from '@/components/ui/stat-card';
+import { organizationStats, turnoverRiskData, engagementHeatmapData } from '@/lib/dummy-data';
+import { TrendingDown, TrendingUp, Users, Heart, AlertTriangle, DollarSign, Target, Award, Zap, UserPlus, Settings, BarChart3 } from 'lucide-react';
+
+export default function Dashboard() {
+  const [user, setUser] = useState<any>(null);
+>>>>>>> refs/remotes/origin/main
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -18,6 +28,7 @@ export default function Dashboard() {
     }
   }, []);
 
+<<<<<<< HEAD
   // Custom Tooltip for Turnover Risk Prediction chart
   const CustomTurnoverTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -81,6 +92,8 @@ export default function Dashboard() {
     return null;
   };
 
+=======
+>>>>>>> refs/remotes/origin/main
   // Admin Dashboard
   if (user?.role === 'admin') {
     return (
@@ -119,6 +132,21 @@ export default function Dashboard() {
               </div>
             </div>
           </button>
+<<<<<<< HEAD
+=======
+
+          <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border border-purple-200 dark:border-purple-700">
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <div className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 text-white group-hover:scale-110 transition-transform duration-200">
+                <Settings className="h-6 w-6" />
+              </div>
+              <div>
+                <div className="font-bold text-gray-900 dark:text-white text-lg">System Settings</div>
+                <div className="text-gray-600 dark:text-gray-400 text-sm">Configure system preferences</div>
+              </div>
+            </div>
+          </button>
+>>>>>>> refs/remotes/origin/main
         </div>
 
         {/* Enhanced Key Metrics */}
@@ -221,7 +249,19 @@ export default function Dashboard() {
                     tick={{ fontSize: 10, fill: 'currentColor' }} 
                     className="text-gray-600 dark:text-gray-400"
                   />
+<<<<<<< HEAD
                   <Tooltip content={CustomTurnoverTooltip} />
+=======
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                      fontSize: '12px'
+                    }}
+                  />
+>>>>>>> refs/remotes/origin/main
                   <Area
                     type="monotone" 
                     dataKey="risk" 
@@ -272,7 +312,19 @@ export default function Dashboard() {
                     tick={{ fontSize: 10, fill: 'currentColor' }} 
                     className="text-gray-600 dark:text-gray-400"
                   />
+<<<<<<< HEAD
                   <Tooltip content={CustomEngagementTooltip} />
+=======
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                      fontSize: '12px'
+                    }}
+                  />
+>>>>>>> refs/remotes/origin/main
                   <Bar 
                     dataKey="engagement" 
                     fill="url(#engagementGradient)" 
@@ -290,9 +342,15 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+<<<<<<< HEAD
         </div>
       );
     }
+=======
+      </div>
+    );
+  }
+>>>>>>> refs/remotes/origin/main
 
   // User Dashboard
   return (
