@@ -117,12 +117,23 @@ export default function RegisterPage() {
 
     // Simulate API call
     setTimeout(() => {
+      // Store user data immediately (auto-approve registration)
+      const userData = {
+        email: formData.email,
+        role: 'user',
+        name: formData.name,
+        position: formData.position,
+        department: formData.department,
+        employeeId: formData.employeeId
+      };
+      
+      localStorage.setItem('user', JSON.stringify(userData));
       setSuccess(true);
       setIsLoading(false);
       
-      // Redirect to login after 2 seconds
+      // Redirect to dashboard after 2 seconds
       setTimeout(() => {
-        router.push('/auth/login');
+        router.push('/dashboard');
       }, 2000);
     }, 1000);
   };
@@ -133,16 +144,16 @@ export default function RegisterPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8 text-center max-w-md w-full"
+          className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-6 sm:p-8 text-center max-w-md w-full"
         >
-          <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600 dark:text-green-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Registration Successful!</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Your account has been created successfully. You will be redirected to the login page.
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">Registration Successful!</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm sm:text-base">
+            Your account has been created successfully. Redirecting to dashboard...
           </p>
-          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
         </motion.div>
       </div>
     );
@@ -161,44 +172,44 @@ export default function RegisterPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-2xl relative z-10"
+        className="w-full max-w-lg sm:max-w-2xl relative z-10"
       >
         {/* Register Card */}
-        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8">
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-6 sm:p-8">
           {/* Logo and Title */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg mb-4"
+              className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl sm:rounded-2xl shadow-lg mb-4"
             >
-              <Brain className="h-8 w-8 text-white" />
+              <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </motion.div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 dark:from-gray-100 dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 dark:from-gray-100 dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent">
               Smart-en
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">Create your employee account</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">Create your employee account</p>
           </div>
 
           {/* Register Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Employee ID and Name */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Employee ID / NIK
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Hash className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                    <Hash className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
                     name="employeeId"
                     value={formData.employeeId}
                     onChange={handleInputChange}
-                    className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                    className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                       errors.employeeId ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                     }`}
                     placeholder="Enter employee ID"
@@ -214,15 +225,15 @@ export default function RegisterPage() {
                   Full Name
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                    <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                    className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                       errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                     }`}
                     placeholder="Enter your full name"
@@ -240,15 +251,15 @@ export default function RegisterPage() {
                 Email Address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                 </div>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                  className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                     errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                   }`}
                   placeholder="name@company.com"
@@ -263,20 +274,20 @@ export default function RegisterPage() {
             </div>
 
             {/* Position and Department */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Position
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Briefcase className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                    <Briefcase className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   </div>
                   <select
                     name="position"
                     value={formData.position}
                     onChange={handleInputChange}
-                    className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                    className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                       errors.position ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                     }`}
                   >
@@ -296,14 +307,14 @@ export default function RegisterPage() {
                   Department
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Building className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                    <Building className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   </div>
                   <select
                     name="department"
                     value={formData.department}
                     onChange={handleInputChange}
-                    className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                    className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                       errors.department ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                     }`}
                   >
@@ -320,21 +331,21 @@ export default function RegisterPage() {
             </div>
 
             {/* Password and Confirm Password */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className={`w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                    className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                       errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                     }`}
                     placeholder="Enter password"
@@ -342,12 +353,12 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center"
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                      <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                      <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
                     )}
                   </button>
                 </div>
@@ -361,15 +372,15 @@ export default function RegisterPage() {
                   Confirm Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   </div>
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className={`w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-gray-700 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${
+                    className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${
                       errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'
                     }`}
                     placeholder="Confirm password"
@@ -377,12 +388,12 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center"
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                      <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
+                      <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
                     )}
                   </button>
                 </div>
@@ -398,10 +409,10 @@ export default function RegisterPage() {
               disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm sm:text-base"
             >
               {isLoading ? (
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 'Create Account'
               )}
@@ -409,8 +420,8 @@ export default function RegisterPage() {
           </form>
 
           {/* Login Link */}
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
+          <div className="mt-6 sm:mt-8 text-center">
+            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
               Already have an account?{' '}
               <button
                 onClick={() => router.push('/auth/login')}

@@ -33,8 +33,8 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const userData = {
-    name: 'Human Resources',
-    email: 'admin@company.com',
+    name: 'Tasya Salsabila',
+    email: 'tasya.salsabila@company.com',
     role: 'Senior Developer',
     avatar: null
   };
@@ -96,7 +96,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm relative z-30">
+    <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm relative z-30">
       {/* Left Section */}
       <div className="flex items-center space-x-3 sm:space-x-6">
         {/* System Status - Hidden on mobile */}

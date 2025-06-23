@@ -8,6 +8,13 @@ export default function Feedback() {
   const [activeTab, setActiveTab] = useState('received');
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [animateCards, setAnimateCards] = useState(false);
+  const [formData, setFormData] = useState({
+    type: 'peer',
+    recipient: '',
+    project: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setAnimateCards(true);
@@ -53,6 +60,30 @@ export default function Feedback() {
       case 'self': return 'bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border border-purple-200';
       default: return 'bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 border border-gray-200';
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.recipient || !formData.project || !formData.message) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      alert('Feedback submitted successfully!');
+      setFormData({
+        type: 'peer',
+        recipient: '',
+        project: '',
+        message: ''
+      });
+      setShowFeedbackForm(false);
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (
@@ -119,27 +150,35 @@ export default function Feedback() {
             <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Give Feedback</h3>
           </div>
           
-          <form className="space-y-4 sm:space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                   Feedback Type
                 </label>
-                <select className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base">
-                  <option>Peer Feedback</option>
-                  <option>Upward Feedback</option>
-                  <option>Self Assessment</option>
+                <select 
+                  value={formData.type}
+                  onChange={(e) => setFormData({...formData, type: e.target.value})}
+                  className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                >
+                  <option value="peer">Peer Feedback</option>
+                  <option value="manager">Upward Feedback</option>
+                  <option value="self">Self Assessment</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                   Recipient
                 </label>
-                <select className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base">
-                  <option>Select recipient...</option>
-                    <option>Aulia</option>
-                    <option>Tasya</option>
-                    <option>Annisa</option>
+                <select 
+                  value={formData.recipient}
+                  onChange={(e) => setFormData({...formData, recipient: e.target.value})}
+                  className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                >
+                  <option value="">Select recipient...</option>
+                  <option value="Aulia">Aulia</option>
+                  <option value="Tasya">Tasya</option>
+                  <option value="Annisa">Annisa</option>
                 </select>
               </div>
             </div>
@@ -150,6 +189,8 @@ export default function Feedback() {
               </label>
               <input
                 type="text"
+                value={formData.project}
+                onChange={(e) => setFormData({...formData, project: e.target.value})}
                 placeholder="e.g., Q4 Product Launch"
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
               />
@@ -161,6 +202,8 @@ export default function Feedback() {
               </label>
               <textarea
                 rows={4}
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
                 placeholder="Share specific, actionable feedback..."
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 resize-none text-gray-900 dark:text-white text-sm sm:text-base"
               />
@@ -169,16 +212,22 @@ export default function Feedback() {
             <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
               <button
                 type="button"
+                onClick={() => setShowFeedbackForm(false)}
                 className="px-4 sm:px-6 py-2 sm:py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl lg:rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-semibold text-sm sm:text-base w-full sm:w-auto"
               >
-                Save Draft
+                Cancel
               </button>
               <button
                 type="submit"
-                className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold text-sm sm:text-base w-full sm:w-auto justify-center"
+                disabled={isSubmitting}
+                className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold text-sm sm:text-base w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:translate-x-1 transition-transform" />
-                Send Feedback
+                {isSubmitting ? (
+                  <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                ) : (
+                  <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                )}
+                {isSubmitting ? 'Sending...' : 'Send Feedback'}
               </button>
             </div>
           </form>

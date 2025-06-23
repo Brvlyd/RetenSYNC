@@ -2,11 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { goalsData, Goal, KeyResult } from '@/lib/dummy-data';
-import { Target, Plus, Calendar, TrendingUp, CheckCircle, Clock, User, Award, BarChart3 } from 'lucide-react';
+import { Target, Plus, Calendar, TrendingUp, CheckCircle, Clock, User, Award, BarChart3, X } from 'lucide-react';
 
 export default function Goals() {
   const [animateProgress, setAnimateProgress] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState('Q4 2024');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    dueDate: '',
+    priority: 'medium'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   useEffect(() => {
     setAnimateProgress(true);
@@ -48,6 +56,30 @@ export default function Goals() {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.description || !formData.dueDate) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      alert('Goal created successfully!');
+      setFormData({
+        title: '',
+        description: '',
+        dueDate: '',
+        priority: 'medium'
+      });
+      setShowAddForm(false);
+      setIsSubmitting(false);
+    }, 1000);
+  };
+
   return (
     <div className="space-y-6 lg:space-y-8">
       {/* Modern Header with Glassmorphism - Responsive */}
@@ -76,14 +108,116 @@ export default function Goals() {
                 <option>Q3 2024</option>
                 <option>Q2 2024</option>
               </select>
-              <button className="group bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105 w-full sm:w-auto justify-center">
+              <button 
+                onClick={() => setShowAddForm(true)}
+                className="group bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105 w-full sm:w-auto justify-center"
+              >
                 <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                 <span className="font-semibold text-sm sm:text-base">Add Goal</span>
               </button>
+            
             </div>
           </div>
         </div>
       </div>
+
+      {/* Add Goal Modal */}
+      {showAddForm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl lg:rounded-3xl p-6 sm:p-8 w-full max-w-md sm:max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                <Target className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-violet-600" />
+                Add New Goal
+              </h3>
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Goal Title
+                </label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  placeholder="Enter goal title"
+                  className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Description
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Describe your goal..."
+                  className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.dueDate}
+                    onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
+                    className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Priority
+                  </label>
+                  <select
+                    value={formData.priority}
+                    onChange={(e) => setFormData({...formData, priority: e.target.value})}
+                    className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  className="px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-semibold w-full sm:w-auto"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  ) : (
+                    <Target className="h-5 w-5 mr-2" />
+                  )}
+                  {isSubmitting ? 'Creating...' : 'Create Goal'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Enhanced Progress Overview - Responsive */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
