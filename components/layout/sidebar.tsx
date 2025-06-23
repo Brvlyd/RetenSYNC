@@ -18,7 +18,9 @@ import {
   Brain,
   LogOut,
   Sparkles,
+  Building,
   User,
+  UserPlus,
   Heart
 } from 'lucide-react';
 
@@ -39,7 +41,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     }
   }, []);
 
-  // Base navigation items (no admin items)
+  // Navigation items for all users
   const baseNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
     { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
@@ -50,8 +52,16 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     { name: 'My Profile', href: '/profile', icon: User, color: 'from-emerald-500 to-teal-500' },
   ];
 
-  // Only use baseNavigation for everyone
-  const navigation = [...baseNavigation];
+  // Additional navigation for admin
+  const adminNavigation = [
+    { name: 'Departments', href: '/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
+    { name: 'User Management', href: '/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' }
+  ];
+
+  // Navigation with admin section if admin
+  const navigation = user?.role === 'admin'
+    ? [...baseNavigation, ...adminNavigation]
+    : baseNavigation;
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
