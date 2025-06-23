@@ -351,11 +351,7 @@ export const userData = [
     joinDate: '2023-06-12',
     status: 'active',
     phone: '+62 816-7890-1234',
-<<<<<<< HEAD
-    location: 'Jakarta',  
-=======
     location: 'Jakarta',
->>>>>>> refs/remotes/origin/main
     manager: 'Design Lead',
     role: 'user'
   }
