@@ -9,22 +9,19 @@ import { useTheme } from '@/contexts/theme-context';
 import {
   BarChart3,
   MessageSquare,
-  Target,
   Users,
-  Award,
   BookOpen,
   TrendingUp,
   ClipboardList,
   Menu,
   X,
   Brain,
-  Settings,
-  Bell,
   LogOut,
   Sparkles,
   Building,
   User,
-  UserPlus
+  UserPlus,
+  Heart
 } from 'lucide-react';
 
 export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (collapsed: boolean) => void }) {
@@ -50,9 +47,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
     { name: 'Feedback', href: '/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500' },
     { name: 'Performance Review', href: '/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
-    { name: 'Goals & OKRs', href: '/goals', icon: Target, color: 'from-violet-500 to-purple-500' },
-    { name: '1-on-1 Meetings', href: '/1on1', icon: Users, color: 'from-pink-500 to-rose-500' },
-    { name: 'Shoutouts', href: '/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500' },
+    { name: 'HR Interactions', href: '/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500' },
     { name: 'Learning', href: '/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
   ];
 
@@ -84,6 +79,10 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   const handleLogout = () => {
     localStorage.removeItem('user');
     router.push('/auth/login');
+  };
+
+  const handleBurgerClick = () => {
+    setIsSidebarExpanded(!isSidebarExpanded);
   };
 
   const sidebarVariants: Variants = {
@@ -145,25 +144,34 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
         initial="collapsed"
         animate={isSidebarExpanded ? "expanded" : "collapsed"}
         variants={sidebarVariants}
-        onHoverStart={() => setIsSidebarExpanded(true)}
-        onHoverEnd={() => setIsSidebarExpanded(false)}
       >
-        {/* Modern Logo Section */}
+        {/* Modern Logo Section with Burger Menu */}
         <div className="h-24 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0">
-          <div className="flex items-center justify-center w-full">
-            <div className="relative">
-              <div className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 w-12 h-12 flex items-center justify-center overflow-hidden shadow-lg">
-                <Brain className="h-8 w-8 text-white" />
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              <div className="relative">
+                <div className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 w-12 h-12 flex items-center justify-center overflow-hidden shadow-lg">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+              <motion.div
+                variants={textVariants}
+                className="ml-4"
+              >
+                <h1 className="font-bold text-xl text-gray-900 dark:text-white">Smart-en</h1>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Performance Platform</p>
+              </motion.div>
             </div>
-            <motion.div
+            
+            {/* Burger Menu Button - Only visible on desktop when sidebar is expanded */}
+            <motion.button
               variants={textVariants}
-              className="ml-4"
+              onClick={handleBurgerClick}
+              className="hidden lg:block p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
-              <h1 className="font-bold text-xl text-gray-900 dark:text-white">Smart-en</h1>
-              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Performance Platform</p>
-            </motion.div>
+              <Menu className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            </motion.button>
           </div>
         </div>
 
@@ -257,27 +265,6 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
             );
           })}
         </div>
-
-        {/* Quick Actions Section */}
-        <motion.div 
-          variants={textVariants}
-          className="mt-6 pt-6 border-t border-gray-200/60 dark:border-gray-700/60 px-4 flex-shrink-0"
-        >
-          <p className="px-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-            Quick Actions
-          </p>
-          <div className="space-y-2">
-            <button className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-300 group">
-              <Bell className="h-4 w-4 mr-3 text-gray-400 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors flex-shrink-0" />
-              <motion.span variants={textVariants} className="truncate">Notifications</motion.span>
-              <motion.span variants={textVariants} className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center flex-shrink-0">3</motion.span>
-            </button>
-            <button className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-300 group">
-              <Settings className="h-4 w-4 mr-3 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors flex-shrink-0" />
-              <motion.span variants={textVariants} className="truncate">Settings</motion.span>
-            </button>
-          </div>
-        </motion.div>
 
         {/* Enhanced User Profile Section - Logout button */}
         <div className="p-4 mb-6 flex-shrink-0">

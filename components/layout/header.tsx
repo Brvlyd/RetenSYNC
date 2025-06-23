@@ -7,18 +7,12 @@ import { useTheme } from '@/contexts/theme-context';
 import {
   Bell,
   Search,
-  Settings,
-  User,
   LogOut,
-  HelpCircle,
   Moon,
   Sun,
   Monitor,
   Palette,
   Command,
-  Calendar,
-  MessageSquare,
-  TrendingUp,
   ChevronDown,
   Menu
 } from 'lucide-react';
@@ -89,12 +83,6 @@ export default function Header() {
     }
   ];
 
-  const quickActions = [
-    { icon: Calendar, label: 'Schedule 1-on-1', action: () => router.push('/1on1') },
-    { icon: MessageSquare, label: 'Give Feedback', action: () => router.push('/feedback') },
-    { icon: TrendingUp, label: 'View Analytics', action: () => router.push('/analytics') }
-  ];
-
   return (
     <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm relative z-30">
       {/* Left Section */}
@@ -136,22 +124,6 @@ export default function Header() {
         >
           <Search className="h-4 w-4" />
         </motion.button>
-
-        {/* Quick Actions - Hidden on mobile */}
-        <div className="hidden lg:flex items-center space-x-2">
-          {quickActions.map((action, index) => (
-            <motion.button
-              key={index}
-              onClick={action.action}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all duration-300 group"
-              title={action.label}
-            >
-              <action.icon className="h-5 w-5" />
-            </motion.button>
-          ))}
-        </div>
 
         {/* Theme Toggle */}
         <div className="relative">
