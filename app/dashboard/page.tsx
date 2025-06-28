@@ -47,7 +47,7 @@ export default function Dashboard() {
             <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white group-hover:scale-110 transition-transform duration-200">
                 <BarChart3 className="h-6 w-6" />
-              </div>a
+              </div>
               <div>
                 <div className="font-bold text-gray-900 dark:text-white text-lg">View Reports</div>
                 <div className="text-gray-600 dark:text-gray-400 text-sm">Detailed analytics and insights</div>
