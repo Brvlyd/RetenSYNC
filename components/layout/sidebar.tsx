@@ -21,7 +21,10 @@ import {
   Building,
   User,
   UserPlus,
-  Heart
+  Heart,
+  Award,
+  Calendar,
+  FileText
 } from 'lucide-react';
 
 export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (collapsed: boolean) => void }) {
@@ -44,17 +47,25 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   // Base navigation items
   const baseNavigation = [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
-    { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
-    { name: 'Feedback', href: '/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500' },
     { name: 'Performance Review', href: '/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
-    { name: 'HR Interactions', href: '/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500' },
+    { name: 'Goals', href: '/goals', icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
     { name: 'Learning', href: '/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
+    { name: 'Surveys', href: '/surveys', icon: FileText, color: 'from-violet-500 to-purple-500' },
   ];
 
   // Admin-only navigation items
   const adminNavigation = [
+    { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
     { name: 'User Management', href: '/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' },
     { name: 'Departments', href: '/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
+  ];
+
+  // HR Interactions section
+  const hrInteractions = [
+    { name: 'HR Interactions', href: '/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
+    { name: 'Peer Recognition', href: '/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500', isChild: true },
+    { name: '1-on-1 Meetings', href: '/1on1', icon: Calendar, color: 'from-blue-500 to-cyan-500', isChild: true },
+    { name: 'Feedback', href: '/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500', isChild: true },
   ];
 
   // User-only navigation items
@@ -65,7 +76,9 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   // Combine navigation based on user role
   const navigation = [
     ...baseNavigation,
-    ...(user?.role === 'admin' ? adminNavigation : userNavigation)
+    ...(user?.role === 'admin' ? adminNavigation : []),
+    ...hrInteractions,
+    ...(user?.role !== 'admin' ? userNavigation : [])
   ];
 
   useEffect(() => {
@@ -94,7 +107,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
       } as Transition
     },
     collapsed: {
-      width: "6rem",
+      width: "5rem",
       transition: { 
         duration: 0.4, 
         ease: [0.23, 1, 0.32, 1] as const
@@ -117,9 +130,6 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     }
   };
 
-  // Only show user info section for non-admin users
-  const isAdmin = user?.role === 'admin';
-
   return (
     <>
       {/* Enhanced Mobile menu button */}
@@ -140,7 +150,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
       <motion.div 
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 h-screen overflow-hidden z-40 shadow-2xl lg:translate-x-0 flex flex-col",
+          "fixed left-0 top-0 h-screen overflow-hidden z-30 shadow-2xl lg:translate-x-0 flex flex-col",
           "bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-gray-200/60 dark:border-gray-700/60 transition-colors duration-300",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
@@ -152,7 +162,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
         onMouseLeave={() => setIsSidebarExpanded(false)}
       >
         {/* Modern Logo Section with Burger Menu */}
-        <div className="h-24 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0">
+        <div className="h-20 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <div className="relative">
@@ -181,32 +191,12 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
           </div>
         </div>
 
-        {/* User Info Section */}
-        <motion.div
-          variants={textVariants}
-          className="px-4 py-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0"
-        >
-          <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-              <span className="text-sm font-bold text-white">
-                {user?.name?.split(' ').map((n: string) => n[0]).join('') || 'U'}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                {user?.name || 'User'}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {user?.position || 'Employee'}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Scrollable Menu Items */}
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-3">
+        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
           {navigation.map((item, index) => {
             const isActive = pathname === item.href;
+            const isParentActive = item.isParent && hrInteractions.some(child => child.isChild && pathname === child.href);
+            
             return (
               <motion.div
                 key={item.name}
@@ -219,17 +209,18 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                   onMouseEnter={() => setHoveredItem(item.name)}
                   onMouseLeave={() => setHoveredItem(null)}
                   className={cn(
-                    "flex items-center px-4 py-4 rounded-xl cursor-pointer transition-all duration-300 group relative overflow-hidden",
-                    isActive
+                    "flex items-center px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 group relative overflow-hidden",
+                    item.isChild ? "ml-4 py-2" : "",
+                    isActive || isParentActive
                       ? "bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-700 dark:text-blue-300 shadow-sm"
                       : "hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                   )}
                 >
                   {/* Active indicator */}
-                  {isActive && (
+                  {(isActive || isParentActive) && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-600 dark:bg-blue-400 rounded-r-full"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 dark:bg-blue-400 rounded-r-full"
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
@@ -237,8 +228,9 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                   {/* Icon - centered when collapsed */}
                   <div className="relative flex-shrink-0">
                     <item.icon className={cn(
-                      "w-6 h-6 transition-colors duration-300",
-                      isActive 
+                      "w-5 h-5 transition-colors duration-300",
+                      item.isChild ? "w-4 h-4" : "",
+                      isActive || isParentActive
                         ? "text-blue-600 dark:text-blue-400" 
                         : `${item.color.includes('blue') ? 'text-blue-600 dark:text-blue-400' : 
                             item.color.includes('emerald') ? 'text-emerald-600 dark:text-emerald-400' :
@@ -252,14 +244,17 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                     )} />
                     
                     {/* Sparkle effect on hover */}
-                    {hoveredItem === item.name && !isActive && (
+                    {hoveredItem === item.name && !isActive && !isParentActive && (
                       <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-amber-400 animate-pulse" />
                     )}
                   </div>
                   
                   <motion.span
                     variants={textVariants}
-                    className="ml-4 font-semibold text-sm"
+                    className={cn(
+                      "ml-4 font-semibold text-sm",
+                      item.isChild ? "text-xs" : ""
+                    )}
                   >
                     {item.name}
                   </motion.span>
@@ -298,7 +293,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
       {/* Enhanced Mobile overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

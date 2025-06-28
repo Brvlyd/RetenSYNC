@@ -39,10 +39,29 @@ function CustomEngagementTooltip({ active, payload }: any) {
 export default function Analytics() {
   const router = useRouter();
   const [animateProgress, setAnimateProgress] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     setAnimateProgress(true);
-  }, []);
+    
+    // Check user role
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      
+      // Redirect non-admin users
+      if (parsedUser.role !== 'admin') {
+        router.push('/dashboard');
+        return;
+      }
+    }
+  }, [router]);
+
+  // Don't render anything for non-admin users
+  if (!user || user.role !== 'admin') {
+    return null;
+  }
 
   const performanceData = [
     { id: 1, name: 'Bravely Dirgayuska', performance: 9.2, engagement: 8.8, feedback: 9.1, satisfaction: 8.9, risk: 'low' },
@@ -264,16 +283,16 @@ export default function Analytics() {
                   </td>
                   <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden sm:table-cell">
                     <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.performance}</div>
-                    <div className="progress-bar">
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div 
-                        className="progress-fill" 
+                        className="h-full bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full transition-all duration-700 ease-out" 
                         style={{ width: `${(employee.performance / 10) * 100}%` }}
                       />
                     </div>
                   </td>
                   <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden md:table-cell">
                     <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.engagement}</div>
-                    <div className="progress-bar">
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div 
                         className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full transition-all duration-700 ease-out" 
                         style={{ width: `${(employee.engagement / 10) * 100}%` }}
@@ -282,7 +301,7 @@ export default function Analytics() {
                   </td>
                   <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden lg:table-cell">
                     <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.satisfaction}</div>
-                    <div className="progress-bar">
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div 
                         className="h-full bg-gradient-to-r from-amber-500 to-orange-600 rounded-full transition-all duration-700 ease-out" 
                         style={{ width: `${(employee.satisfaction / 10) * 100}%` }}
@@ -291,7 +310,7 @@ export default function Analytics() {
                   </td>
                   <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
                     <span 
-                      className="status-pill font-bold"
+                      className="px-3 py-1 rounded-full text-xs font-bold border"
                       style={{ 
                         backgroundColor: getRiskColor(employee.risk) + '20',
                         color: getRiskColor(employee.risk),

@@ -14,7 +14,8 @@ import {
   Palette,
   Command,
   ChevronDown,
-  Menu
+  Menu,
+  User
 } from 'lucide-react';
 
 type Theme = 'light' | 'dark' | 'system';
@@ -24,14 +25,16 @@ export default function Header() {
   const { theme, setTheme, isDarkMode } = useTheme();
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [user, setUser] = useState<any>(null);
 
-  const userData = {
-    name: 'Admin',
-    email: 'admin@company.com',
-    role: 'Administrator',
-    avatar: null
-  };
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   const getInitials = (name: string) => {
     return name
@@ -42,9 +45,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    // Clear user data from localStorage
     localStorage.removeItem('user');
-    // Redirect to login page
     router.push('/auth/login');
   };
 
@@ -83,8 +84,10 @@ export default function Header() {
     }
   ];
 
+  if (!user) return null;
+
   return (
-    <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm relative z-30">
+    <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-50">
       {/* Left Section */}
       <div className="flex items-center space-x-3 sm:space-x-6">
         {/* System Status - Hidden on mobile */}
@@ -214,8 +217,8 @@ export default function Header() {
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer ${
-                      notification.unread ? 'bg-blue-50/50' : ''
+                    className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer ${
+                      notification.unread ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''
                     }`}
                   >
                     <div className="flex items-start space-x-3">
@@ -248,33 +251,89 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Profile with Logout */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* User Info */}
-          <div className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl border border-gray-200 dark:border-gray-700">
+        {/* User Profile Menu */}
+        <div className="relative">
+          <motion.button
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+          >
             <div className="relative">
               <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xs sm:text-sm">
-                  {getInitials(userData.name)}
+                  {getInitials(user.name)}
                 </span>
               </div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></div>
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{userData.name}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{userData.role}</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{user.role === 'admin' ? 'Administrator' : user.position || 'Employee'}</p>
             </div>
-          </div>
+            <ChevronDown className="h-4 w-4 text-gray-400 hidden sm:block" />
+          </motion.button>
+
+          {/* User Menu Dropdown */}
+          {isUserMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
+            >
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {getInitials(user.name)}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="py-2">
+                <button
+                  onClick={() => {
+                    router.push('/profile');
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <User className="h-4 w-4 mr-3" />
+                  My Profile
+                </button>
+                
+                <div className="border-t border-gray-100 dark:border-gray-700 my-2"></div>
+                
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsUserMenuOpen(false);
+                  }}
+                  className="w-full flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                >
+                  <LogOut className="h-4 w-4 mr-3" />
+                  Sign Out
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
 
       {/* Click outside to close dropdowns */}
-      {(isThemeOpen || isNotificationOpen) && (
+      {(isThemeOpen || isNotificationOpen || isUserMenuOpen) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
             setIsThemeOpen(false);
             setIsNotificationOpen(false);
+            setIsUserMenuOpen(false);
           }}
         />
       )}
