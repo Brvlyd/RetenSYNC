@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, User, TrendingUp, AlertTriangle, Target, Calendar, MessageSquare, Award } from 'lucide-react';
+import { ArrowLeft, User, TrendingUp, AlertTriangle, CheckCircle, Target, Calendar, MessageSquare, Award } from 'lucide-react';
 
 interface EmployeeDetail {
   id: number;
@@ -75,7 +75,7 @@ export default function EmployeeAnalyticsClient({ id }: { id: string }) {
         factor: 'Workload Stress',
         impact: 'medium',
         description: 'High project load in recent quarters'
-      }, 
+      },
       {
         factor: 'Team Dynamics',
         impact: 'low',
@@ -148,14 +148,14 @@ export default function EmployeeAnalyticsClient({ id }: { id: string }) {
 
   if (!employee) {
     return (
-      <div className="flex items-center justify-center min-h-screen mt-24">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 lg:space-y-8 mt-24">
+    <div className="space-y-6 lg:space-y-8">
       {/* Header with Back Button */}
       <div className="flex items-center space-x-4 mb-6">
         <button

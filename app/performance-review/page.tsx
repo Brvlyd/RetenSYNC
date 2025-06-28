@@ -7,7 +7,7 @@ import { Star, Clock, Edit3, TrendingUp, Award, Target, CheckCircle, AlertCircle
 export default function PerformanceReview() {
   const [currentRating, setCurrentRating] = useState(4.2);
   const [animateProgress, setAnimateProgress] = useState(false);
-  const [activeSection, setActiveSection] = useState('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'self' | 'manager' | 'goals' | 'history'>('overview');
   const [showAddGoalForm, setShowAddGoalForm] = useState(false);
   const [newGoal, setNewGoal] = useState({
     title: '',
@@ -20,6 +20,7 @@ export default function PerformanceReview() {
     setAnimateProgress(true);
   }, []);
 
+  // Moved renderStars to top-level scope so it's available everywhere
   const renderStars = (rating: number, size = 'normal') => {
     const starSize = size === 'large' ? 'h-8 w-8' : 'h-5 w-5';
     return Array.from({ length: 5 }, (_, i) => (
@@ -41,7 +42,7 @@ export default function PerformanceReview() {
     { id: 'manager', label: 'Manager Review', icon: Award },
     { id: 'goals', label: 'Goals & OKRs', icon: Target },
     { id: 'history', label: 'History', icon: Clock },
-  ];
+  ] as const;
 
   const handleAddGoal = (e: React.FormEvent) => {
     e.preventDefault();
@@ -217,118 +218,118 @@ export default function PerformanceReview() {
             </div>
           </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-700">
-                <div className="flex items-center space-x-2 mb-4">
-                  <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                  <h4 className="font-bold text-emerald-900 dark:text-emerald-200">Key Achievements</h4>
-                </div>
-                <ul className="space-y-3">
-                  {performanceReviewData.selfReview.achievements.map((achievement, index) => (
-                    <li key={index} className="flex items-start">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-emerald-800 dark:text-emerald-200 leading-relaxed">{achievement}</span>
-                    </li>
-                  ))}
-                </ul>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-700">
+              <div className="flex items-center space-x-2 mb-4">
+                <CheckCircle className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                <h4 className="font-bold text-emerald-900 dark:text-emerald-200">Key Achievements</h4>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Manager's Goal Recommendations</h3>
+              <ul className="space-y-3">
+                {performanceReviewData.selfReview.achievements.map((achievement, index) => (
+                  <li key={index} className="flex items-start">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <span className="text-emerald-800 dark:text-emerald-200 leading-relaxed">{achievement}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-
-              <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-6 border border-orange-200 dark:border-orange-700">
-                <div className="flex items-center space-x-2 mb-4">
-                  <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-                  <h4 className="font-bold text-orange-900 dark:text-orange-200">Areas for Growth</h4>
-                </div>
-                <ul className="space-y-3">
-                  {performanceReviewData.selfReview.challenges.map((challenge, index) => (
-                    <li key={index} className="flex items-start">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-orange-800 dark:text-orange-200 leading-relaxed">{challenge}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
-                <div className="flex items-center space-x-2 mb-4">
-                  <Target className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <h4 className="font-bold text-blue-900 dark:text-blue-200">Goals for Next Year</h4>
-                </div>
-                <ul className="space-y-3">
-                  {performanceReviewData.selfReview.goals.map((goal, index) => (
-                    <li key={index} className="flex items-start">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-blue-800 dark:text-blue-200 leading-relaxed">{goal}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Manager's Goal Recommendations</h3>
           </div>
 
-          {/* Goals & OKRs Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl">
-                  <Target className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Current Goals & OKRs</h3>
-              </div>
-              <button
-                onClick={() => setShowAddGoalForm(true)}
-                className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 py-2 rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Goal
-              </button>
+          <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-6 border border-orange-200 dark:border-orange-700">
+            <div className="flex items-center space-x-2 mb-4">
+              <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              <h4 className="font-bold text-orange-900 dark:text-orange-200">Areas for Growth</h4>
             </div>
-
-            <div className="space-y-6">
-              {goalsData.slice(0, 3).map((goal, index) => (
-                <div key={goal.id} className="border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{goal.title}</h4>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm">{goal.description}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-gray-900 dark:text-white">{goal.progress}%</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">Complete</div>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Progress</span>
-                      <span className="text-sm font-bold text-gray-900 dark:text-white">{goal.progress}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner">
-                      <div
-                        className={`h-full rounded-full transition-all duration-1000 ${getProgressBarColor(goal.progress)} shadow-lg`}
-                        style={{ width: `${goal.progress}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h5 className="font-semibold text-gray-900 dark:text-white text-sm">Key Results:</h5>
-                    {goal.keyResults.map((kr, krIndex) => (
-                      <div key={krIndex} className="flex items-center space-x-2 text-sm">
-                        <CheckCircle className={`h-4 w-4 ${kr.completed ? 'text-emerald-500' : 'text-gray-400'}`} />
-                        <span className={kr.completed ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}>
-                          {kr.description}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <ul className="space-y-3">
+              {performanceReviewData.selfReview.challenges.map((challenge, index) => (
+                <li key={index} className="flex items-start">
+                  <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                  <span className="text-orange-800 dark:text-orange-200 leading-relaxed">{challenge}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Add Goal Modal */}
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
+            <div className="flex items-center space-x-2 mb-4">
+              <Target className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <h4 className="font-bold text-blue-900 dark:text-blue-200">Goals for Next Year</h4>
+            </div>
+            <ul className="space-y-3">
+              {performanceReviewData.selfReview.goals.map((goal, index) => (
+                <li key={index} className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                  <span className="text-blue-800 dark:text-blue-200 leading-relaxed">{goal}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Goals & OKRs Section */}
+      {activeSection === 'goals' && (
+        <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl">
+                <Target className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Current Goals & OKRs</h3>
+            </div>
+            <button
+              onClick={() => setShowAddGoalForm(true)}
+              className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 py-2 rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Goal
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            {goalsData.slice(0, 3).map((goal, index) => (
+              <div key={goal.id} className="border border-gray-200 dark:border-gray-700 rounded-2xl p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{goal.title}</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">{goal.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{goal.progress}%</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">Complete</div>
+                  </div>
+                </div>
+                
+                <div className="mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Progress</span>
+                    <span className="text-sm font-bold text-gray-900 dark:text-white">{goal.progress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner">
+                    <div
+                      className={`h-full rounded-full transition-all duration-1000 ${getProgressBarColor(goal.progress)} shadow-lg`}
+                      style={{ width: `${goal.progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h5 className="font-semibold text-gray-900 dark:text-white text-sm">Key Results:</h5>
+                  {goal.keyResults.map((kr, krIndex) => (
+                    <div key={krIndex} className="flex items-center space-x-2 text-sm">
+                      <CheckCircle className={`h-4 w-4 ${kr.completed ? 'text-emerald-500' : 'text-gray-400'}`} />
+                      <span className={kr.completed ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}>
+                        {kr.description}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Add Goal Modal for Goals tab */}
           {showAddGoalForm && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl">
@@ -562,77 +563,6 @@ export default function PerformanceReview() {
                 )}
               </div>
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Add Goal Modal (keep outside sections so it will appear above everything) */}
-      {showAddGoalForm && activeSection === 'goals' && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Add New Goal</h3>
-            <form onSubmit={handleAddGoal} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Goal Title</label>
-                <input
-                  type="text"
-                  value={newGoal.title}
-                  onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-                  className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                <textarea
-                  rows={3}
-                  value={newGoal.description}
-                  onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-                  className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
-                  required
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Due Date</label>
-                  <input
-                    type="date"
-                    value={newGoal.dueDate}
-                    onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
-                    className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Priority</label>
-                  <select
-                    value={newGoal.priority}
-                    onChange={(e) => setNewGoal({...newGoal, priority: e.target.value})}
-                    className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
-                </div>
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => setShowAddGoalForm(false)}
-                  className="px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-semibold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold"
-                >
-                  <Target className="h-5 w-5 mr-2" />
-                  Create Goal
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
