@@ -7,6 +7,7 @@ type Theme = 'light' | 'dark' | 'system';
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
   isDarkMode: boolean;
 }
 
@@ -54,8 +55,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('theme', newTheme);
   };
 
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      handleThemeChange('dark');
+    } else if (theme === 'dark') {
+      handleThemeChange('light');
+    } else {
+      // If system, toggle to opposite of current system preference
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      handleThemeChange(isDark ? 'light' : 'dark');
+    }
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme: handleThemeChange, isDarkMode }}>
+    <ThemeContext.Provider value={{ theme, setTheme: handleThemeChange, toggleTheme, isDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );

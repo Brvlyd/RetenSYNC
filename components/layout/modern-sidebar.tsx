@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { 
   Home, Users, BarChart3, MessageSquare, ClipboardList, 
   Heart, BookOpen, UserPlus, Building, User, Settings, 
@@ -71,14 +71,41 @@ export default function ModernSidebar({
     router.push('/auth/login');
   };
 
-  const sidebarVariants = {
-    expanded: { width: 280, transition: { duration: 0.3, ease: 'easeInOut' } },
-    collapsed: { width: 80, transition: { duration: 0.3, ease: 'easeInOut' } }
+  const sidebarVariants: Variants = {
+    expanded: { 
+      width: 280, 
+      transition: { 
+        duration: 0.3, 
+        ease: [0.23, 1, 0.32, 1]
+      } 
+    },
+    collapsed: { 
+      width: 80, 
+      transition: { 
+        duration: 0.3, 
+        ease: [0.23, 1, 0.32, 1]
+      } 
+    }
   };
 
-  const textVariants = {
-    expanded: { opacity: 1, x: 0, transition: { delay: 0.1 } },
-    collapsed: { opacity: 0, x: -10, transition: { duration: 0.1 } }
+  const textVariants: Variants = {
+    expanded: { 
+      opacity: 1, 
+      x: 0, 
+      transition: { 
+        delay: 0.1,
+        duration: 0.2,
+        ease: "easeOut"
+      } 
+    },
+    collapsed: { 
+      opacity: 0, 
+      x: -10, 
+      transition: { 
+        duration: 0.1,
+        ease: "easeIn"
+      } 
+    }
   };
 
   return (
