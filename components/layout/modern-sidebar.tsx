@@ -76,14 +76,14 @@ export default function ModernSidebar({
       width: 280, 
       transition: { 
         duration: 0.3, 
-        ease: [0.23, 1, 0.32, 1]
+        ease: "easeInOut"
       } 
     },
     collapsed: { 
       width: 80, 
       transition: { 
         duration: 0.3, 
-        ease: [0.23, 1, 0.32, 1]
+        ease: "easeInOut"
       } 
     }
   };
@@ -177,7 +177,7 @@ export default function ModernSidebar({
             </div>
           </div>
 
-          {/* User Info */}
+          {/* User Info - Role Removed */}
           <AnimatePresence>
             {isSidebarExpanded && user && (
               <motion.div
@@ -197,9 +197,10 @@ export default function ModernSidebar({
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-900 dark:text-white truncate">{user.name}</p>
                     <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                    {/* Role badge removed - now shown in header */}
                     <div className="flex items-center space-x-1 mt-1">
                       <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                        {user.role}
+                        Online
                       </span>
                     </div>
                   </div>
@@ -321,7 +322,7 @@ export default function ModernSidebar({
         </div>
       </motion.aside>
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar - Same structure but always expanded */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.aside
@@ -331,7 +332,6 @@ export default function ModernSidebar({
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="lg:hidden fixed left-0 top-0 h-full w-80 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border-r border-white/20 dark:border-slate-700/20"
           >
-            {/* Same content as desktop but always expanded */}
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="p-6 border-b border-gray-200/50 dark:border-slate-700/50">
@@ -346,7 +346,7 @@ export default function ModernSidebar({
                 </div>
               </div>
 
-              {/* User Info */}
+              {/* User Info - Role Removed from Mobile as well */}
               {user && (
                 <div className="p-6 border-b border-gray-200/50 dark:border-slate-700/50">
                   <div className="flex items-center space-x-3">
@@ -359,9 +359,10 @@ export default function ModernSidebar({
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-gray-900 dark:text-white truncate">{user.name}</p>
                       <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                      {/* Role badge removed from mobile sidebar too */}
                       <div className="flex items-center space-x-1 mt-1">
                         <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">
-                          {user.role}
+                          Online
                         </span>
                       </div>
                     </div>
@@ -369,7 +370,7 @@ export default function ModernSidebar({
                 </div>
               )}
 
-              {/* Navigation */}
+              {/* Navigation - Rest remains the same */}
               <nav className="flex-1 p-6 space-y-2">
                 {navigation.map((item, index) => {
                   const isActive = pathname === item.href;

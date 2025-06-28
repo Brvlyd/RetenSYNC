@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Search, Bell, Settings, User, Moon, Sun, 
-  MessageCircle, Calendar, HelpCircle, Zap
+  MessageCircle, Calendar, HelpCircle, Zap, Shield, Crown
 } from 'lucide-react';
 import { useTheme } from '@/contexts/theme-context';
 
@@ -24,6 +24,27 @@ export default function ModernHeader({ isSidebarExpanded }: ModernHeaderProps) {
       setUser(JSON.parse(userData));
     }
   }, []);
+
+  const getRoleConfig = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return {
+          label: 'Admin',
+          icon: Crown,
+          bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+          textColor: 'text-purple-700 dark:text-purple-400',
+          iconColor: 'text-purple-600 dark:text-purple-400'
+        };
+      default:
+        return {
+          label: 'Employee',
+          icon: User,
+          bgColor: 'bg-emerald-100 dark:bg-emerald-900/30',
+          textColor: 'text-emerald-700 dark:text-emerald-400',
+          iconColor: 'text-emerald-600 dark:text-emerald-400'
+        };
+    }
+  };
 
   return (
     <motion.header
@@ -136,18 +157,57 @@ export default function ModernHeader({ isSidebarExpanded }: ModernHeaderProps) {
             <MessageCircle className="w-5 h-5 text-gray-600 dark:text-gray-400" />
           </motion.button>
 
-          {/* User Profile */}
+          {/* User Profile with Role */}
           {user && (
             <div className="flex items-center space-x-3">
-              <div className="hidden md:block text-right">
-                <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {user.name}
-                </p>
+              {/* User Info and Role */}
+              <div className="hidden md:flex flex-col items-end space-y-1">
+                <div className="flex items-center space-x-2">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                    {user.name}
+                  </p>
+                  {/* Role Badge in Header */}
+                  {user.role && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium ${
+                        getRoleConfig(user.role).bgColor
+                      } ${getRoleConfig(user.role).textColor}`}
+                    >
+                      {React.createElement(getRoleConfig(user.role).icon, {
+                        className: `w-3 h-3 ${getRoleConfig(user.role).iconColor}`
+                      })}
+                      <span>{getRoleConfig(user.role).label}</span>
+                    </motion.div>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {user.role}
+                  {user.email}
                 </p>
               </div>
+
+              {/* Mobile Role Badge */}
+              <div className="md:hidden">
+                {user.role && (
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium ${
+                      getRoleConfig(user.role).bgColor
+                    } ${getRoleConfig(user.role).textColor}`}
+                  >
+                    {React.createElement(getRoleConfig(user.role).icon, {
+                      className: `w-3 h-3 ${getRoleConfig(user.role).iconColor}`
+                    })}
+                    <span className="sr-only md:not-sr-only">{getRoleConfig(user.role).label}</span>
+                  </motion.div>
+                )}
+              </div>
               
+              {/* Profile Avatar */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
