@@ -1,12 +1,32 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from 'recharts';
+import { motion } from 'framer-motion';
+import { 
+  Users, TrendingUp, Award, BarChart3, UserPlus, Settings,
+  MessageSquare, Calendar, Clock, Star, Activity, Zap,
+  BookOpen, Heart, Target, Coffee
+} from 'lucide-react';
+import WelcomeCard from '@/components/ui/welcome-card';
+import QuickActionCard from '@/components/ui/quick-action-card';
 import StatCard from '@/components/ui/stat-card';
-import { organizationStats, turnoverRiskData, engagementHeatmapData } from '@/lib/dummy-data';
-import { TrendingDown, TrendingUp, Users, Heart, AlertTriangle, DollarSign, Target, Award, Zap, UserPlus, Settings, BarChart3 } from 'lucide-react';
 
-export default function Dashboard() {
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
+
+export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -16,368 +36,331 @@ export default function Dashboard() {
     }
   }, []);
 
-  // Admin Dashboard
-  if (user?.role === 'admin') {
+  const organizationStats = {
+    totalEmployees: 247,
+    turnoverReduction: 23,
+    avgSatisfaction: 4.2,
+    activeProjects: 18
+  };
+
+  const userStats = {
+    tasksCompleted: 12,
+    performanceScore: 94,
+    upcomingMeetings: 3
+  };
+
+  if (!user) {
     return (
-      <div className="space-y-6 lg:space-y-8 animate-fade-in">
-        {/* Admin Header */}
-        <div className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-600 via-blue-700 to-indigo-600 text-white overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/10 rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-          <div className="relative z-10 animate-slide-in-left">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">Admin Dashboard</h1>
-            <p className="text-blue-100 text-sm sm:text-base lg:text-lg">Welcome back, {user.name}! Monitor your organization's performance</p>
-          </div>
-        </div>
-
-        {/* Admin Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-          <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border border-blue-200 dark:border-blue-700">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white group-hover:scale-110 transition-transform duration-200">
-                <UserPlus className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900 dark:text-white text-lg">Manage Users</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Add, edit, or remove employees</div>
-              </div>
-            </div>
-          </button>
-
-          <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 border border-emerald-200 dark:border-emerald-700">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white group-hover:scale-110 transition-transform duration-200">
-                <BarChart3 className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900 dark:text-white text-lg">View Reports</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Detailed analytics and insights</div>
-              </div>
-            </div>
-          </button>
-
-          <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border border-purple-200 dark:border-purple-700">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 rounded-xl bg-gradient-to-r from-purple-500 to-violet-500 text-white group-hover:scale-110 transition-transform duration-200">
-                <Settings className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="font-bold text-gray-900 dark:text-white text-lg">System Settings</div>
-                <div className="text-gray-600 dark:text-gray-400 text-sm">Configure system preferences</div>
-              </div>
-            </div>
-          </button>
-        </div>
-
-        {/* Enhanced Key Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
-          {[
-            {
-              title: "Total Employees",
-              value: organizationStats.totalEmployees,
-              change: "↑ 12 new hires this month",
-              changeType: "positive",
-              icon: Users,
-              gradient: "from-blue-500 to-cyan-500",
-              bgPattern: "from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30"
-            },
-            {
-              title: "Turnover Reduction",
-              value: `${organizationStats.turnoverReduction}%`,
-              change: "↓ 12% from last quarter",
-              changeType: "positive",
-              icon: TrendingDown,
-              gradient: "from-emerald-500 to-teal-500",
-              bgPattern: "from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30"
-            },
-            {
-              title: "Revenue Increase",
-              value: `${organizationStats.revenueIncrease}%`,
-              change: "↑ 8% from last quarter",
-              changeType: "positive",
-              icon: DollarSign,
-              gradient: "from-green-500 to-emerald-500",
-              bgPattern: "from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30"
-            },
-            {
-              title: "At-Risk Employees",
-              value: organizationStats.riskEmployees,
-              change: "↓ 5 from last month",
-              changeType: "positive",
-              icon: AlertTriangle,
-              gradient: "from-orange-500 to-amber-500",
-              bgPattern: "from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30"
-            }
-          ].map((stat, index) => (
-            <div key={stat.title} className="modern-card hover-lift overflow-hidden" style={{animationDelay: `${index * 0.1}s`}}>
-              <div className={`h-1 bg-gradient-to-r ${stat.gradient}`}></div>
-              <div className="p-4 sm:p-6">
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <div className={`p-2 sm:p-3 rounded-2xl bg-gradient-to-r ${stat.gradient} text-white shadow-lg`}>
-                    <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
-                  </div>
-                  <div className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
-                    stat.changeType === 'positive' 
-                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
-                      : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                  }`}>
-                    {stat.change}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">{stat.title}</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
-          {/* Turnover Risk Prediction */}
-          <div className="modern-card p-4 sm:p-6 lg:p-8 hover-lift">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Turnover Risk Prediction</h3>
-                <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">AI-powered predictive analytics</p>
-              </div>
-              <div className="p-2 sm:p-3 bg-gradient-to-r from-red-500 to-pink-600 rounded-2xl">
-                <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-              </div>
-            </div>
-            <div className="h-64 sm:h-72 lg:h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={turnoverRiskData}>
-                  <defs>
-                    <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0.1}/>
-                    </linearGradient>
-                    <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:stroke-gray-700" />
-                  <XAxis 
-                    dataKey="month" 
-                    tick={{ fontSize: 10, fill: 'currentColor' }} 
-                    className="text-gray-600 dark:text-gray-400"
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 10, fill: 'currentColor' }} 
-                    className="text-gray-600 dark:text-gray-400"
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Area
-                    type="monotone" 
-                    dataKey="risk" 
-                    stroke="#ef4444" 
-                    fillOpacity={1}
-                    fill="url(#riskGradient)"
-                    strokeWidth={2}
-                    name="Predicted Risk"
-                  />
-                  <Area
-                    type="monotone" 
-                    dataKey="actual" 
-                    stroke="#10b981" 
-                    fillOpacity={1}
-                    fill="url(#actualGradient)"
-                    strokeWidth={2}
-                    name="Actual Turnover"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Team Engagement Overview */}
-          <div className="modern-card p-4 sm:p-6 lg:p-8 hover-lift">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
-              <div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Team Engagement Overview</h3>
-                <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">Real-time engagement metrics</p>
-              </div>
-              <div className="p-2 sm:p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl">
-                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-              </div>
-            </div>
-            <div className="h-64 sm:h-72 lg:h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={engagementHeatmapData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:stroke-gray-700" />
-                  <XAxis 
-                    dataKey="team" 
-                    angle={-45}
-                    textAnchor="end"
-                    height={60}
-                    fontSize={10}
-                    className="text-gray-600 dark:text-gray-400"
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 10, fill: 'currentColor' }} 
-                    className="text-gray-600 dark:text-gray-400"
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Bar 
-                    dataKey="engagement" 
-                    fill="url(#engagementGradient)" 
-                    name="Engagement Score" 
-                    radius={[6, 6, 0, 0]}
-                  />
-                  <defs>
-                    <linearGradient id="engagementGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#3b82f6" />
-                      <stop offset="100%" stopColor="#1d4ed8" />
-                    </linearGradient>
-                  </defs>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500" />
       </div>
     );
   }
 
-  // User Dashboard
+  // Admin Dashboard
+  if (user?.role === 'admin') {
+    return (
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="space-y-8 p-6"
+      >
+        {/* Welcome Section */}
+        <motion.div variants={item}>
+          <WelcomeCard 
+            user={user} 
+            stats={userStats}
+          />
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div variants={item}>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <Zap className="w-6 h-6 mr-2 text-yellow-500" />
+            Quick Actions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <QuickActionCard
+              title="Manage Users"
+              description="Add, edit, or remove employee accounts"
+              icon={UserPlus}
+              gradient="from-blue-500 to-cyan-500"
+              bgGradient="from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30"
+              onClick={() => window.location.href = '/users'}
+            />
+            <QuickActionCard
+              title="View Reports"
+              description="Access detailed analytics and insights"
+              icon={BarChart3}
+              gradient="from-emerald-500 to-teal-500"
+              bgGradient="from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30"
+              onClick={() => window.location.href = '/analytics'}
+            />
+            <QuickActionCard
+              title="System Settings"
+              description="Configure platform preferences"
+              icon={Settings}
+              gradient="from-purple-500 to-violet-500"
+              bgGradient="from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30"
+              onClick={() => window.location.href = '/settings'}
+            />
+          </div>
+        </motion.div>
+
+        {/* Key Metrics */}
+        <motion.div variants={item}>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <Activity className="w-6 h-6 mr-2 text-blue-500" />
+            Organization Overview
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            <StatCard
+              title="Total Employees"
+              value={organizationStats.totalEmployees}
+              change="↑ 12 new hires this month"
+              changeType="positive"
+              icon={<Users className="w-6 h-6 text-blue-500" />}
+              className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border-blue-200 dark:border-blue-700"
+            />
+            <StatCard
+              title="Turnover Reduction"
+              value={`${organizationStats.turnoverReduction}%`}
+              change="↓ 12% from last quarter"
+              changeType="positive"
+              icon={<TrendingUp className="w-6 h-6 text-emerald-500" />}
+              className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 border-emerald-200 dark:border-emerald-700"
+            />
+            <StatCard
+              title="Avg Satisfaction"
+              value={`${organizationStats.avgSatisfaction}/5`}
+              change="↑ 0.3 from last month"
+              changeType="positive"
+              icon={<Star className="w-6 h-6 text-yellow-500" />}
+              className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/30 dark:to-orange-900/30 border-yellow-200 dark:border-yellow-700"
+            />
+            <StatCard
+              title="Active Projects"
+              value={organizationStats.activeProjects}
+              change="3 completed this week"
+              changeType="positive"
+              icon={<Activity className="w-6 h-6 text-purple-500" />}
+              className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border-purple-200 dark:border-purple-700"
+            />
+          </div>
+        </motion.div>
+
+        {/* Charts and Analytics would go here */}
+      </motion.div>
+    );
+  }
+
+  // Employee Dashboard - More Personal and Friendly
   return (
-    <div className="space-y-6 lg:space-y-8 animate-fade-in">
-      {/* User Header */}
-      <div className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-emerald-600 via-teal-700 to-cyan-600 text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/10 rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-        <div className="relative z-10 animate-slide-in-left">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">My Dashboard</h1>
-          <p className="text-emerald-100 text-sm sm:text-base lg:text-lg">Welcome back, {user?.name || 'User'}! Track your performance and goals</p>
+    <motion.div 
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="space-y-8 p-6"
+    >
+      {/* Welcome Section */}
+      <motion.div variants={item}>
+        <WelcomeCard 
+          user={user} 
+          stats={userStats}
+        />
+      </motion.div>
+
+      {/* Quick Actions - More Personal */}
+      <motion.div variants={item}>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+          <Coffee className="w-6 h-6 mr-2 text-orange-500" />
+          What would you like to do today?
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <QuickActionCard
+            title="My Performance"
+            description="View feedback and track your progress"
+            icon={Award}
+            gradient="from-emerald-500 to-teal-500"
+            bgGradient="from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30"
+            onClick={() => window.location.href = '/performance-review'}
+          />
+          <QuickActionCard
+            title="Give Feedback"
+            description="Share your thoughts and help improve our workplace"
+            icon={MessageSquare}
+            gradient="from-purple-500 to-pink-500"
+            bgGradient="from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30"
+            onClick={() => window.location.href = '/feedback'}
+            badge="3"
+          />
+          <QuickActionCard
+            title="Learning Hub"
+            description="Explore new courses and develop your skills"
+            icon={BookOpen}
+            gradient="from-green-500 to-emerald-500"
+            bgGradient="from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30"
+            onClick={() => window.location.href = '/learning'}
+            isNew
+          />
+          <QuickActionCard
+            title="HR Connect"
+            description="Schedule 1-on-1s and connect with HR"
+            icon={Heart}
+            gradient="from-pink-500 to-rose-500"
+            bgGradient="from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30"
+            onClick={() => window.location.href = '/hr-interactions'}
+          />
+          <QuickActionCard
+            title="My Goals"
+            description="Track your objectives and milestones"
+            icon={Target}
+            gradient="from-blue-500 to-indigo-500"
+            bgGradient="from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30"
+            onClick={() => window.location.href = '/goals'}
+          />
+          <QuickActionCard
+            title="My Profile"
+            description="Update your information and preferences"
+            icon={Users}
+            gradient="from-cyan-500 to-blue-500"
+            bgGradient="from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30"
+            onClick={() => window.location.href = '/profile'}
+          />
         </div>
-      </div>
+      </motion.div>
 
-      {/* User Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border border-blue-200 dark:border-blue-700">
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="p-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white group-hover:scale-110 transition-transform duration-200">
-              <Target className="h-6 w-6" />
-            </div>
-            <div>
-              <div className="font-bold text-gray-900 dark:text-white text-lg">My Goals</div>
-              <div className="text-gray-600 dark:text-gray-400 text-sm">Track your objectives and progress</div>
-            </div>
-          </div>
-        </button>
-
-        <button className="modern-card p-4 sm:p-6 text-left hover-lift group w-full bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 border border-emerald-200 dark:border-emerald-700">
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white group-hover:scale-110 transition-transform duration-200">
-              <Award className="h-6 w-6" />
-            </div>
-            <div>
-              <div className="font-bold text-gray-900 dark:text-white text-lg">My Performance</div>
-              <div className="text-gray-600 dark:text-gray-400 text-sm">View feedback and reviews</div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      {/* User Personal Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {[
-          {
-            title: "Goals Completed",
-            value: "8/12",
-            change: "67% completion rate",
-            changeType: "positive",
-            icon: Target,
-            gradient: "from-blue-500 to-cyan-500",
-          },
-          {
-            title: "Feedback Received",
-            value: "15",
-            change: "This month",
-            changeType: "neutral",
-            icon: Heart,
-            gradient: "from-emerald-500 to-teal-500",
-          },
-          {
-            title: "Learning Hours",
-            value: "24h",
-            change: "This quarter",
-            changeType: "positive",
-            icon: Award,
-            gradient: "from-purple-500 to-violet-500",
-          },
-          {
-            title: "Performance Score",
-            value: "4.2/5",
-            change: "Above average",
-            changeType: "positive",
-            icon: TrendingUp,
-            gradient: "from-orange-500 to-amber-500",
-          }
-        ].map((stat, index) => (
-          <div key={stat.title} className="modern-card hover-lift overflow-hidden" style={{animationDelay: `${index * 0.1}s`}}>
-            <div className={`h-1 bg-gradient-to-r ${stat.gradient}`}></div>
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <div className={`p-2 sm:p-3 rounded-2xl bg-gradient-to-r ${stat.gradient} text-white shadow-lg`}>
-                  <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
-                </div>
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">{stat.title}</p>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</p>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">{stat.change}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Recent Activity */}
-      <div className="modern-card p-4 sm:p-6 lg:p-8">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 flex items-center">
-          <Zap className="h-5 w-5 sm:h-6 sm:w-6 mr-2 text-yellow-500" />
-          Recent Activity
-        </h3>
-        <div className="space-y-4">
-          {[
-            { action: "Completed goal: Improve team collaboration", time: "2 hours ago", type: "success" },
-            { action: "Received feedback from Bravely Dirgayuska", time: "1 day ago", type: "info" },
-            { action: "Started learning module: Leadership Skills", time: "3 days ago", type: "learning" },
-            { action: "Attended 1-on-1 meeting with manager", time: "1 week ago", type: "meeting" }
-          ].map((activity, index) => (
-            <div key={index} className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-              <div className={`w-3 h-3 rounded-full ${
-                activity.type === 'success' ? 'bg-green-500' :
-                activity.type === 'info' ? 'bg-blue-500' :
-                activity.type === 'learning' ? 'bg-purple-500' :
-                'bg-orange-500'
-              }`}></div>
-              <div className="flex-1">
-                <p className="text-gray-900 dark:text-white font-medium">{activity.action}</p>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">{activity.time}</p>
-              </div>
-            </div>
-          ))}
+      {/* Personal Insights */}
+      <motion.div variants={item}>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+          <Star className="w-6 h-6 mr-2 text-yellow-500" />
+          Your Performance at a Glance
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <StatCard
+            title="Tasks Completed"
+            value={userStats.tasksCompleted}
+            change="↑ 3 this week"
+            changeType="positive"
+            icon={<Target className="w-6 h-6 text-emerald-500" />}
+            className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 border-emerald-200 dark:border-emerald-700"
+          />
+          <StatCard
+            title="Performance Score"
+            value={`${userStats.performanceScore}%`}
+            change="↑ 5% from last month"
+            changeType="positive"
+            icon={<Award className="w-6 h-6 text-blue-500" />}
+            className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 border-blue-200 dark:border-blue-700"
+          />
+          <StatCard
+            title="Upcoming Meetings"
+            value={userStats.upcomingMeetings}
+            change="Next: 2:00 PM Today"
+            changeType="neutral"
+            icon={<Calendar className="w-6 h-6 text-purple-500" />}
+            className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border-purple-200 dark:border-purple-700"
+          />
+          <StatCard
+            title="Learning Progress"
+            value="85%"
+            change="2 courses in progress"
+            changeType="positive"
+            icon={<BookOpen className="w-6 h-6 text-green-500" />}
+            className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-green-200 dark:border-green-700"
+          />
         </div>
-      </div>
-    </div>
+      </motion.div>
+
+      {/* Recent Activity and Upcoming */}
+      <motion.div variants={item}>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          <div className="modern-card p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Recent Activity</h3>
+              <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl">
+                <Activity className="w-5 h-5 text-white" />
+              </div>
+            </div>
+            <div className="space-y-4">
+              {[
+                { action: 'Completed project milestone', time: '2 hours ago', type: 'success' },
+                { action: 'Received feedback from manager', time: '1 day ago', type: 'info' },
+                { action: 'Started new learning course', time: '2 days ago', type: 'success' },
+                { action: 'Attended team meeting', time: '3 days ago', type: 'info' }
+              ].map((activity, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-start space-x-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                >
+                  <div className={`w-2 h-2 rounded-full mt-2 ${
+                    activity.type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+                  }`} />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {activity.action}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {activity.time}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <div className="modern-card p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Today's Schedule</h3>
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl">
+                <Calendar className="w-5 h-5 text-white" />
+              </div>
+            </div>
+            <div className="space-y-4">
+              {[
+                { title: 'Daily Standup', time: '9:00 AM', status: 'completed' },
+                { title: 'Project Review', time: '2:00 PM', status: 'upcoming' },
+                { title: '1-on-1 with Manager', time: '4:00 PM', status: 'upcoming' },
+                { title: 'Team Social Hour', time: '5:30 PM', status: 'optional' }
+              ].map((event, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-3 h-3 rounded-full ${
+                      event.status === 'completed' ? 'bg-green-500' :
+                      event.status === 'upcoming' ? 'bg-blue-500' : 'bg-gray-400'
+                    }`} />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {event.title}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {event.time}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    event.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                    event.status === 'upcoming' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                    'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                  }`}>
+                    {event.status}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
