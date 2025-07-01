@@ -108,7 +108,7 @@ export default function Header() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-48 sm:w-64 lg:w-80 pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-sm"
           />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none lg:block hidden">
+          <div className="absolute inset-y-0 right-0 pr-3 items-center pointer-events-none hidden lg:flex">
             <kbd className="inline-flex items-center border border-gray-200 dark:border-gray-700 rounded px-2 py-0.5 text-xs font-mono text-gray-500 dark:text-gray-400">
               <Command className="h-3 w-3 mr-1" />
               K
@@ -299,7 +299,7 @@ export default function Header() {
               <div className="py-2">
                 <button
                   onClick={() => {
-                    router.push('/profile');
+                    router.push('/user/profile');
                     setIsUserMenuOpen(false);
                   }}
                   className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"

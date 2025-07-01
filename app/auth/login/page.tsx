@@ -64,7 +64,7 @@ export default function LoginPage() {
           role: 'admin',
           name: 'Administrator'
         }));
-        router.push('/dashboard');
+        router.push('/user/dashboard');
       } else {
         setErrors({ general: 'Invalid email or password' });
       }
@@ -100,7 +100,7 @@ export default function LoginPage() {
               <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </motion.div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 dark:from-gray-100 dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent">
-              Smart-en
+              RetenSYNC
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">Sign in to your account</p>
           </div>

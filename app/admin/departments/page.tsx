@@ -229,7 +229,7 @@ export default function DepartmentsPage() {
 
   const handleViewAnalytics = (departmentId: number) => {
     // Navigate to department-specific analytics
-    router.push(`/analytics?department=${departmentId}`);
+    router.push(`/admin/analytics?department=${departmentId}`);
   };
 
   return (

@@ -87,7 +87,7 @@ export default function DashboardPage() {
               icon={UserPlus}
               gradient="from-blue-500 to-cyan-500"
               bgGradient="from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30"
-              onClick={() => window.location.href = '/users'}
+              onClick={() => window.location.href = '/admin/users'}
             />
             <QuickActionCard
               title="View Reports"
@@ -95,7 +95,7 @@ export default function DashboardPage() {
               icon={BarChart3}
               gradient="from-emerald-500 to-teal-500"
               bgGradient="from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30"
-              onClick={() => window.location.href = '/analytics'}
+              onClick={() => window.location.href = '/admin/analytics'}
             />
             <QuickActionCard
               title="System Settings"
@@ -184,7 +184,7 @@ export default function DashboardPage() {
             icon={Award}
             gradient="from-emerald-500 to-teal-500"
             bgGradient="from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30"
-            onClick={() => window.location.href = '/performance-review'}
+            onClick={() => window.location.href = '/admin/performance-review'}
           />
           <QuickActionCard
             title="Give Feedback"
@@ -192,7 +192,7 @@ export default function DashboardPage() {
             icon={MessageSquare}
             gradient="from-purple-500 to-pink-500"
             bgGradient="from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30"
-            onClick={() => window.location.href = '/feedback'}
+            onClick={() => window.location.href = '/admin/feedback'}
             badge="3"
           />
           <QuickActionCard
@@ -201,7 +201,7 @@ export default function DashboardPage() {
             icon={BookOpen}
             gradient="from-green-500 to-emerald-500"
             bgGradient="from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30"
-            onClick={() => window.location.href = '/learning'}
+            onClick={() => window.location.href = '/user/learning'}
             isNew
           />
           <QuickActionCard
@@ -218,7 +218,7 @@ export default function DashboardPage() {
             icon={Target}
             gradient="from-blue-500 to-indigo-500"
             bgGradient="from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30"
-            onClick={() => window.location.href = '/goals'}
+            onClick={() => window.location.href = '/admin/goals'}
           />
           <QuickActionCard
             title="My Profile"
@@ -226,7 +226,7 @@ export default function DashboardPage() {
             icon={Users}
             gradient="from-cyan-500 to-blue-500"
             bgGradient="from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30"
-            onClick={() => window.location.href = '/profile'}
+            onClick={() => window.location.href = '/user/profile'}
           />
         </div>
       </motion.div>

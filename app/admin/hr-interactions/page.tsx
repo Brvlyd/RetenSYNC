@@ -27,7 +27,7 @@ export default function HRInteractionsPage() {
         'Team celebrations',
         'Achievement tracking'
       ],
-      route: '/shoutouts'
+      route: '/admin/shoutouts'
     },
     {
       id: 'meetings',
@@ -47,7 +47,7 @@ export default function HRInteractionsPage() {
         'Goal setting and tracking',
         'Personal growth planning'
       ],
-      route: '/1on1'
+      route: '/admin/1on1'
     }
   ];
 

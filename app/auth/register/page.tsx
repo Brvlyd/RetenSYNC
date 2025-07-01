@@ -110,32 +110,53 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      // Store user data immediately (auto-approve registration)
-      const userData = {
-        email: formData.email,
-        role: 'user',
-        name: formData.name,
-        position: formData.position,
-        department: formData.department,
-        employeeId: formData.employeeId
-      };
-      
-      localStorage.setItem('user', JSON.stringify(userData));
+    // Prepare payload for the API
+    const payload = {
+      username: formData.employeeId,
+      email: formData.email,
+      first_name: formData.name.split(' ')[0] || formData.name,
+      last_name: formData.name.split(' ').slice(1).join(' ') || '',
+      password: formData.password,
+      password_confirm: formData.confirmPassword
+    };
+
+    try {
+      // Call your Next.js API route (proxy to external API)
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors(prev => ({
+          ...prev,
+          general: data.error?.message || 'Registration failed'
+        }));
+        setIsLoading(false);
+        return;
+      }
+
       setSuccess(true);
       setIsLoading(false);
-      
-      // Redirect to dashboard after 2 seconds
+
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push('/user/dashboard');
       }, 2000);
-    }, 1000);
+    } catch (err) {
+      setErrors(prev => ({
+        ...prev,
+        general: 'Registration failed. Please try again.'
+      }));
+      setIsLoading(false);
+    }
   };
 
   if (success) {
@@ -187,13 +208,21 @@ export default function RegisterPage() {
               <Brain className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </motion.div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 dark:from-gray-100 dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent">
-              Smart-en
+              RetenSYNC
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">Create your employee account</p>
           </div>
 
           {/* Register Form */}
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            {/* Show general error message if exists */}
+            {errors.general && (
+              <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/40 rounded-lg px-3 py-2 mb-2">
+                <AlertCircle className="h-4 w-4" />
+                <span>{errors.general}</span>
+              </div>
+            )}
+            {/* The rest of your form fields remain unchanged */}
             {/* Employee ID and Name */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <div>
