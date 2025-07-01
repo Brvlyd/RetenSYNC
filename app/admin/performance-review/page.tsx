@@ -99,7 +99,7 @@ export default function PerformanceReview() {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
                 My Performance Review
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Track your progress and achievements</p>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Track progress and achievements</p>
             </div>
           </div>
         </div>

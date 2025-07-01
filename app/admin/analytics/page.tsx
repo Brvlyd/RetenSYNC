@@ -52,7 +52,7 @@ export default function Analytics() {
       
       // Redirect non-admin users
       if (parsedUser.role !== 'admin') {
-        router.push('/admin/dashboard');
+        router.push('/user/dashboard');
         return;
       }
     }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { 
   Users, TrendingUp, Award, BarChart3, UserPlus, Settings,
@@ -26,27 +27,38 @@ const item = {
   show: { opacity: 1, y: 0 }
 };
 
-export default function DashboardPage() {
+export default function UserDashboardPage() {
   const [user, setUser] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
-      setUser(JSON.parse(userData));
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      
+      // Redirect admin users
+      if (parsedUser.role === 'user') {
+        router.push('/user/dashboard');
+        return;
+      }
+    } else {
+      router.push('/auth/login');
     }
-  }, []);
-
-  const organizationStats = {
-    totalEmployees: 247,
-    turnoverReduction: 23,
-    avgSatisfaction: 4.2,
-    activeProjects: 18
-  };
+  }, [router]);
 
   const userStats = {
     tasksCompleted: 12,
     performanceScore: 94,
     upcomingMeetings: 3
+  };
+
+  // Dummy organization stats for demonstration
+  const organizationStats = {
+    totalEmployees: 120,
+    turnoverReduction: 12,
+    avgSatisfaction: 4.5,
+    activeProjects: 8
   };
 
   if (!user) {
@@ -57,8 +69,9 @@ export default function DashboardPage() {
     );
   }
 
-  // Admin Dashboard
-  if (user?.role === 'admin') {
+
+  // User Dashboard
+  if (user?.role === 'user') {
     return (
       <motion.div 
         variants={container}
@@ -184,7 +197,7 @@ export default function DashboardPage() {
             icon={Award}
             gradient="from-emerald-500 to-teal-500"
             bgGradient="from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30"
-            onClick={() => window.location.href = '/admin/performance-review'}
+            onClick={() => window.location.href = '/user/performance-review'}
           />
           <QuickActionCard
             title="Give Feedback"
@@ -192,7 +205,7 @@ export default function DashboardPage() {
             icon={MessageSquare}
             gradient="from-purple-500 to-pink-500"
             bgGradient="from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30"
-            onClick={() => window.location.href = '/admin/feedback'}
+            onClick={() => window.location.href = '/user/feedback'}
             badge="3"
           />
           <QuickActionCard
@@ -210,7 +223,7 @@ export default function DashboardPage() {
             icon={Heart}
             gradient="from-pink-500 to-rose-500"
             bgGradient="from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30"
-            onClick={() => window.location.href = '/admin/hr-interactions'}
+            onClick={() => window.location.href = '/user/hr-interactions'}
           />
           <QuickActionCard
             title="My Goals"
