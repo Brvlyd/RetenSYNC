@@ -7,8 +7,9 @@ import { Star, Clock, Edit3, TrendingUp, Award, Target, CheckCircle, AlertCircle
 export default function PerformanceReview() {
   const [currentRating, setCurrentRating] = useState(4.2);
   const [animateProgress, setAnimateProgress] = useState(false);
-  const [activeSection, setActiveSection] = useState<'overview' | 'self' | 'manager' | 'goals' | 'history'>('overview');
+  const [activeSection, setActiveSection] = useState<'overview' | 'goals' | 'history'>('overview');
   const [showAddGoalForm, setShowAddGoalForm] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -18,6 +19,12 @@ export default function PerformanceReview() {
 
   useEffect(() => {
     setAnimateProgress(true);
+    
+    // Get user data
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
   }, []);
 
   // Moved renderStars to top-level scope so it's available everywhere
@@ -38,8 +45,6 @@ export default function PerformanceReview() {
   // Insert new section for goals
   const sections = [
     { id: 'overview', label: 'Overview', icon: TrendingUp },
-    { id: 'self', label: 'Self Assessment', icon: Target },
-    { id: 'manager', label: 'Manager Review', icon: Award },
     { id: 'goals', label: 'Goals & OKRs', icon: Target },
     { id: 'history', label: 'History', icon: Clock },
   ] as const;
@@ -59,6 +64,27 @@ export default function PerformanceReview() {
     return 'bg-gradient-to-r from-red-500 to-pink-500';
   };
 
+  // User-specific performance data
+  const userPerformanceData = {
+    currentRating: 4.2,
+    achievements: [
+      'Completed 5 major projects this quarter',
+      'Mentored 2 junior team members',
+      'Improved code quality metrics by 25%',
+      'Led successful client presentation'
+    ],
+    areasForGrowth: [
+      'Time management during peak periods',
+      'Cross-team communication',
+      'Technical documentation'
+    ],
+    goals: [
+      'Complete AWS certification by Q2',
+      'Lead cross-functional project',
+      'Improve presentation skills'
+    ]
+  };
+
   return (
     <div className="space-y-8">
       {/* Modern Header with Glassmorphism */}
@@ -71,9 +97,9 @@ export default function PerformanceReview() {
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
-                Performance Review
+                My Performance Review
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Annual performance review and goal management</p>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Track your progress and achievements</p>
             </div>
           </div>
         </div>
@@ -104,80 +130,20 @@ export default function PerformanceReview() {
       {/* Overview Section */}
       {activeSection === 'overview' && (
         <div className="space-y-6">
-          {/* Enhanced Current Review Status */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl">
-                  <TrendingUp className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">2024 Annual Review</h3>
-              </div>
-              <span className="px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 text-blue-800 dark:text-blue-200 rounded-full text-sm font-semibold border border-blue-200 dark:border-blue-700">
-                In Progress
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  label: 'Self-Review Complete',
-                  value: 85,
-                  color: 'from-emerald-500 to-teal-500',
-                  bgColor: 'from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30',
-                },
-                {
-                  label: 'Peer Reviews Received',
-                  value: 60,
-                  display: '3/5',
-                  color: 'from-blue-500 to-cyan-500',
-                  bgColor: 'from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30',
-                },
-                {
-                  label: 'Manager Calibration',
-                  value: 0,
-                  display: 'Pending',
-                  color: 'from-orange-500 to-amber-500',
-                  bgColor: 'from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30',
-                },
-              ].map((item, index) => (
-                <div
-                  key={item.label}
-                  className={`group relative bg-gradient-to-r ${item.bgColor} rounded-2xl p-6 border border-gray-100 dark:border-gray-600 hover:shadow-lg transition-all duration-300`}
-                >
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                      {item.display || `${item.value}%`}
-                    </div>
-                    <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">{item.label}</div>
-                    {typeof item.value === 'number' && item.value > 0 && (
-                      <div className="w-full bg-white/50 dark:bg-gray-700/50 rounded-full h-2 overflow-hidden">
-                        <div
-                          className={`bg-gradient-to-r ${item.color} h-2 rounded-full transition-all duration-1000 shadow-sm`}
-                          style={{ width: animateProgress ? `${item.value}%` : '0%' }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Overall Rating Card */}
+          {/* Current Performance Rating */}
           <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
             <div className="text-center">
               <div className="flex items-center justify-center space-x-3 mb-4">
                 <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl">
                   <Star className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Overall Performance Rating</h3>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Current Performance Rating</h3>
               </div>
 
               <div className="flex items-center justify-center space-x-4 mb-6">
-                <div className="flex">{renderStars(performanceReviewData.managerFeedback.rating, 'large')}</div>
+                <div className="flex">{renderStars(userPerformanceData.currentRating, 'large')}</div>
                 <span className="text-4xl font-bold text-gray-900 dark:text-white">
-                  {performanceReviewData.managerFeedback.rating}
+                  {userPerformanceData.currentRating}
                 </span>
               </div>
 
@@ -197,27 +163,8 @@ export default function PerformanceReview() {
               </div>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Self Assessment Section with Goals */}
-      {activeSection === 'self' && (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-2xl">
-                  <Target className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Self Assessment</h3>
-              </div>
-              <button className="group text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center text-sm bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 px-4 py-2 rounded-xl transition-all duration-300">
-                <Edit3 className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                Edit Assessment
-              </button>
-            </div>
-          </div>
-
+          {/* Performance Summary */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-700">
               <div className="flex items-center space-x-2 mb-4">
@@ -225,7 +172,7 @@ export default function PerformanceReview() {
                 <h4 className="font-bold text-emerald-900 dark:text-emerald-200">Key Achievements</h4>
               </div>
               <ul className="space-y-3">
-                {performanceReviewData.selfReview.achievements.map((achievement, index) => (
+                {userPerformanceData.achievements.map((achievement, index) => (
                   <li key={index} className="flex items-start">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                     <span className="text-emerald-800 dark:text-emerald-200 leading-relaxed">{achievement}</span>
@@ -233,37 +180,36 @@ export default function PerformanceReview() {
                 ))}
               </ul>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Manager's Goal Recommendations</h3>
-          </div>
 
-          <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-6 border border-orange-200 dark:border-orange-700">
-            <div className="flex items-center space-x-2 mb-4">
-              <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              <h4 className="font-bold text-orange-900 dark:text-orange-200">Areas for Growth</h4>
+            <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-6 border border-orange-200 dark:border-orange-700">
+              <div className="flex items-center space-x-2 mb-4">
+                <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                <h4 className="font-bold text-orange-900 dark:text-orange-200">Areas for Growth</h4>
+              </div>
+              <ul className="space-y-3">
+                {userPerformanceData.areasForGrowth.map((area, index) => (
+                  <li key={index} className="flex items-start">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <span className="text-orange-800 dark:text-orange-200 leading-relaxed">{area}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-3">
-              {performanceReviewData.selfReview.challenges.map((challenge, index) => (
-                <li key={index} className="flex items-start">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span className="text-orange-800 dark:text-orange-200 leading-relaxed">{challenge}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
-            <div className="flex items-center space-x-2 mb-4">
-              <Target className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              <h4 className="font-bold text-blue-900 dark:text-blue-200">Goals for Next Year</h4>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-6 border border-blue-200 dark:border-blue-700">
+              <div className="flex items-center space-x-2 mb-4">
+                <Target className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <h4 className="font-bold text-blue-900 dark:text-blue-200">Current Goals</h4>
+              </div>
+              <ul className="space-y-3">
+                {userPerformanceData.goals.map((goal, index) => (
+                  <li key={index} className="flex items-start">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                    <span className="text-blue-800 dark:text-blue-200 leading-relaxed">{goal}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-3">
-              {performanceReviewData.selfReview.goals.map((goal, index) => (
-                <li key={index} className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span className="text-blue-800 dark:text-blue-200 leading-relaxed">{goal}</span>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       )}
@@ -276,7 +222,7 @@ export default function PerformanceReview() {
               <div className="p-3 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl">
                 <Target className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Current Goals & OKRs</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">My Goals & OKRs</h3>
             </div>
             <button
               onClick={() => setShowAddGoalForm(true)}
@@ -329,7 +275,7 @@ export default function PerformanceReview() {
             ))}
           </div>
 
-          {/* Add Goal Modal for Goals tab */}
+          {/* Add Goal Modal */}
           {showAddGoalForm && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl">
@@ -399,120 +345,6 @@ export default function PerformanceReview() {
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {/* Manager Assessment Section with Goals */}
-      {activeSection === 'manager' && (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-violet-600 rounded-2xl">
-                <Award className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Manager Assessment</h3>
-            </div>
-
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl p-6 border border-amber-200 dark:border-amber-700">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="font-bold text-amber-900 dark:text-amber-200 text-lg">Overall Rating</h4>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex">{renderStars(performanceReviewData.managerFeedback.rating)}</div>
-                    <span className="text-2xl font-bold text-amber-900 dark:text-amber-200">
-                      {performanceReviewData.managerFeedback.rating}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-700">
-                  <h4 className="font-bold text-emerald-900 dark:text-emerald-200 mb-4 flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    Key Strengths
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {performanceReviewData.managerFeedback.strengths.map((strength, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-2 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-800/50 dark:to-teal-800/50 text-emerald-800 dark:text-emerald-200 rounded-full text-sm font-semibold border border-emerald-300 dark:border-emerald-600 shadow-sm"
-                      >
-                        {strength}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-6 border border-orange-200 dark:border-orange-700">
-                  <h4 className="font-bold text-orange-900 dark:text-orange-200 mb-4 flex items-center">
-                    <TrendingUp className="h-5 w-5 mr-2" />
-                    Development Areas
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {performanceReviewData.managerFeedback.improvements.map((improvement, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-2 bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-800/50 dark:to-amber-800/50 text-orange-800 dark:text-orange-200 rounded-full text-sm font-semibold border border-orange-300 dark:border-orange-600 shadow-sm"
-                      >
-                        {improvement}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Manager's Goal Recommendations */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-8">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="p-3 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl">
-                <Target className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Manager's Goal Recommendations</h3>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                {
-                  title: "Technical Leadership Development",
-                  description: "Focus on developing technical leadership skills to guide junior team members",
-                  priority: "high",
-                  timeline: "Q1 2025"
-                },
-                {
-                  title: "Cross-functional Collaboration",
-                  description: "Improve collaboration with product and design teams for better project outcomes",
-                  priority: "medium",
-                  timeline: "Q2 2025"
-                },
-                {
-                  title: "Public Speaking & Presentation",
-                  description: "Develop presentation skills for technical talks and stakeholder meetings",
-                  priority: "medium",
-                  timeline: "Q3 2025"
-                }
-              ].map((goal, index) => (
-                <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-xl p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold text-gray-900 dark:text-white">{goal.title}</h4>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                      goal.priority === 'high' ? 'bg-red-100 text-red-800 border border-red-200' :
-                      'bg-amber-100 text-amber-800 border border-amber-200'
-                    }`}>
-                      {goal.priority.toUpperCase()}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{goal.description}</p>
-                  <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    Target: {goal.timeline}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
 
