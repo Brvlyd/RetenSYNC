@@ -44,33 +44,39 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     }
   }, []);
 
+  // Get the base path based on user role
+  const getBasePath = () => {
+    if (!user) return '';
+    return user.role === 'admin' ? '/admin' : '/user';
+  };
+
   // Base navigation items
   const baseNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
-    { name: 'Performance Review', href: '/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
+    { name: 'Dashboard', href: `${getBasePath()}/dashboard`, icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
+    { name: 'Performance Review', href: `${getBasePath()}/performance-review`, icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
     { name: 'Goals', href: '/goals', icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
-    { name: 'Learning', href: '/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
+    { name: 'Learning', href: `${getBasePath()}/learning`, icon: BookOpen, color: 'from-green-500 to-emerald-500' },
     { name: 'Surveys', href: '/surveys', icon: FileText, color: 'from-violet-500 to-purple-500' },
   ];
 
   // Admin-only navigation items
   const adminNavigation = [
-    { name: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
-    { name: 'User Management', href: '/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' },
-    { name: 'Departments', href: '/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
+    { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
+    { name: 'User Management', href: '/admin/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' },
+    { name: 'Departments', href: '/admin/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
   ];
 
   // HR Interactions section
   const hrInteractions = [
-    { name: 'HR Interactions', href: '/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
-    { name: 'Peer Recognition', href: '/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500', isChild: true },
-    { name: '1-on-1 Meetings', href: '/1on1', icon: Calendar, color: 'from-blue-500 to-cyan-500', isChild: true },
-    { name: 'Feedback', href: '/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500', isChild: true },
+    { name: 'HR Interactions', href: `${getBasePath()}/hr-interactions`, icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
+    { name: 'Peer Recognition', href: `${getBasePath()}/shoutouts`, icon: Award, color: 'from-amber-500 to-orange-500', isChild: true },
+    { name: '1-on-1 Meetings', href: `${getBasePath()}/1on1`, icon: Calendar, color: 'from-blue-500 to-cyan-500', isChild: true },
+    { name: 'Feedback', href: `${getBasePath()}/feedback`, icon: MessageSquare, color: 'from-emerald-500 to-teal-500', isChild: true },
   ];
 
   // User-only navigation items
   const userNavigation = [
-    { name: 'My Profile', href: '/profile', icon: User, color: 'from-emerald-500 to-teal-500' },
+    { name: 'My Profile', href: '/user/profile', icon: User, color: 'from-emerald-500 to-teal-500' },
   ];
 
   // Combine navigation based on user role

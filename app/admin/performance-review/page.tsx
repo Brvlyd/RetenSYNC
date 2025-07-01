@@ -97,9 +97,9 @@ export default function PerformanceReview() {
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
-                My Performance Review
+                Performance Review
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Track your progress and achievements</p>
+              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Track progress and achievements</p>
             </div>
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function PerformanceReview() {
               <div className="p-3 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl">
                 <Target className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">My Goals & OKRs</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Goals & OKRs</h3>
             </div>
             <button
               onClick={() => setShowAddGoalForm(true)}
@@ -274,77 +274,6 @@ export default function PerformanceReview() {
               </div>
             ))}
           </div>
-
-          {/* Add Goal Modal */}
-          {showAddGoalForm && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Add New Goal</h3>
-                <form onSubmit={handleAddGoal} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Goal Title</label>
-                    <input
-                      type="text"
-                      value={newGoal.title}
-                      onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
-                      className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                    <textarea
-                      rows={3}
-                      value={newGoal.description}
-                      onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
-                      className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
-                      required
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Due Date</label>
-                      <input
-                        type="date"
-                        value={newGoal.dueDate}
-                        onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
-                        className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Priority</label>
-                      <select
-                        value={newGoal.priority}
-                        onChange={(e) => setNewGoal({...newGoal, priority: e.target.value})}
-                        className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                      >
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="flex justify-end space-x-4">
-                    <button
-                      type="button"
-                      onClick={() => setShowAddGoalForm(false)}
-                      className="px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-semibold"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold"
-                    >
-                      <Target className="h-5 w-5 mr-2" />
-                      Create Goal
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
         </div>
       )}
 
