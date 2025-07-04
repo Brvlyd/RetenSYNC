@@ -99,8 +99,8 @@ export default function RegisterPage() {
     const newErrors: {[key: string]: string} = {};
     if (!formData.email) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+    } else if (!/^([a-zA-Z0-9_.+-]+)@company\.com$/.test(formData.email)) {
+      newErrors.email = 'Email must be a valid @company.com address';
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
@@ -212,7 +212,22 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f7f7fa] via-[#fff7e6] to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] flex items-start justify-center p-2 relative overflow-auto">
+    <div className="min-h-screen bg-gradient-to-br from-[#f7f7fa] via-[#fff7e6] to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] flex flex-col items-center justify-start p-2 relative pt-8 pb-16">
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #9ca3af;
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #6b7280;
+        }
+      `}</style>
       {/* Vibrant animated blurred shapes */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Animated accent blobs - new color scheme */}
@@ -220,41 +235,57 @@ export default function RegisterPage() {
         <div className="absolute bottom-0 right-0 w-[30rem] h-[30rem] bg-gradient-to-tr from-[#94c47d]/30 via-[#fff7e6]/20 to-[#d96f27]/30 rounded-full blur-3xl animate-blob2" />
         <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-gradient-to-br from-[#fff7e6]/40 via-[#d96f27]/20 to-[#94c47d]/30 rounded-full blur-2xl animate-blob3" style={{transform:'translate(-50%,-50%)'}} />
       </div>
+      
+      {/* Logo Container - Separate shape at top */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-lg sm:max-w-xl relative z-10 flex justify-center items-start"
+        className="w-96 h-24 bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] flex items-center justify-center mb-4 relative z-10"
       >
-        {/* Register Card - vertical layout, longer */}
-        <div className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-4 sm:p-6 flex flex-col items-center max-w-lg sm:max-w-xl mx-auto w-full z-10 overflow-hidden group transition-transform duration-300"
+        {/* Subtle animated gradient accent at the top */}
+        <div className="pointer-events-none absolute left-0 top-0 w-full h-3 rounded-t-2xl bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
+        <Image
+          src={require('../../../assets/Group 15.png')}
+          alt="RetenSYNC Logo"
+          width={140}
+          height={60}
+          className="object-contain w-[400px] h-[60px]"
+          priority
+        />
+      </motion.div>
+
+      <div className="w-full max-w-full relative z-10 flex justify-center items-start mb-16" style={{height:'100%'}}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex justify-center items-start w-full"
+          style={{ height: '100%' }}
         >
+          {/* Register Card - vertical, scrollable, responsive form */}
+          <div
+            className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-1 sm:p-4 flex flex-col items-center max-w-md w-full mx-auto z-10 group transition-transform duration-300 custom-scrollbar"
+            style={{ 
+              maxHeight: '75vh', 
+              minHeight: '400px', 
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#9ca3af transparent'
+            }}
+          >
           {/* Subtle animated gradient accent at the top */}
           <div className="pointer-events-none absolute left-0 top-0 w-full h-3 rounded-t-[2.5rem] bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
-          {/* Logo and Welcome */}
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex items-center justify-center mb-3 drop-shadow-2xl"
-            style={{ position: 'relative', zIndex: 30 }}
-          >
-            <span className="relative flex items-center justify-center">
-              <span className="absolute w-[220px] h-[70px] rounded-2xl bg-[#fff7e6] dark:bg-[#23281a] border border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10" style={{filter:'blur(1px)'}}></span>
-              <Image
-                src={require('../../../assets/Group 15.png')}
-                alt="RetenSYNC Logo"
-                width={140}
-                height={60}
-                className="object-contain w-[200px] h-[60px] relative z-20"
-                priority
-              />
-            </span>
-          </motion.div>
-          <p className="text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-2 py-1 rounded-lg inline-block shadow-sm animate-fade-in text-sm sm:text-base font-semibold mb-3">Create your account</p>
+          
+          <p className="text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-2 py-1 rounded-lg inline-block shadow-sm animate-fade-in text-sm sm:text-base font-semibold mb-3 mt-3">Create your account</p>
 
           {/* Register Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-full mx-0 text-sm sm:text-base">
+          <form
+            onSubmit={handleSubmit}
+            className="w-full max-w-full mx-0 text-xs sm:text-sm flex flex-col gap-2 flex-1"
+            style={{ minHeight: '350px', paddingRight: '2px', flexGrow: 1 }}
+          >
             {/* Show general error message if exists */}
             {errors.general && (
               <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/40 rounded-lg px-3 py-2 mb-2">
@@ -262,175 +293,302 @@ export default function RegisterPage() {
                 <span>{errors.general}</span>
               </div>
             )}
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
-                  placeholder="name@smarten.com"
-                />
-              </div>
-              {errors.email && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
-            </div>
-            {/* Passwords */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+
+            {/* Organized Form Sections */}
+            <div className="space-y-4">
+              {/* Personal Information Section */}
+              <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-lg p-3 border border-gray-200/50 dark:border-gray-700/50">
+                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-3 flex items-center">
+                  <span className="w-5 h-5 bg-[#d96f27] dark:bg-[#94c47d] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-2">1</span>
+                  Personal Information
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address *</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Mail className="h-4 w-4 text-gray-400" />
+                      </div>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        placeholder="email@company.com"
+                      />
+                    </div>
+                    {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
                   </div>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
-                    placeholder="Enter password"
-                  />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center">
-                    {showPassword ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /> : <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />}
-                  </button>
-                </div>
-                {errors.password && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+
+                  {/* Name Fields - Side by Side */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">First Name *</label>
+                      <input 
+                        type="text" 
+                        name="first_name" 
+                        value={formData.first_name} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.first_name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        placeholder="First name" 
+                      />
+                      {errors.first_name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.first_name}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Last Name *</label>
+                      <input 
+                        type="text" 
+                        name="last_name" 
+                        value={formData.last_name} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.last_name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        placeholder="Last name" 
+                      />
+                      {errors.last_name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.last_name}</p>}
+                    </div>
                   </div>
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    name="password_confirm"
-                    value={formData.password_confirm}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.password_confirm ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
-                    placeholder="Confirm password"
-                  />
-                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center">
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /> : <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />}
-                  </button>
+
+                  {/* Phone and Date of Birth - Side by Side */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone Number *</label>
+                      <input 
+                        type="tel" 
+                        name="phone_number" 
+                        value={formData.phone_number} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.phone_number ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        placeholder="Phone number" 
+                      />
+                      {errors.phone_number && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone_number}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Date of Birth *</label>
+                      <input 
+                        type="date" 
+                        name="date_of_birth" 
+                        value={formData.date_of_birth} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.date_of_birth ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                      />
+                      {errors.date_of_birth && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.date_of_birth}</p>}
+                    </div>
+                  </div>
+
+                  {/* Gender and Marital Status - Side by Side */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Gender *</label>
+                      <select 
+                        name="gender" 
+                        value={formData.gender} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.gender ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                      >
+                        <option value="">Select gender</option>
+                        {genders.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
+                      </select>
+                      {errors.gender && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.gender}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Marital Status *</label>
+                      <select 
+                        name="marital_status" 
+                        value={formData.marital_status} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.marital_status ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                      >
+                        <option value="">Select status</option>
+                        {maritalStatuses.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+                      </select>
+                      {errors.marital_status && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.marital_status}</p>}
+                    </div>
+                  </div>
+
+                  {/* Education Level */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Education Level *</label>
+                    <select 
+                      name="education_level" 
+                      value={formData.education_level} 
+                      onChange={handleInputChange} 
+                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.education_level ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                    >
+                      <option value="">Select education level</option>
+                      {educationLevels.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
+                    </select>
+                    {errors.education_level && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.education_level}</p>}
+                  </div>
+
+                  {/* Address */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Address *</label>
+                    <input 
+                      type="text" 
+                      name="address" 
+                      value={formData.address} 
+                      onChange={handleInputChange} 
+                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.address ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                      placeholder="Enter your address" 
+                    />
+                    {errors.address && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.address}</p>}
+                  </div>
                 </div>
-                {errors.password_confirm && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.password_confirm}</p>}
+              </div>
+
+              {/* Account Security Section */}
+              <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-lg p-3 border border-gray-200/50 dark:border-gray-700/50">
+                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-3 flex items-center">
+                  <span className="w-5 h-5 bg-[#d96f27] dark:bg-[#94c47d] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-2">2</span>
+                  Account Security
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {/* Password */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password *</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Lock className="h-4 w-4 text-gray-400" />
+                      </div>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        placeholder="Enter password"
+                      />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        {showPassword ? <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /> : <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />}
+                      </button>
+                    </div>
+                    {errors.password && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm Password *</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Lock className="h-4 w-4 text-gray-400" />
+                      </div>
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        name="password_confirm"
+                        value={formData.password_confirm}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.password_confirm ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        placeholder="Confirm password"
+                      />
+                      <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" /> : <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />}
+                      </button>
+                    </div>
+                    {errors.password_confirm && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password_confirm}</p>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Work Information Section */}
+              <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-lg p-3 border border-gray-200/50 dark:border-gray-700/50">
+                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-3 flex items-center">
+                  <span className="w-5 h-5 bg-[#d96f27] dark:bg-[#94c47d] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-2">3</span>
+                  Work Information
+                </h3>
+                <div className="grid grid-cols-1 gap-3">
+                  {/* Position and Department - Side by Side */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position *</label>
+                      <select 
+                        name="position" 
+                        value={formData.position} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.position ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                      >
+                        <option value="">Select position</option>
+                        {positions.map(position => <option key={position} value={position}>{position}</option>)}
+                      </select>
+                      {errors.position && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.position}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department *</label>
+                      <select 
+                        name="department" 
+                        value={formData.department} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.department ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                      >
+                        <option value="">Select department</option>
+                        {departments.map(dept => <option key={dept.id} value={dept.id}>{dept.name}</option>)}
+                      </select>
+                      {errors.department && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.department}</p>}
+                    </div>
+                  </div>
+
+                  {/* Hire Date */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hire Date *</label>
+                    <input 
+                      type="date" 
+                      name="hire_date" 
+                      value={formData.hire_date} 
+                      onChange={handleInputChange} 
+                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.hire_date ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                    />
+                    {errors.hire_date && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.hire_date}</p>}
+                  </div>
+
+                  {/* Salary Information - Side by Side */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Type *</label>
+                      <select 
+                        name="salary" 
+                        value={formData.salary} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.salary ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                      >
+                        <option value="">Select type</option>
+                        {salaryTypes.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                      </select>
+                      {errors.salary && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.salary}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Amount *</label>
+                      <input 
+                        type="number" 
+                        name="salary_amount" 
+                        value={formData.salary_amount} 
+                        onChange={handleInputChange} 
+                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.salary_amount ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        placeholder="Amount" 
+                        min="0" 
+                      />
+                      {errors.salary_amount && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.salary_amount}</p>}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            {/* First & Last Name */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">First Name</label>
-                <input type="text" name="first_name" value={formData.first_name} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.first_name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} placeholder="Enter first name" />
-                {errors.first_name && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.first_name}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
-                <input type="text" name="last_name" value={formData.last_name} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.last_name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} placeholder="Enter last name" />
-                {errors.last_name && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.last_name}</p>}
-              </div>
+
+            {/* Form Help Text */}
+            <div className="mt-4 mb-3 text-center">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Fields marked with <span className="text-red-500">*</span> are required
+              </p>
             </div>
-            {/* Phone, DOB */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
-                <input type="tel" name="phone_number" value={formData.phone_number} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.phone_number ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} placeholder="e.g. +6281234567890" />
-                {errors.phone_number && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.phone_number}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Date of Birth</label>
-                <input type="date" name="date_of_birth" value={formData.date_of_birth} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.date_of_birth ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} />
-                {errors.date_of_birth && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.date_of_birth}</p>}
-              </div>
-            </div>
-            {/* Gender, Marital Status */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Gender</label>
-                <select name="gender" value={formData.gender} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.gender ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}>
-                  <option value="">Select gender</option>
-                  {genders.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
-                </select>
-                {errors.gender && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.gender}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Marital Status</label>
-                <select name="marital_status" value={formData.marital_status} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.marital_status ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}>
-                  <option value="">Select status</option>
-                  {maritalStatuses.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-                </select>
-                {errors.marital_status && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.marital_status}</p>}
-              </div>
-            </div>
-            {/* Education, Address */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Education Level</label>
-                <select name="education_level" value={formData.education_level} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.education_level ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}>
-                  <option value="">Select education</option>
-                  {educationLevels.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
-                </select>
-                {errors.education_level && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.education_level}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Address</label>
-                <input type="text" name="address" value={formData.address} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.address ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} placeholder="Enter address" />
-                {errors.address && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.address}</p>}
-              </div>
-            </div>
-            {/* Position, Department */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position</label>
-                <select name="position" value={formData.position} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.position ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}>
-                  <option value="">Select position</option>
-                  {positions.map(position => <option key={position} value={position}>{position}</option>)}
-                </select>
-                {errors.position && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.position}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department</label>
-                <select name="department" value={formData.department} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.department ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}>
-                  <option value="">Select department</option>
-                  {departments.map(dept => <option key={dept.id} value={dept.id}>{dept.name}</option>)}
-                </select>
-                {errors.department && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.department}</p>}
-              </div>
-            </div>
-            {/* Hire Date, Salary Type, Salary Amount */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hire Date</label>
-                <input type="date" name="hire_date" value={formData.hire_date} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.hire_date ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} />
-                {errors.hire_date && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.hire_date}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Type</label>
-                <select name="salary" value={formData.salary} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.salary ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}>
-                  <option value="">Select type</option>
-                  {salaryTypes.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                </select>
-                {errors.salary && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.salary}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Amount</label>
-                <input type="number" name="salary_amount" value={formData.salary_amount} onChange={handleInputChange} className={`w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white text-sm sm:text-base ${errors.salary_amount ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} placeholder="e.g. 15000000" min="0" />
-                {errors.salary_amount && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.salary_amount}</p>}
-              </div>
-            </div>
+
             {/* Submit Button */}
             <motion.button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               className="w-full bg-[#d96f27] hover:bg-[#b95a1f] dark:bg-[#94c47d] dark:hover:bg-[#7ea864] text-white dark:text-[#23232a] py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-base tracking-wide border-2 border-[#f7cfa6] dark:border-[#23281a]"
+              style={{ minHeight: '48px' }}
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -438,22 +596,25 @@ export default function RegisterPage() {
                 <>Create Account</>
               )}
             </motion.button>
+            
+            {/* Login Link directly below the Create Account button */}
+            <div className="mt-2 text-center">
+              <p className="text-sm text-[#d96f27] dark:text-[#94c47d] font-medium">
+                Already have an account?{' '}
+                <button
+                  onClick={() => router.push('/auth/login')}
+                  className="text-[#94c47d] dark:text-[#d96f27] hover:text-[#b95a1f] dark:hover:text-[#b0e09a] font-bold underline underline-offset-2 transition-colors"
+                >
+                  Sign in here
+                </button>
+              </p>
+              {/* Large visible margin below the login link, always visible */}
+              <div style={{ height: '48px', width: '100%' }} aria-hidden="true"></div>
+            </div>
           </form>
-
-          {/* Login Link */}
-          <div className="mt-5 text-center w-full">
-            <p className="text-sm text-[#d96f27] dark:text-[#94c47d] font-medium">
-              Already have an account?
-              <button
-                onClick={() => router.push('/auth/login')}
-                className="ml-1 text-[#94c47d] dark:text-[#d96f27] hover:text-[#b95a1f] dark:hover:text-[#b0e09a] font-bold underline underline-offset-2 transition-colors"
-              >
-                Sign in here
-              </button>
-            </p>
-          </div>
-        </div> {/* End of card */}
-      </motion.div> {/* End of motion.div for card animation */}
+          </div> {/* End of card */}
+        </motion.div> {/* End of motion.div for card animation */}
+      </div>
     </div>
   );
 }

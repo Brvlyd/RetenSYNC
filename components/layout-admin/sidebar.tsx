@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -157,11 +158,15 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
         <div className="h-20 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
-              <div className="relative">
-                <div className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 w-12 h-12 flex items-center justify-center overflow-hidden shadow-lg">
-                  <Brain className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+              <div>
+                <Image
+                  src={require('../../assets/Group 13.png')}
+                  alt="Company Logo"
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                  priority
+                />
               </div>
               <motion.div
                 variants={textVariants}
@@ -171,7 +176,6 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Performance Platform</p>
               </motion.div>
             </div>
-            
             {/* Burger Menu Button - Only visible on desktop when sidebar is expanded */}
             <motion.button
               variants={textVariants}
