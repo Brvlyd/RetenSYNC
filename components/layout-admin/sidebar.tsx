@@ -9,7 +9,6 @@ import { useTheme } from '@/contexts/theme-context';
 import {
   BarChart3,
   MessageSquare,
-  Users,
   BookOpen,
   TrendingUp,
   ClipboardList,
@@ -19,12 +18,12 @@ import {
   LogOut,
   Sparkles,
   Building,
-  User,
   UserPlus,
   Heart,
   Award,
   Calendar,
-  FileText
+  FileText,
+  Target
 } from 'lucide-react';
 
 export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (collapsed: boolean) => void }) {
@@ -34,15 +33,10 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+  // No user state needed for admin-only sidebar
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
+
 
   // Define navigation item type to include optional isParent and isChild
   type NavigationItem = {
@@ -54,18 +48,13 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     isChild?: boolean;
   };
   
-  // Base navigation items
+  // Admin navigation items only
   const baseNavigation: NavigationItem[] = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
-    { name: 'Performance Review', href: '/admin/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
     { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
-    { name: 'Learning', href: '/admin/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
+    { name: 'Performance Review', href: '/admin/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
+    { name: 'Goals', href: '/admin/goals', icon: Target, color: 'from-emerald-500 to-teal-500' },
     { name: 'Self Assessment', href: '/admin/self-assessment', icon: FileText, color: 'from-violet-500 to-purple-500' },
-  ];
-  
-  // Admin-only navigation items
-  const adminNavigation: NavigationItem[] = [
-    { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp, color: 'from-red-500 to-pink-500' },
     { name: 'User Management', href: '/admin/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' },
     { name: 'Departments', href: '/admin/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
   ];
@@ -77,18 +66,11 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     { name: '1-on-1 Meetings', href: '/admin/1on1', icon: Calendar, color: 'from-blue-500 to-cyan-500', isChild: true },
     { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500', isChild: true },
   ];
-  
-  // User-only navigation items
-  const userNavigation: NavigationItem[] = [
-    { name: 'My Profile', href: '/user/profile', icon: User, color: 'from-emerald-500 to-teal-500' },
-  ];
 
-  // Combine navigation based on user role
+  // Combine navigation: only show pages from inside the admin folder
   const navigation = [
     ...baseNavigation,
-    ...(user?.role === 'admin' ? adminNavigation : []),
-    ...hrInteractions,
-    ...(user?.role !== 'admin' ? userNavigation : [])
+    ...hrInteractions
   ];
 
   useEffect(() => {

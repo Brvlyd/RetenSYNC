@@ -251,78 +251,17 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Profile Menu */}
-        <div className="relative">
-          <motion.button
-            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center space-x-2 sm:space-x-3 p-1 sm:p-2 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
-          >
-            <div className="relative">
-              <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xs sm:text-sm">
-                  {getInitials(user.name)}
-                </span>
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></div>
-            </div>
-            <div className="hidden sm:block text-left">
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{user.role === 'admin' ? 'Administrator' : user.position || 'Employee'}</p>
-            </div>
-            <ChevronDown className="h-4 w-4 text-gray-400 hidden sm:block" />
-          </motion.button>
-
-          {/* User Menu Dropdown */}
-          {isUserMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
-            >
-              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">
-                      {getInitials(user.name)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="py-2">
-                <button
-                  onClick={() => {
-                    router.push('/user/profile');
-                    setIsUserMenuOpen(false);
-                  }}
-                  className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <User className="h-4 w-4 mr-3" />
-                  My Profile
-                </button>
-                
-                <div className="border-t border-gray-100 dark:border-gray-700 my-2"></div>
-                
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsUserMenuOpen(false);
-                  }}
-                  className="w-full flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-                >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  Sign Out
-                </button>
-              </div>
-            </motion.div>
-          )}
+        {/* User Profile (admin, improved look) */}
+        <div className="flex items-center gap-3 px-3 py-2 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-[#5e0e8b] via-purple-700 to-purple-500 shadow-xl min-w-[170px] max-w-xs">
+          <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/20">
+            <span className="text-white font-bold text-lg select-none">
+              {getInitials(user.name)}
+            </span>
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="truncate text-sm font-semibold text-white leading-tight">{user.name}</span>
+            <span className="truncate text-xs font-medium text-blue-100 leading-tight">Administrator</span>
+          </div>
         </div>
       </div>
 

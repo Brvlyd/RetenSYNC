@@ -339,6 +339,34 @@
   50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
 }
 
+/* Login Page Animated Gradient and Blob Keyframes */
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease-in-out infinite;
+}
+@keyframes blob1 {
+  0%,100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.08) translateY(-10px); }
+}
+@keyframes blob2 {
+  0%,100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.04) translateY(15px); }
+}
+@keyframes blob3 {
+  0%,100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.06) translateY(-8px); }
+}
+.animate-blob1 { animation: blob1 4s ease-in-out infinite; filter: blur(16px); }
+.animate-blob2 { animation: blob2 5s ease-in-out infinite; filter: blur(18px); }
+.animate-blob3 { animation: blob3 6s ease-in-out infinite; filter: blur(10px); }
+
+/* Reduce blur for the main gradient bar */
+.animate-gradient-x { filter: blur(4px); }
+
 /* Loading Animations */
 @keyframes spin {
   to { transform: rotate(360deg); }

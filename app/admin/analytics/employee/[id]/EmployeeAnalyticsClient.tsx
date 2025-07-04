@@ -155,7 +155,7 @@ export default function EmployeeAnalyticsClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className="space-y-6 lg:space-y-8 pt-8 md:pt-12 xl:pt-16">
       {/* Header with Back Button */}
       <div className="flex items-center space-x-4 mb-6">
         <button

@@ -38,7 +38,7 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
       className={cn(
         "relative overflow-hidden rounded-3xl p-8 text-white",
         isAdmin 
-          ? "bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-700"
+          ? "bg-gradient-to-br from-[#5e0e8b] via-purple-600 to-[#5e0e8b]"
           : "bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600",
         className
       )}
