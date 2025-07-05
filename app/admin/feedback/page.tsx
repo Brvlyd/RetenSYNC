@@ -86,8 +86,10 @@ export default function Feedback() {
     }, 1000);
   };
 
+  // Add margin to top so header doesn't cut content (same as 1on1 page)
+  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
       {/* Modern Header with Glassmorphism - Responsive */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 via-teal-600/20 to-cyan-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>

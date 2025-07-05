@@ -154,8 +154,10 @@ export default function EmployeeAnalyticsClient({ id }: { id: string }) {
     );
   }
 
+  // Add margin to top so header doesn't cut content (same as 1on1 page)
+  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
   return (
-    <div className="space-y-6 lg:space-y-8 pt-8 md:pt-12 xl:pt-16">
+    <div className={`space-y-6 lg:space-y-8 pt-8 md:pt-12 xl:pt-16 ${pageTopMargin}`}>
       {/* Header with Back Button */}
       <div className="flex items-center space-x-4 mb-6">
         <button

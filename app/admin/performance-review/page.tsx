@@ -85,8 +85,10 @@ export default function PerformanceReview() {
     ]
   };
 
+  // Add margin to top so header doesn't cut content (same as 1on1 page)
+  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
   return (
-    <div className="space-y-8">
+    <div className={`space-y-8 ${pageTopMargin}`}>
       {/* Modern Header with Glassmorphism */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-blue-600/20 rounded-3xl blur-xl"></div>

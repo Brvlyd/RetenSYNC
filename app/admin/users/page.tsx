@@ -146,8 +146,10 @@ export default function UsersPage() {
     setUsers(users.filter(u => u.id !== id));
   };
 
+  // No top margin for this page
+  const pageTopMargin = '';
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-purple-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>

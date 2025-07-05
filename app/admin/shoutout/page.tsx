@@ -11,6 +11,8 @@ const companyValues = [
 
 const emojiOptions = ['🌟', '🚀', '💪', '🎯', '👏', '🔥', '💡', '🏆'];
 
+// Add margin to top so header doesn't cut content (same as 1on1 page)
+const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
 export default function Shoutouts() {
   const [showShoutoutForm, setShowShoutoutForm] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState('🌟');
@@ -68,7 +70,7 @@ export default function Shoutouts() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className={`space-y-8 ${pageTopMargin}`}>
       {/* Modern Header with Glassmorphism */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-amber-600/20 via-orange-600/20 to-red-600/20 rounded-3xl blur-xl"></div>

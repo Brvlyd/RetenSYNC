@@ -163,8 +163,10 @@ export default function GoalsPage() {
     avgProgress: Math.round(goals.reduce((sum, goal) => sum + goal.progress, 0) / goals.length)
   };
 
+  // Add margin to top so header doesn't cut content (same as 1on1 page)
+  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 via-purple-600/20 to-indigo-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>

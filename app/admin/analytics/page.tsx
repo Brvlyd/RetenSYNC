@@ -36,6 +36,8 @@ function CustomEngagementTooltip({ active, payload }: any) {
   return null;
 }
 
+// Add margin to top so header doesn't cut content (same as 1on1 page)
+const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
 export default function Analytics() {
   const router = useRouter();
   const [animateProgress, setAnimateProgress] = useState(false);
@@ -86,7 +88,7 @@ export default function Analytics() {
   };
 
   return (
-    <div className="space-y-6 lg:space-y-8 animate-fade-in">
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in ${pageTopMargin}`}>
       {/* Modern Header - Responsive */}
       <div className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/10 rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
