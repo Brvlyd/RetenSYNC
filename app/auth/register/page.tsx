@@ -24,9 +24,7 @@ export default function RegisterPage() {
     address: '',
     position: '',
     department: '',
-    hire_date: '',
-    salary: '',
-    salary_amount: ''
+    hire_date: ''
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +59,8 @@ export default function RegisterPage() {
   ];
   const genders = [
     { value: 'M', label: 'Male' },
-    { value: 'F', label: 'Female' }
+    { value: 'F', label: 'Female' },
+    { value: 'O', label: 'Other' }
   ];
   const maritalStatuses = [
     { value: 'single', label: 'Single' },
@@ -70,11 +69,11 @@ export default function RegisterPage() {
     { value: 'widowed', label: 'Widowed' }
   ];
   const educationLevels = [
-    { value: 'highschool', label: 'High School' },
+    { value: 'high_school', label: 'High School' },
     { value: 'diploma', label: 'Diploma' },
-    { value: 'bachelor', label: 'Bachelor' },
-    { value: 'master', label: 'Master' },
-    { value: 'doctorate', label: 'Doctorate' }
+    { value: 'bachelor', label: "Bachelor's Degree" },
+    { value: 'master', label: "Master's Degree" },
+    { value: 'phd', label: 'PhD' }
   ];
   const salaryTypes = [
     { value: 'monthly', label: 'Monthly' },
@@ -100,7 +99,7 @@ export default function RegisterPage() {
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^([a-zA-Z0-9_.+-]+)@company\.com$/.test(formData.email)) {
-      newErrors.email = 'Email must be a valid @company.com address';
+      newErrors.email = 'Email must use @company.com domain';
     }
     if (!formData.password) {
       newErrors.password = 'Password is required';
@@ -120,11 +119,13 @@ export default function RegisterPage() {
     if (!formData.marital_status) newErrors.marital_status = 'Marital status is required';
     if (!formData.education_level) newErrors.education_level = 'Education level is required';
     if (!formData.address) newErrors.address = 'Address is required';
-    if (!formData.position) newErrors.position = 'Position is required';
-    if (!formData.department) newErrors.department = 'Department is required';
+    if (!formData.position || formData.position === '') newErrors.position = 'Position is required';
+    if (!formData.department || formData.department === '') {
+      newErrors.department = 'Department is required';
+    } else if (isNaN(Number(formData.department)) || Number(formData.department) <= 0) {
+      newErrors.department = 'Department must be selected';
+    }
     if (!formData.hire_date) newErrors.hire_date = 'Hire date is required';
-    if (!formData.salary) newErrors.salary = 'Salary type is required';
-    if (!formData.salary_amount) newErrors.salary_amount = 'Salary amount is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -136,27 +137,51 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    // Prepare payload for the external API
+    // Prepare payload for the external API (all required fields, correct types, trimmed, no empty string)
     const payload = {
-      email: formData.email,
-      password: formData.password,
-      password_confirm: formData.password_confirm,
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      phone_number: formData.phone_number,
-      date_of_birth: formData.date_of_birth,
-      gender: formData.gender,
-      marital_status: formData.marital_status,
-      education_level: formData.education_level,
-      address: formData.address,
-      position: formData.position,
-      department: Number(formData.department),
-      hire_date: formData.hire_date,
-      salary: formData.salary,
-      salary_amount: Number(formData.salary_amount)
+      email: formData.email.trim(),
+      password: formData.password.trim(),
+      password_confirm: formData.password_confirm.trim(),
+      first_name: formData.first_name.trim(),
+      last_name: formData.last_name.trim(),
+      phone_number: formData.phone_number.trim(),
+      date_of_birth: formData.date_of_birth.trim(),
+      gender: formData.gender.trim(),
+      marital_status: formData.marital_status.trim(),
+      education_level: formData.education_level.trim(),
+      address: formData.address.trim(),
+      position: formData.position.trim(),
+      department: parseInt(formData.department, 10),
+      hire_date: formData.hire_date.trim()
     };
+    // Final check: if any field is empty or department is not a valid number, do not submit
+    if (
+      !payload.email ||
+      !payload.password ||
+      !payload.password_confirm ||
+      !payload.first_name ||
+      !payload.last_name ||
+      !payload.phone_number ||
+      !payload.date_of_birth ||
+      !payload.gender ||
+      !payload.marital_status ||
+      !payload.education_level ||
+      !payload.address ||
+      !payload.position ||
+      !payload.hire_date ||
+      isNaN(payload.department) || payload.department <= 0
+    ) {
+      setErrors(prev => ({
+        ...prev,
+        general: 'Please fill all fields correctly.'
+      }));
+      setIsLoading(false);
+      return;
+    }
 
     try {
+      // Debug: log payload
+      console.log('Register payload:', payload);
       // Call the external API directly (with trailing slash)
       const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/register/', {
         method: 'POST',
@@ -165,11 +190,18 @@ export default function RegisterPage() {
       });
 
       const data = await response.json();
+      // Debug: log API response
+      console.log('Register API response:', data);
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
+        // Show all field errors if available
+        let errorMsg = data.message || data.error || 'Registration failed';
+        if (data.errors) {
+          errorMsg += ': ' + Object.values(data.errors).flat().join(', ');
+        }
         setErrors(prev => ({
           ...prev,
-          general: data.error || data.message || 'Registration failed'
+          general: errorMsg
         }));
         setIsLoading(false);
         return;
@@ -178,10 +210,13 @@ export default function RegisterPage() {
       setSuccess(true);
       setIsLoading(false);
 
+      // Redirect to login page after successful registration
       setTimeout(() => {
-        router.push('/user/dashboard');
-      }, 2000);
+        router.push('/auth/login');
+      }, 1500);
     } catch (err) {
+      // Debug: log error
+      console.error('Register error:', err);
       setErrors(prev => ({
         ...prev,
         general: 'Registration failed. Please try again.'
@@ -541,35 +576,7 @@ export default function RegisterPage() {
                     {errors.hire_date && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.hire_date}</p>}
                   </div>
 
-                  {/* Salary Information - Side by Side */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Type *</label>
-                      <select 
-                        name="salary" 
-                        value={formData.salary} 
-                        onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.salary ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
-                      >
-                        <option value="">Select type</option>
-                        {salaryTypes.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                      </select>
-                      {errors.salary && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.salary}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Amount *</label>
-                      <input 
-                        type="number" 
-                        name="salary_amount" 
-                        value={formData.salary_amount} 
-                        onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.salary_amount ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
-                        placeholder="Amount" 
-                        min="0" 
-                      />
-                      {errors.salary_amount && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.salary_amount}</p>}
-                    </div>
-                  </div>
+
                 </div>
               </div>
             </div>

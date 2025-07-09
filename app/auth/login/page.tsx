@@ -50,27 +50,38 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
-
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      // Check admin credentials
-      if (formData.email === 'admin@company.com' && formData.password === 'admin123') {
-        // Store user data in localStorage (in real app, use proper auth)
-        localStorage.setItem('user', JSON.stringify({
-          email: formData.email,
-          role: 'admin',
-          name: 'Administrator'
-        }));
-        router.push('/user/dashboard');
-      } else {
-        setErrors({ general: 'Invalid email or password' });
+    setErrors({});
+    try {
+      const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: formData.password
+        })
+      });
+      const data = await response.json();
+      // Debug: log API response
+      console.log('Login API response:', data);
+      if (!response.ok || !data.success) {
+        let errorMsg = data.message || data.error || 'Login failed';
+        setErrors({ general: errorMsg });
+        setIsLoading(false);
+        return;
+      }
+      // Store user data and token in localStorage
+      if (data.data && data.data.user) {
+        localStorage.setItem('user', JSON.stringify(data.data.user));
       }
       setIsLoading(false);
-    }, 1000);
+      router.push('/user/dashboard');
+    } catch (err) {
+      console.error('Login error:', err);
+      setErrors({ general: 'Login failed. Please try again.' });
+      setIsLoading(false);
+    }
   };
 
   return (

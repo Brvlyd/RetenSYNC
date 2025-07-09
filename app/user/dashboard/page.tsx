@@ -231,7 +231,7 @@ export default function UserDashboardPage() {
             icon={Target}
             gradient="from-blue-500 to-indigo-500"
             bgGradient="from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30"
-            onClick={() => window.location.href = '/admin/goals'}
+            onClick={() => window.location.href = '/user/goals'}
           />
           <QuickActionCard
             title="My Profile"
