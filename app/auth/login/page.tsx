@@ -107,7 +107,7 @@ export default function LoginPage() {
               <span className="relative flex items-center justify-center">
                 <span className="absolute w-[420px] h-[110px] mr-14 rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10" style={{filter:'blur(0.5px)'}}></span>
                 <Image
-                  src={require('../../../assets/Group 15.png')}
+                  src={require('../../../assets/RetenSYNC.png')}
                   alt="RetenSYNC Logo"
                   width={180}
                   height={180}

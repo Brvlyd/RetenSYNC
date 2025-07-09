@@ -246,7 +246,7 @@ export default function RegisterPage() {
         {/* Subtle animated gradient accent at the top */}
         <div className="pointer-events-none absolute left-0 top-0 w-full h-3 rounded-t-2xl bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
         <Image
-          src={require('../../../assets/Group 15.png')}
+          src={require('../../../assets/RetenSYNC.png')}
           alt="RetenSYNC Logo"
           width={140}
           height={60}

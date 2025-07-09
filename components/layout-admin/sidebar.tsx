@@ -160,7 +160,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
             <div className="flex items-center">
               <div>
                 <Image
-                  src={require('../../assets/Group 13.png')}
+                  src={require('../../assets/Logo.png')}
                   alt="Company Logo"
                   width={48}
                   height={48}
