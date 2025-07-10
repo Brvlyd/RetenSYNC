@@ -228,7 +228,7 @@ function ScheduleMeetingModal(props: ScheduleMeetingModalProps) {
 export default function AdminOneOnOne() {
   // Add margin to top so header doesn't cut content
   // You can adjust this value if your header height changes
-  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
+  const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [animateCards, setAnimateCards] = useState(false);
   const [selectedView, setSelectedView] = useState("all");

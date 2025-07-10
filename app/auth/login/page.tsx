@@ -53,7 +53,9 @@ export default function LoginPage() {
     if (!validateForm()) return;
     setIsLoading(true);
     setErrors({});
+    
     try {
+      // API login for all users
       const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -74,6 +76,12 @@ export default function LoginPage() {
       // Store user data and token in localStorage
       if (data.data && data.data.user) {
         localStorage.setItem('user', JSON.stringify(data.data.user));
+        // Redirect based on role
+        if (data.data.user.role === 'admin') {
+          setIsLoading(false);
+          router.push('/admin/dashboard');
+          return;
+        }
       }
       setIsLoading(false);
       router.push('/user/dashboard');
@@ -118,7 +126,7 @@ export default function LoginPage() {
               <span className="relative flex items-center justify-center">
                 <span className="absolute w-[420px] h-[110px] mr-14 rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10" style={{filter:'blur(0.5px)'}}></span>
                 <Image
-                  src={require('../../../assets/RetenSYNC.png')}
+                  src="/assets/RetenSYNC.png"
                   alt="RetenSYNC Logo"
                   width={180}
                   height={180}
@@ -134,7 +142,7 @@ export default function LoginPage() {
                 <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs">
                   <span><strong>Email:</strong> admin@company.com</span>
-                  <span><strong>Password:</strong> admin123</span>
+                  <span><strong>Password:</strong> AdminPass123!</span>
                 </div>
               </div>
             </div>

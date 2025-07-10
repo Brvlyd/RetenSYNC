@@ -91,39 +91,28 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-50">
-      {/* Left Section - Logo and Brand */}
-      <div className="flex items-center space-x-4">
-        {/* Logo */}
+      {/* Left Section - System Status */}
+      <div className="flex items-center space-x-6">
+        {/* System Status */}
         <div className="flex items-center space-x-3">
-          <div className="relative group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden transition-transform group-hover:scale-110">
-              <Image
-                src="/assets/RetenSYNC.png"
-                alt="RetenSYNC Logo"
-                width={40}
-                height={40}
-                className="object-contain w-full h-full"
-                priority
-              />
-            </div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-            </div>
-          </div>
-          <div className="hidden sm:block">
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              RetenSYNC
-            </h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Admin Dashboard
-            </p>
-          </div>
-        </div>
-
-        {/* System Status - Hidden on mobile */}
-        <div className="hidden md:flex items-center space-x-3 border-l border-gray-300 dark:border-gray-600 pl-4">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
           <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">System Online</span>
+        </div>
+        
+        {/* Quick Stats - Hidden on mobile */}
+        <div className="hidden md:flex items-center space-x-6">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <span className="text-xs font-bold text-blue-600 dark:text-blue-400">4</span>
+            </div>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Active Users</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">96%</span>
+            </div>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Uptime</span>
+          </div>
         </div>
       </div>
 
@@ -262,74 +251,27 @@ export default function Header() {
         </div>
 
         {/* User Profile - Compact Admin Design */}
-        <div className="relative">
-          <motion.button
-            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-3 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-500 via-purple-600 to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 min-w-[160px]"
-          >
-            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-white/20">
-              <span className="text-white font-bold text-sm select-none">
-                {getInitials(user.name)}
-              </span>
+        <div className="flex items-center gap-3 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-r from-[#94c47d] to-[#d96f27] shadow-lg">
+          <div className="relative flex items-center justify-center h-8 w-8 rounded-lg bg-white/20">
+            <User className="h-4 w-4 text-white" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
             </div>
-            <div className="flex flex-col min-w-0 text-left">
-              <span className="truncate text-sm font-semibold text-white leading-tight">{user.name}</span>
-              <span className="truncate text-xs font-medium text-blue-100 leading-tight">Administrator</span>
-            </div>
-            <ChevronDown className="h-4 w-4 text-white/80" />
-          </motion.button>
-
-          {/* User Menu Dropdown */}
-          {isUserMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
-            >
-              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">
-                      {getInitials(user.name)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
-                  </div>
-                </div>
-              </div>
-              <div className="py-2">
-                <button
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
-                  <User className="h-4 w-4 mr-3" />
-                  Profile Settings
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                >
-                  <LogOut className="h-4 w-4 mr-3" />
-                  Sign Out
-                </button>
-              </div>
-            </motion.div>
-          )}
+          </div>
+          <div className="flex flex-col min-w-0 text-left">
+            <span className="truncate text-sm font-semibold text-white leading-tight">{user.name}</span>
+            <span className="truncate text-xs font-medium text-white/80 leading-tight">Administrator</span>
+          </div>
         </div>
       </div>
 
       {/* Click outside to close dropdowns */}
-      {(isThemeOpen || isNotificationOpen || isUserMenuOpen) && (
+      {(isThemeOpen || isNotificationOpen) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
             setIsThemeOpen(false);
             setIsNotificationOpen(false);
-            setIsUserMenuOpen(false);
           }}
         />
       )}

@@ -1,12 +1,109 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, Award, MessageSquare, Calendar, TrendingUp, Heart } from 'lucide-react';
+import { feedbackData } from '@/lib/dummy-data';
+import { Users, Award, MessageSquare, Calendar, TrendingUp, Heart, Send, Clock, Star, ThumbsUp } from 'lucide-react';
 
 export default function HRInteractionsPage() {
   const router = useRouter();
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('received');
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [animateCards, setAnimateCards] = useState(false);
+  const [formData, setFormData] = useState({
+    type: 'peer',
+    recipient: '',
+    project: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState('');
+
+  useEffect(() => {
+    setAnimateCards(true);
+  }, []);
+
+  const tabs = [
+    { 
+      id: 'received', 
+      label: 'Received', 
+      count: feedbackData.filter(f => f.status === 'received').length,
+      icon: Heart,
+      color: 'from-emerald-500 to-teal-500'
+    },
+    { 
+      id: 'sent', 
+      label: 'Sent', 
+      count: feedbackData.filter(f => f.status === 'sent').length,
+      icon: Send,
+      color: 'from-blue-500 to-cyan-500'
+    },
+    { 
+      id: 'give', 
+      label: 'Give Feedback', 
+      count: 0,
+      icon: Star,
+      color: 'from-violet-500 to-purple-500'
+    },
+  ];
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'peer': return <Users className="h-4 w-4" />;
+      case 'manager': return <TrendingUp className="h-4 w-4" />;
+      case 'self': return <Award className="h-4 w-4" />;
+      default: return <MessageSquare className="h-4 w-4" />;
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'peer': return 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border border-emerald-200';
+      case 'manager': return 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border border-blue-200';
+      case 'self': return 'bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border border-purple-200';
+      default: return 'bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 border border-gray-200';
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.recipient || !formData.project || !formData.message) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      alert('Feedback submitted successfully!');
+      setFormData({
+        type: 'peer',
+        recipient: '',
+        project: '',
+        message: ''
+      });
+      setShowFeedbackForm(false);
+      setIsSubmitting(false);
+    }, 1000);
+  };
+
+  const handleReplySubmit = async (feedbackId: number) => {
+    if (!replyText.trim()) {
+      alert('Please enter a reply message');
+      return;
+    }
+
+    // Simulate API call for reply
+    setTimeout(() => {
+      alert('Reply sent successfully!');
+      setReplyText('');
+      setReplyingTo(null);
+    }, 500);
+  };
 
   const interactionTypes = [
     {
@@ -51,8 +148,8 @@ export default function HRInteractionsPage() {
     }
   ];
 
-  // Add margin to top so header doesn't cut content (same as 1on1 page)
-  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
+  // Add margin to top so header doesn't cut content (reduced margin)
+  const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
     <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
       {/* Header */}
@@ -149,6 +246,265 @@ export default function HRInteractionsPage() {
             )}
           </div>
         ))}
+      </div>
+
+      {/* Feedback Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl lg:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl p-6 lg:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+          <div className="flex items-center space-x-3 mb-4 sm:mb-0">
+            <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl">
+              <MessageSquare className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Continuous Feedback</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">360° feedback system for continuous improvement</p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setActiveTab('give');
+              setShowFeedbackForm(true);
+            }}
+            className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold text-sm sm:text-base w-full sm:w-auto justify-center"
+          >
+            <Star className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-12 transition-transform" />
+            Give Feedback
+          </button>
+        </div>
+
+        {/* Enhanced Tab Navigation - Responsive */}
+        <div className="relative mb-6">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 bg-gray-50 dark:bg-gray-700 rounded-xl lg:rounded-2xl p-2 border border-gray-100 dark:border-gray-600">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setShowFeedbackForm(tab.id === 'give');
+                }}
+                className={`group relative flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 rounded-lg lg:rounded-xl font-semibold text-sm transition-all duration-300 w-full sm:flex-1 ${
+                  activeTab === tab.id
+                    ? `bg-gradient-to-r ${tab.color} text-white shadow-lg scale-105`
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
+                }`}
+              >
+                <tab.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${
+                  activeTab === tab.id ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                } transition-colors`} />
+                <span className="truncate">{tab.label}</span>
+                {tab.count > 0 && (
+                  <span className={`px-2 py-0.5 sm:py-1 rounded-full text-xs font-bold ${
+                    activeTab === tab.id 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 group-hover:bg-gray-300 dark:group-hover:bg-gray-500'
+                  } transition-all duration-300`}>
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Enhanced Feedback Form - Responsive */}
+        {showFeedbackForm && (
+          <div className="bg-gray-50 dark:bg-gray-700 rounded-2xl lg:rounded-3xl border border-gray-200 dark:border-gray-600 p-4 sm:p-6 lg:p-8 mb-6">
+            <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl lg:rounded-2xl">
+                <Star className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+              </div>
+              <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Give Feedback</h4>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                    Feedback Type
+                  </label>
+                  <select 
+                    value={formData.type}
+                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                    className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                  >
+                    <option value="peer">Peer Feedback</option>
+                    <option value="manager">Upward Feedback</option>
+                    <option value="self">Self Assessment</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                    Recipient
+                  </label>
+                  <select 
+                    value={formData.recipient}
+                    onChange={(e) => setFormData({...formData, recipient: e.target.value})}
+                    className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                  >
+                    <option value="">Select recipient...</option>
+                    <option value="Aulia">Aulia</option>
+                    <option value="Tasya">Tasya</option>
+                    <option value="Annisa">Annisa</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                  Project/Context
+                </label>
+                <input
+                  type="text"
+                  value={formData.project}
+                  onChange={(e) => setFormData({...formData, project: e.target.value})}
+                  placeholder="e.g., Q4 Product Launch"
+                  className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
+                  Feedback Message
+                </label>
+                <textarea
+                  rows={4}
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  placeholder="Share specific, actionable feedback..."
+                  className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 resize-none text-gray-900 dark:text-white text-sm sm:text-base"
+                />
+              </div>
+              
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setShowFeedbackForm(false)}
+                  className="px-4 sm:px-6 py-2 sm:py-3 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-xl lg:rounded-2xl hover:bg-gray-300 dark:hover:bg-gray-500 transition-all duration-300 font-semibold text-sm sm:text-base w-full sm:w-auto"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="group px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold text-sm sm:text-base w-full sm:w-auto justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  ) : (
+                    <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:translate-x-1 transition-transform" />
+                  )}
+                  {isSubmitting ? 'Sending...' : 'Send Feedback'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Enhanced Feedback List - Responsive */}
+        {!showFeedbackForm && (
+          <div className="space-y-4 sm:space-y-6">
+            {feedbackData
+              .filter(feedback => feedback.status === activeTab)
+              .map((feedback, index) => (
+                <div 
+                  key={feedback.id} 
+                  className={`group bg-gray-50 dark:bg-gray-700 rounded-2xl lg:rounded-3xl border border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden ${
+                    animateCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  }`}
+                  style={{ animationDelay: `${index * 150}ms` }}
+                >
+                  <div className="p-4 sm:p-6 lg:p-8">
+                    <div className="flex flex-col lg:flex-row lg:items-start justify-between space-y-4 lg:space-y-0">
+                      <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
+                        <div className="flex-shrink-0">
+                          <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl lg:rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-3">
+                            <span className="font-bold text-gray-900 dark:text-white text-base sm:text-lg">
+                              {feedback.status === 'received' ? `From: ${feedback.from}` : `To: ${feedback.to}`}
+                            </span>
+                            <span className={`flex items-center space-x-1 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold w-fit ${getTypeColor(feedback.type)}`}>
+                              {getTypeIcon(feedback.type)}
+                              <span className="ml-1">{feedback.type}</span>
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-medium">
+                            Project: <span className="text-gray-900 dark:text-white">{feedback.project}</span>
+                          </p>
+                          <p className="text-gray-800 dark:text-gray-200 leading-relaxed bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl p-3 sm:p-4 border border-gray-200 dark:border-gray-600 text-sm sm:text-base">
+                            {feedback.content}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-row lg:flex-col items-center lg:items-end space-x-4 lg:space-x-0 lg:space-y-2">
+                        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-full px-3 py-2">
+                          <Clock className="h-4 w-4" />
+                          <span className="font-medium">{new Date(feedback.date).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group/like">
+                            <ThumbsUp className="h-4 w-4 group-hover/like:scale-110 transition-transform" />
+                            <span className="font-medium">Helpful</span>
+                          </button>
+                          <button 
+                            onClick={() => setReplyingTo(replyingTo === feedback.id ? null : feedback.id)}
+                            className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group/reply"
+                          >
+                            <MessageSquare className="h-4 w-4 group-hover/reply:scale-110 transition-transform" />
+                            <span className="font-medium">Reply</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Reply Form */}
+                    {replyingTo === feedback.id && (
+                      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0">
+                            <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+                              <MessageSquare className="h-4 w-4 text-white" />
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <textarea
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              placeholder="Write your reply..."
+                              rows={3}
+                              className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-800 resize-none text-gray-900 dark:text-white text-sm"
+                            />
+                            <div className="flex justify-end space-x-2 mt-3">
+                              <button
+                                onClick={() => {
+                                  setReplyingTo(null);
+                                  setReplyText('');
+                                }}
+                                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors text-sm font-medium"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => handleReplySubmit(feedback.id)}
+                                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow hover:shadow-lg hover:scale-105 flex items-center text-sm font-medium"
+                              >
+                                <Send className="h-4 w-4 mr-1" />
+                                Send Reply
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
       </div>
 
       {/* Quick Stats Overview */}

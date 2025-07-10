@@ -233,7 +233,7 @@ export default function DepartmentsPage() {
   };
 
   // Add margin to top so header doesn't cut content (same as 1on1 page)
-  const pageTopMargin = 'mt-24 sm:mt-28 lg:mt-32';
+  const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
     <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
       {/* Header */}

@@ -28,7 +28,7 @@ const item = {
 };
 
 // No extra top margin for this page
-const pageTopMargin = '';
+const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
 export default function AdminDashboardPage() {
   // Admin dashboard only, no user-based dashboard
   const organizationStats = {

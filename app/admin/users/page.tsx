@@ -147,7 +147,7 @@ export default function UsersPage() {
   };
 
   // No top margin for this page
-  const pageTopMargin = '';
+  const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
     <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
       {/* Header */}

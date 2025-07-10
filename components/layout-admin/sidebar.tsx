@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
+import Logo from '@/assets/Logo.png';
 import {
   BarChart3,
   MessageSquare,
@@ -63,9 +64,6 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   // HR Interactions section
   const hrInteractions: NavigationItem[] = [
     { name: 'HR Interactions', href: '/admin/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
-    { name: 'Peer Recognition', href: '/admin/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500', isChild: true },
-    { name: '1-on-1 Meetings', href: '/admin/1on1', icon: Calendar, color: 'from-blue-500 to-cyan-500', isChild: true },
-    { name: 'Feedback', href: '/admin/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500', isChild: true },
   ];
 
   // Combine navigation: only show pages from inside the admin folder
@@ -161,7 +159,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
               <div className="relative group">
                 <div className="rounded-xl w-12 h-12 overflow-hidden shadow-lg transition-transform group-hover:scale-105">
                   <Image
-                    src="/assets/RetenSYNC.png"
+                    src={Logo}
                     alt="RetenSYNC Logo"
                     width={48}
                     height={48}
@@ -177,7 +175,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                 variants={textVariants}
                 className="ml-4"
               >
-                <h1 className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="font-bold text-xl bg-gradient-to-r from-[#94c47d] to-[#d96f27] bg-clip-text text-transparent">
                   RetenSYNC
                 </h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Admin Dashboard</p>
