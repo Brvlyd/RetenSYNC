@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
@@ -15,7 +16,6 @@ import {
   ClipboardList,
   Menu,
   X,
-  Brain,
   LogOut,
   Sparkles,
   Building,
@@ -176,8 +176,15 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <div className="relative">
-                <div className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 w-12 h-12 flex items-center justify-center overflow-hidden shadow-lg">
-                  <Brain className="h-8 w-8 text-white" />
+                <div className="rounded-xl w-12 h-12 overflow-hidden shadow-lg transition-transform group-hover:scale-105">
+                  <Image
+                    src="/assets/RetenSYNC.png"
+                    alt="RetenSYNC Logo"
+                    width={48}
+                    height={48}
+                    className="object-contain w-full h-full"
+                    priority
+                  />
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
               </div>

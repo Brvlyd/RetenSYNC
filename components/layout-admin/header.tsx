@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
+import Image from 'next/image';
 import {
   Bell,
   Search,
@@ -90,14 +91,40 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-50">
-      {/* Left Section */}
-      <div className="flex items-center space-x-3 sm:space-x-6">
+      {/* Left Section - Logo and Brand */}
+      <div className="flex items-center space-x-4">
+        {/* Logo */}
+        <div className="flex items-center space-x-3">
+          <div className="relative group">
+            <div className="w-10 h-10 rounded-xl overflow-hidden transition-transform group-hover:scale-110">
+              <Image
+                src="/assets/RetenSYNC.png"
+                alt="RetenSYNC Logo"
+                width={40}
+                height={40}
+                className="object-contain w-full h-full"
+                priority
+              />
+            </div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+            </div>
+          </div>
+          <div className="hidden sm:block">
+            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              RetenSYNC
+            </h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Admin Dashboard
+            </p>
+          </div>
+        </div>
+
         {/* System Status - Hidden on mobile */}
-        <div className="hidden md:flex items-center space-x-3">
+        <div className="hidden md:flex items-center space-x-3 border-l border-gray-300 dark:border-gray-600 pl-4">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
           <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">System Online</span>
         </div>
-        {/* Logo and search bar removed */}
       </div>
 
       {/* Right Section */}
@@ -234,17 +261,64 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Profile (admin, improved look) */}
-        <div className="flex items-center gap-3 px-3 py-2 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-[#5e0e8b] via-purple-700 to-purple-500 shadow-xl min-w-[170px] max-w-xs">
-          <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-white/20">
-            <span className="text-white font-bold text-lg select-none">
-              {getInitials(user.name)}
-            </span>
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="truncate text-sm font-semibold text-white leading-tight">{user.name}</span>
-            <span className="truncate text-xs font-medium text-blue-100 leading-tight">Administrator</span>
-          </div>
+        {/* User Profile - Compact Admin Design */}
+        <div className="relative">
+          <motion.button
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-3 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-500 via-purple-600 to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 min-w-[160px]"
+          >
+            <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-white/20">
+              <span className="text-white font-bold text-sm select-none">
+                {getInitials(user.name)}
+              </span>
+            </div>
+            <div className="flex flex-col min-w-0 text-left">
+              <span className="truncate text-sm font-semibold text-white leading-tight">{user.name}</span>
+              <span className="truncate text-xs font-medium text-blue-100 leading-tight">Administrator</span>
+            </div>
+            <ChevronDown className="h-4 w-4 text-white/80" />
+          </motion.button>
+
+          {/* User Menu Dropdown */}
+          {isUserMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
+            >
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">
+                      {getInitials(user.name)}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Administrator</p>
+                  </div>
+                </div>
+              </div>
+              <div className="py-2">
+                <button
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <User className="h-4 w-4 mr-3" />
+                  Profile Settings
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                >
+                  <LogOut className="h-4 w-4 mr-3" />
+                  Sign Out
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
 

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
@@ -158,22 +158,29 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
         <div className="h-20 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
-              <div>
-                <Image
-                  src={require('../../assets/Logo.png')}
-                  alt="Company Logo"
-                  width={48}
-                  height={48}
-                  className="object-contain"
-                  priority
-                />
+              <div className="relative group">
+                <div className="rounded-xl w-12 h-12 overflow-hidden shadow-lg transition-transform group-hover:scale-105">
+                  <Image
+                    src="/assets/RetenSYNC.png"
+                    alt="RetenSYNC Logo"
+                    width={48}
+                    height={48}
+                    className="object-contain w-full h-full"
+                    priority
+                  />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                </div>
               </div>
               <motion.div
                 variants={textVariants}
                 className="ml-4"
               >
-                <h1 className="font-bold text-xl text-gray-900 dark:text-white">RetenSYNC</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Performance Platform</p>
+                <h1 className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  RetenSYNC
+                </h1>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Admin Dashboard</p>
               </motion.div>
             </div>
             {/* Burger Menu Button - Only visible on desktop when sidebar is expanded */}
