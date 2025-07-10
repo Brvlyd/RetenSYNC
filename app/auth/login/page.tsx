@@ -250,7 +250,7 @@ export default function LoginPage() {
                 <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs">
                   <span><strong>Email:</strong> admin@company.com</span>
-                  <span><strong>Password:</strong> admin123</span>
+                  <span><strong>Password:</strong> AdminPass123!</span>
                 </div>
               </div>
             </div>
