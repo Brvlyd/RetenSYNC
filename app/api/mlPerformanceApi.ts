@@ -1,17 +1,48 @@
+// Predict turnover risk for an employee
+export interface PredictionResult {
+  success: boolean;
+  message: string;
+  data: {
+    employee_id: number;
+    prediction: string; // e.g., "High", "Medium", "Low"
+    probability?: number;
+    [key: string]: any;
+  };
+}
+
+export const predictTurnoverRisk = async (employee_id: number): Promise<PredictionResult> => {
+  const token = getAuthToken();
+  if (!token) {
+    throw new Error('Authentication token not found. Please login or set a valid API token.');
+  }
+  const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/predict/', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ employee_id }),
+  });
+  if (response.status === 401) {
+    throw new Error('Authentication failed. Please check your API token or login again.');
+  }
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}. ${errorText}`);
+  }
+  const result: PredictionResult = await response.json();
+  if (!result.success) {
+    throw new Error(result.message || 'Failed to get prediction');
+  }
+  return result;
+};
 // External API utility for ML Performance data
 const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api/performance/';
 
-// You should replace this with actual token from your authentication system
+// Hardcoded API token for automatic authentication
 const getAuthToken = () => {
-  // This is a placeholder - replace with your actual token retrieval logic
-  const token = localStorage.getItem('api_token') || localStorage.getItem('authToken') || localStorage.getItem('token');
-  
-  if (!token || token === 'your-api-token-here') {
-    console.warn('No valid API token found. Please set a valid token in localStorage or update the getAuthToken function.');
-    return null;
-  }
-  
-  return token;
+  // Directly return the provided API token
+  return 'b42b585b90fbb149294bf041aaef5085c1ca4935';
 };
 
 export interface PerformanceData {

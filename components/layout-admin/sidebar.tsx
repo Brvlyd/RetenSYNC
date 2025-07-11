@@ -155,21 +155,13 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
         <div className="h-20 flex items-center px-6 pt-4 pb-4 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
-              <div className="relative group">
-                <div className="rounded-xl w-12 h-12 overflow-hidden shadow-lg transition-transform group-hover:scale-105">
-                  <Image
-                    src={Logo}
-                    alt="RetenSYNC Logo"
-                    width={48}
-                    height={48}
-                    className="object-contain w-full h-full"
-                    priority
-                  />
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-                </div>
-              </div>
+              <Image
+                src={Logo}
+                alt="RetenSYNC Logo"
+                width={48}
+                height={48}
+                priority
+              />
               <motion.div
                 variants={textVariants}
                 className="ml-4"

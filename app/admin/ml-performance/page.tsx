@@ -24,11 +24,10 @@ import {
   fetchPerformanceData, 
   createPerformanceData, 
   calculateRiskLevel, 
-  mockPerformanceData,
+  predictTurnoverRisk,
   type PerformanceData, 
   type CreatePerformanceData 
 } from '@/app/api/mlPerformanceApi';
-import TokenManager from '@/components/TokenManager';
 
 export default function MLPerformancePage() {
   const [performanceData, setPerformanceData] = useState<PerformanceData[]>([]);
@@ -37,7 +36,7 @@ export default function MLPerformancePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<PerformanceData | null>(null);
-  const [showTokenManager, setShowTokenManager] = useState(false);
+  // const [showTokenManager, setShowTokenManager] = useState(false);
   const [createFormData, setCreateFormData] = useState<CreatePerformanceData>({
     employee: 0,
     satisfaction_level: 0.5,
@@ -49,6 +48,10 @@ export default function MLPerformancePage() {
     promotion_last_5years: false,
     left: false
   });
+  const [predictionResult, setPredictionResult] = useState<any | null>(null);
+  const [predicting, setPredicting] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editFormData, setEditFormData] = useState<CreatePerformanceData | null>(null);
 
   useEffect(() => {
     loadPerformanceData();
@@ -63,14 +66,8 @@ export default function MLPerformancePage() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       setError(errorMessage);
-      
-      // If it's an authentication error, suggest showing token manager
-      if (errorMessage.includes('Authentication') || errorMessage.includes('401')) {
-        setShowTokenManager(true);
-      }
-      
-      // Use mock data as fallback
-      setPerformanceData(mockPerformanceData);
+      // If it's an authentication error, you could handle it here if needed
+      setPerformanceData([]);
     } finally {
       setLoading(false);
     }
@@ -82,24 +79,20 @@ export default function MLPerformancePage() {
       await loadPerformanceData(); // Refresh the list
       setShowCreateModal(false);
       resetCreateForm();
-      setError(null); // Clear any previous errors
+      setError(null); 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create performance data';
       setError(errorMessage);
       
-      // If it's an authentication error, suggest showing token manager
-      if (errorMessage.includes('Authentication') || errorMessage.includes('401')) {
-        setShowTokenManager(true);
-      }
     }
   };
 
-  const handleTokenSet = (token: string) => {
-    setShowTokenManager(false);
-    setError(null);
-    // Retry loading data with new token
-    loadPerformanceData();
-  };
+  // const handleTokenSet = (token: string) => {
+  //   setShowTokenManager(false);
+  //   setError(null);
+  //   // Retry loading data with new token
+  //   loadPerformanceData();
+  // };
 
   const resetCreateForm = () => {
     setCreateFormData({
@@ -120,6 +113,53 @@ export default function MLPerformancePage() {
     item.employee_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.department_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Predict ML for selected employee
+  const handlePredict = async (employeeId: number) => {
+    setPredicting(true);
+    setPredictionResult(null);
+    try {
+      const result = await predictTurnoverRisk(employeeId);
+      setPredictionResult(result.data);
+    } catch (err) {
+      setPredictionResult({ error: err instanceof Error ? err.message : 'Prediction failed' });
+    } finally {
+      setPredicting(false);
+    }
+  };
+
+  // Start editing
+  const handleEdit = () => {
+    if (selectedEmployee) {
+      setEditFormData({
+        employee: selectedEmployee.employee,
+        satisfaction_level: selectedEmployee.satisfaction_level,
+        last_evaluation: selectedEmployee.last_evaluation,
+        number_project: selectedEmployee.number_project,
+        average_monthly_hours: selectedEmployee.average_monthly_hours,
+        time_spend_company: selectedEmployee.time_spend_company,
+        work_accident: selectedEmployee.work_accident,
+        promotion_last_5years: selectedEmployee.promotion_last_5years,
+        left: selectedEmployee.left
+      });
+      setEditMode(true);
+    }
+  };
+
+  // Save edit (workaround: use create API)
+  const handleEditSave = async () => {
+    if (!editFormData) return;
+    try {
+      await createPerformanceData(editFormData);
+      setEditMode(false);
+      setSelectedEmployee(null);
+      setEditFormData(null);
+      await loadPerformanceData();
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update performance data');
+    }
+  };
 
   if (loading) {
     return (
@@ -150,13 +190,6 @@ export default function MLPerformancePage() {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowTokenManager(!showTokenManager)}
-                className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                <Key className="h-5 w-5" />
-                API Setup
-              </button>
-              <button
                 onClick={() => setShowCreateModal(true)}
                 className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
@@ -168,7 +201,7 @@ export default function MLPerformancePage() {
         </motion.div>
 
         {/* API Status Notice */}
-        {performanceData.length === mockPerformanceData.length && (
+        {performanceData.length === 0 && !loading && !error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -178,26 +211,18 @@ export default function MLPerformancePage() {
               <AlertTriangle className="h-5 w-5 text-amber-600" />
               <div>
                 <p className="text-amber-800 dark:text-amber-200 font-medium">
-                  Using Mock Data
+                  No data found
                 </p>
                 <p className="text-amber-700 dark:text-amber-300 text-sm">
-                  The system is currently displaying sample data. Configure your API token to connect to the ML Performance API.
+                  No performance data available. Please add data or check your API connection.
                 </p>
               </div>
-              <button
-                onClick={() => setShowTokenManager(true)}
-                className="ml-auto bg-amber-600 hover:bg-amber-700 text-white px-3 py-1 rounded text-sm transition-colors"
-              >
-                Setup API
-              </button>
             </div>
           </motion.div>
         )}
 
         {/* Token Manager */}
-        {showTokenManager && (
-          <TokenManager onTokenSet={handleTokenSet} />
-        )}
+        {/* Token Manager removed: API token is now hardcoded */}
 
         {/* Stats Cards */}
         <motion.div
@@ -214,19 +239,17 @@ export default function MLPerformancePage() {
               <Users className="h-8 w-8 text-blue-600" />
             </div>
           </div>
-          
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">Avg Satisfaction</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {(performanceData.reduce((acc, curr) => acc + curr.satisfaction_level, 0) / performanceData.length * 100).toFixed(1)}%
+                  {performanceData.length > 0 ? (performanceData.reduce((acc, curr) => acc + curr.satisfaction_level, 0) / performanceData.length * 100).toFixed(1) : 0}%
                 </p>
               </div>
               <TrendingUp className="h-8 w-8 text-green-600" />
             </div>
           </div>
-          
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
             <div className="flex items-center justify-between">
               <div>
@@ -238,7 +261,6 @@ export default function MLPerformancePage() {
               <AlertTriangle className="h-8 w-8 text-red-600" />
             </div>
           </div>
-          
           <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
             <div className="flex items-center justify-between">
               <div>
@@ -379,7 +401,24 @@ export default function MLPerformancePage() {
                           >
                             <Eye className="h-4 w-4" />
                           </button>
-                          <button className="text-indigo-600 hover:text-indigo-900">
+                          <button 
+                            className="text-indigo-600 hover:text-indigo-900"
+                            onClick={() => {
+                              setSelectedEmployee(employee);
+                              setEditFormData({
+                                employee: employee.employee,
+                                satisfaction_level: employee.satisfaction_level,
+                                last_evaluation: employee.last_evaluation,
+                                number_project: employee.number_project,
+                                average_monthly_hours: employee.average_monthly_hours,
+                                time_spend_company: employee.time_spend_company,
+                                work_accident: employee.work_accident,
+                                promotion_last_5years: employee.promotion_last_5years,
+                                left: employee.left
+                              });
+                              setEditMode(true);
+                            }}
+                          >
                             <Edit className="h-4 w-4" />
                           </button>
                           <button className="text-red-600 hover:text-red-900">
@@ -549,55 +588,178 @@ export default function MLPerformancePage() {
                   Employee Performance Details
                 </h2>
                 <button
-                  onClick={() => setSelectedEmployee(null)}
+                  onClick={() => {
+                    setSelectedEmployee(null);
+                    setPredictionResult(null);
+                    setEditMode(false);
+                    setEditFormData(null);
+                  }}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   <X className="h-6 w-6" />
                 </button>
               </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.employee_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.employee_email}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Department</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.department_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Satisfaction Level</p>
-                  <p className="text-gray-900 dark:text-white">{(selectedEmployee.satisfaction_level * 100).toFixed(1)}%</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Evaluation</p>
-                  <p className="text-gray-900 dark:text-white">{(selectedEmployee.last_evaluation * 100).toFixed(1)}%</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Projects</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.number_project}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Monthly Hours</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.average_monthly_hours}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Time in Company</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.time_spend_company} years</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Work Accident</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.work_accident ? 'Yes' : 'No'}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Promotion Last 5 Years</p>
-                  <p className="text-gray-900 dark:text-white">{selectedEmployee.promotion_last_5years ? 'Yes' : 'No'}</p>
-                </div>
-              </div>
+              {!editMode ? (
+                <>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.employee_name}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.employee_email}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Department</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.department_name}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Satisfaction Level</p>
+                      <p className="text-gray-900 dark:text-white">{(selectedEmployee.satisfaction_level * 100).toFixed(1)}%</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Evaluation</p>
+                      <p className="text-gray-900 dark:text-white">{(selectedEmployee.last_evaluation * 100).toFixed(1)}%</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Projects</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.number_project}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Monthly Hours</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.average_monthly_hours}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Time in Company</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.time_spend_company} years</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Work Accident</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.work_accident ? 'Yes' : 'No'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Promotion Last 5 Years</p>
+                      <p className="text-gray-900 dark:text-white">{selectedEmployee.promotion_last_5years ? 'Yes' : 'No'}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col md:flex-row gap-2">
+                    <button
+                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                      onClick={() => handlePredict(selectedEmployee.employee)}
+                      disabled={predicting}
+                    >
+                      {predicting ? (
+                        <>
+                          <span className="animate-spin h-4 w-4 mr-2 border-b-2 border-white rounded-full inline-block"></span>
+                          Predicting...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="h-5 w-5" /> Predict ML
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {predictionResult && (
+                    <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded text-gray-900 dark:text-white">
+                      {predictionResult.error ? (
+                        <span>{predictionResult.error}</span>
+                      ) : (
+                        <>
+                          <div className="mb-2 flex items-center gap-2">
+                            <span className="font-semibold">Risk Level:</span>
+                            {predictionResult.prediction?.risk_level ? (
+                              <span
+                                className={
+                                  predictionResult.prediction.risk_level === 'high'
+                                    ? 'inline-block px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-bold text-xs'
+                                    : predictionResult.prediction.risk_level === 'medium'
+                                    ? 'inline-block px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-600 font-bold text-xs'
+                                    : predictionResult.prediction.risk_level === 'low'
+                                    ? 'inline-block px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold text-xs'
+                                    : ''
+                                }
+                              >
+                                {predictionResult.prediction.risk_level.charAt(0).toUpperCase() + predictionResult.prediction.risk_level.slice(1)}
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </div>
+                          <div className="mb-2">
+                            <span className="font-semibold">Will Leave:</span> {predictionResult.prediction?.will_leave === true ? 'Yes' : predictionResult.prediction?.will_leave === false ? 'No' : '-'}
+                          </div>
+                          <div className="mb-2">
+                            <span className="font-semibold">Probability:</span> {typeof predictionResult.prediction?.probability === 'number' ? (predictionResult.prediction.probability * 100).toFixed(1) + '%' : '-'}
+                          </div>
+                          {predictionResult.recommendations && predictionResult.recommendations.length > 0 && (
+                            <div className="mb-2">
+                              <span className="font-semibold">Recommendations:</span>
+                              <ul className="list-disc ml-6 mt-1">
+                                {predictionResult.recommendations.map((rec: any, idx: number) => (
+                                  <li key={idx} className="mb-1">
+                                    <span className="font-medium">[{rec.category}]</span> <span className="italic">{rec.issue}</span>: {rec.recommendation} <span className="text-xs text-gray-500">(Priority: {rec.priority})</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    handleEditSave();
+                  }}
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Employee ID</label>
+                      <input type="number" value={editFormData?.employee ?? ''} disabled className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" />
+                    </div>
+                    <div></div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Satisfaction Level (0-1)</label>
+                      <input type="number" step="0.01" min="0" max="1" value={editFormData?.satisfaction_level ?? ''} onChange={e => setEditFormData(f => f ? { ...f, satisfaction_level: parseFloat(e.target.value) } : f)} className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Evaluation (0-1)</label>
+                      <input type="number" step="0.01" min="0" max="1" value={editFormData?.last_evaluation ?? ''} onChange={e => setEditFormData(f => f ? { ...f, last_evaluation: parseFloat(e.target.value) } : f)} className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Number of Projects</label>
+                      <input type="number" min="0" value={editFormData?.number_project ?? ''} onChange={e => setEditFormData(f => f ? { ...f, number_project: parseInt(e.target.value) } : f)} className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Average Monthly Hours</label>
+                      <input type="number" min="0" value={editFormData?.average_monthly_hours ?? ''} onChange={e => setEditFormData(f => f ? { ...f, average_monthly_hours: parseInt(e.target.value) } : f)} className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Time Spent in Company (years)</label>
+                      <input type="number" min="0" value={editFormData?.time_spend_company ?? ''} onChange={e => setEditFormData(f => f ? { ...f, time_spend_company: parseInt(e.target.value) } : f)} className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white" required />
+                    </div>
+                    <div className="flex items-center gap-4 col-span-2">
+                      <label className="flex items-center">
+                        <input type="checkbox" checked={!!editFormData?.work_accident} onChange={e => setEditFormData(f => f ? { ...f, work_accident: e.target.checked } : f)} className="mr-2" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Work Accident</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input type="checkbox" checked={!!editFormData?.promotion_last_5years} onChange={e => setEditFormData(f => f ? { ...f, promotion_last_5years: e.target.checked } : f)} className="mr-2" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Promoted Last 5 Years</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button type="submit" className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors">Save</button>
+                    <button type="button" onClick={() => { setEditMode(false); setEditFormData(null); }} className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg transition-colors">Cancel</button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         )}
@@ -613,14 +775,6 @@ export default function MLPerformancePage() {
               <div className="flex-1">
                 <p className="font-medium">Error</p>
                 <p className="text-sm opacity-90">{error}</p>
-                {error.includes('Authentication') && (
-                  <button
-                    onClick={() => setShowTokenManager(true)}
-                    className="mt-2 text-sm bg-white bg-opacity-20 hover:bg-opacity-30 px-3 py-1 rounded transition-colors"
-                  >
-                    Configure API Token
-                  </button>
-                )}
               </div>
               <button 
                 onClick={() => setError(null)}
