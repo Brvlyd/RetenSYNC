@@ -25,8 +25,28 @@ import {
   Award,
   Calendar,
   FileText,
-  Target
+  Target,
+  Megaphone,
+  Users
 } from 'lucide-react';
+
+// Helper function to get icon color based on gradient
+const getIconColor = (gradientColor: string) => {
+  if (gradientColor.includes('amber')) return 'text-amber-600 dark:text-amber-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('teal')) return 'text-teal-600 dark:text-teal-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('violet')) return 'text-violet-600 dark:text-violet-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('emerald')) return 'text-emerald-600 dark:text-emerald-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('indigo')) return 'text-indigo-600 dark:text-indigo-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('slate')) return 'text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('green')) return 'text-green-600 dark:text-green-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('rose')) return 'text-rose-600 dark:text-rose-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('yellow')) return 'text-yellow-600 dark:text-yellow-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('cyan')) return 'text-cyan-600 dark:text-cyan-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('purple')) return 'text-purple-600 dark:text-purple-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  if (gradientColor.includes('pink')) return 'text-pink-600 dark:text-pink-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+  // Default fallback
+  return 'text-blue-600 dark:text-blue-400 group-hover:text-blue-600 dark:group-hover:text-blue-400';
+};
 
 export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (collapsed: boolean) => void }) {
   const pathname = usePathname();
@@ -50,19 +70,19 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     isChild?: boolean;
   };
   
-  // Admin navigation items only
+  // Admin navigation items only - colors match page headers
   const baseNavigation: NavigationItem[] = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
-    { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
-    { name: 'Performance Review', href: '/admin/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
-    { name: 'ML Performance', href: '/admin/ml-performance', icon: Brain, color: 'from-violet-500 to-purple-500' },
-    { name: 'User Management', href: '/admin/users', icon: UserPlus, color: 'from-blue-500 to-indigo-500' },
-    { name: 'Departments', href: '/admin/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
+    { name: 'Dashboard', href: '/admin/dashboard', icon: BarChart3, color: 'from-amber-500 to-orange-600' },
+    { name: 'Analytics', href: '/admin/analytics', icon: TrendingUp, color: 'from-teal-600 to-blue-600' },
+    { name: 'Performance Review', href: '/admin/performance-review', icon: ClipboardList, color: 'from-indigo-600 to-purple-700' },
+    { name: 'ML Performance', href: '/admin/ml-performance', icon: Brain, color: 'from-violet-600 to-fuchsia-700' },
+    { name: 'User Management', href: '/admin/users', icon: UserPlus, color: 'from-emerald-600 to-cyan-700' },
+    { name: 'Departments', href: '/admin/departments', icon: Building, color: 'from-slate-600 to-zinc-700' },
   ];
   
   // HR Interactions section
   const hrInteractions: NavigationItem[] = [
-    { name: 'HR Interactions', href: '/admin/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
+    { name: 'HR Interactions', href: '/admin/hr-interactions', icon: Heart, color: 'from-pink-600 to-red-600', isParent: true },
   ];
 
   // Combine navigation: only show pages from inside the admin folder
@@ -224,15 +244,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
                       item.isChild ? "w-4 h-4" : "",
                       isActive || isParentActive
                         ? "text-blue-600 dark:text-blue-400" 
-                        : `${item.color.includes('blue') ? 'text-blue-600 dark:text-blue-400' : 
-                            item.color.includes('emerald') ? 'text-emerald-600 dark:text-emerald-400' :
-                            item.color.includes('indigo') ? 'text-indigo-600 dark:text-indigo-400' :
-                            item.color.includes('violet') ? 'text-violet-600 dark:text-violet-400' :
-                            item.color.includes('pink') ? 'text-pink-600 dark:text-pink-400' :
-                            item.color.includes('amber') ? 'text-amber-600 dark:text-amber-400' :
-                            item.color.includes('green') ? 'text-green-600 dark:text-green-400' :
-                            item.color.includes('purple') ? 'text-purple-600 dark:text-purple-400' :
-                            'text-red-600 dark:text-red-400'} group-hover:text-blue-600 dark:group-hover:text-blue-400`
+                        : getIconColor(item.color)
                     )} />
                     
                     {/* Sparkle effect on hover */}

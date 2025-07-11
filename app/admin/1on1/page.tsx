@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { motion } from "framer-motion";
 import { oneOnOneData } from "@/lib/dummy-data";
 import EditMeetingModal from "@/components/admin/EditMeetingModal";
 import {
@@ -351,7 +352,7 @@ export default function AdminOneOnOne() {
   };
 
   return (
-    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in ${pageTopMargin}`}>
       {/* Loading spinner */}
       {!isHydrated && (
         <div className="space-y-6 lg:space-y-8">
@@ -365,21 +366,104 @@ export default function AdminOneOnOne() {
           </div>
         </div>
       )}
-      {/* Enhanced Admin Header with Controls */}
-      <div className="relative overflow-hidden">
+      {/* Enhanced Admin Header with Controls and Conversation Animation */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative overflow-hidden"
+      >
+        {/* Chat bubble animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-4 left-8 w-8 h-6 bg-gradient-to-r from-purple-300/30 to-pink-300/30 rounded-full rounded-bl-none"
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.3, 0.6, 0.3]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className="absolute top-8 right-12 w-6 h-4 bg-gradient-to-r from-pink-300/30 to-purple-300/30 rounded-full rounded-br-none"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3]
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          />
+          <motion.div
+            className="absolute bottom-8 left-16 w-10 h-7 bg-gradient-to-r from-blue-300/20 to-cyan-300/20 rounded-full rounded-bl-none"
+            animate={{
+              scale: [1, 1.05, 1],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
+          <motion.div
+            className="absolute bottom-4 right-20 w-7 h-5 bg-gradient-to-r from-cyan-300/20 to-blue-300/20 rounded-full rounded-br-none"
+            animate={{
+              scale: [1, 1.15, 1],
+              opacity: [0.2, 0.3, 0.2]
+            }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            }}
+          />
+        </div>
+        
         <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-rose-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl"
+        >
           <div className="flex flex-col space-y-4 lg:space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
               <div className="flex items-center space-x-3 sm:space-x-4">
-                <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl lg:rounded-3xl shadow-lg">
+                <motion.div 
+                  initial={{ opacity: 0, rotate: -10 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="p-3 sm:p-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl lg:rounded-3xl shadow-lg"
+                >
                   <Shield className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
-                </div>
+                </motion.div>
                 <div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 dark:from-gray-100 dark:via-purple-100 dark:to-pink-100 bg-clip-text text-transparent">
+                  <motion.h1 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 dark:from-gray-100 dark:via-purple-100 dark:to-pink-100 bg-clip-text text-transparent"
+                  >
                     Admin: 1-on-1 Meetings
-                  </h1>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Manage and oversee all organizational 1-on-1 meetings</p>
+                  </motion.h1>
+                  <motion.p 
+                    initial={{ opacity: 0, x: -15 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1"
+                  >
+                    Manage and oversee all organizational 1-on-1 meetings
+                  </motion.p>
                 </div>
               </div>
               <button
@@ -458,28 +542,28 @@ export default function AdminOneOnOne() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
+      </motion.div>
 
-        {/* Enhanced Admin Schedule Form Modal */}
-        {showScheduleForm && (
-          <ScheduleMeetingModal
-            isOpen={showScheduleForm}
-            onClose={() => setShowScheduleForm(false)}
-            formData={formData}
-            setFormData={setFormData}
-            isSubmitting={isSubmitting}
-            handleSubmit={handleSubmit}
-          />
-        )}
-
-        {/* Edit Meeting Modal */}
-        <EditMeetingModal
-          isOpen={showEditModal}
-          onClose={handleCloseEditModal}
-          meeting={editingMeeting}
-          onSave={handleSaveMeeting}
+      {/* Enhanced Admin Schedule Form Modal */}
+      {showScheduleForm && (
+        <ScheduleMeetingModal
+          isOpen={showScheduleForm}
+          onClose={() => setShowScheduleForm(false)}
+          formData={formData}
+          setFormData={setFormData}
+          isSubmitting={isSubmitting}
+          handleSubmit={handleSubmit}
         />
-      </div>
+      )}
+
+      {/* Edit Meeting Modal */}
+      <EditMeetingModal
+        isOpen={showEditModal}
+        onClose={handleCloseEditModal}
+        meeting={editingMeeting}
+        onSave={handleSaveMeeting}
+      />
 
       {/* Enhanced Admin Meetings List */}
       <div className="space-y-4 sm:space-y-6">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Building, Users, Plus, Edit, Trash2, X, UserPlus, TrendingUp, BarChart3, Target, Award } from 'lucide-react';
 
@@ -235,24 +236,98 @@ export default function DepartmentsPage() {
   // Add margin to top so header doesn't cut content (same as 1on1 page)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
-      {/* Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-pink-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="p-3 sm:p-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl lg:rounded-3xl shadow-lg">
-              <Building className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
-                Departments & Positions
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Manage organizational structure and performance insights</p>
-            </div>
-          </div>
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Building Animation */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-slate-700 via-gray-800 to-zinc-900 text-white overflow-hidden relative"
+      >
+        {/* Building skyline animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-black/20 to-transparent" />
+          <motion.div
+            className="absolute bottom-0 left-8 w-8 h-16 bg-white/10 rounded-t-lg"
+            initial={{ height: 0 }}
+            animate={{ height: 64 }}
+            transition={{ duration: 1, delay: 0.2 }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-20 w-6 h-12 bg-white/15 rounded-t-lg"
+            initial={{ height: 0 }}
+            animate={{ height: 48 }}
+            transition={{ duration: 1, delay: 0.4 }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-30 w-10 h-20 bg-white/8 rounded-t-lg"
+            initial={{ height: 0 }}
+            animate={{ height: 80 }}
+            transition={{ duration: 1, delay: 0.6 }}
+          />
+          <motion.div
+            className="absolute bottom-0 left-44 w-7 h-14 bg-white/12 rounded-t-lg"
+            initial={{ height: 0 }}
+            animate={{ height: 56 }}
+            transition={{ duration: 1, delay: 0.8 }}
+          />
+          <motion.div
+            className="absolute bottom-0 right-8 w-12 h-18 bg-white/10 rounded-t-lg"
+            initial={{ height: 0 }}
+            animate={{ height: 72 }}
+            transition={{ duration: 1, delay: 1 }}
+          />
+          <motion.div
+            className="absolute bottom-0 right-24 w-8 h-16 bg-white/8 rounded-t-lg"
+            initial={{ height: 0 }}
+            animate={{ height: 64 }}
+            transition={{ duration: 1, delay: 1.2 }}
+          />
+          
+          {/* Animated windows */}
+          <motion.div
+            className="absolute bottom-8 left-10 w-2 h-2 bg-yellow-400/60 rounded-sm"
+            animate={{ opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-12 left-10 w-2 h-2 bg-blue-400/50 rounded-sm"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
+          />
+          <motion.div
+            className="absolute bottom-8 right-12 w-2 h-2 bg-green-400/40 rounded-sm"
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 1.8, repeat: Infinity, delay: 1 }}
+          />
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/5 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-10"
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+          >
+            Departments & Positions
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-gray-300 text-sm sm:text-base lg:text-lg"
+          >
+            Manage organizational structure and performance insights
+          </motion.p>
+        </motion.div>
+      </motion.div>
 
       {/* Department Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">

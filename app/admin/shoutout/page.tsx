@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { shoutoutsData } from '@/lib/dummy-data';
 import { Award, Heart, Send, Slack, MessageSquare, Target, TrendingUp, Users, X, Sparkles, Zap } from 'lucide-react';
 
@@ -70,33 +71,116 @@ export default function Shoutouts() {
   };
 
   return (
-    <div className={`space-y-8 ${pageTopMargin}`}>
-      {/* Modern Header with Glassmorphism */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-600/20 via-orange-600/20 to-red-600/20 rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="p-4 bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl shadow-lg">
-                <Award className="h-10 w-10 text-white" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-amber-900 to-orange-900 dark:from-gray-100 dark:via-amber-100 dark:to-orange-100 bg-clip-text text-transparent">
-                  Peer Recognition
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Celebrate and recognize great work</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setShowShoutoutForm(true)}
-              className="group bg-gradient-to-r from-amber-600 to-orange-600 text-white px-6 py-3 rounded-2xl hover:from-amber-700 hover:to-orange-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              <Award className="h-5 w-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-              <span className="font-semibold">Give Shoutout</span>
-            </button>
-          </div>
+    <div className={`space-y-8 animate-fade-in ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Sparkling Animation */}
+      <motion.div
+        initial={{ opacity: 0, rotateY: -15 }}
+        animate={{ opacity: 1, rotateY: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 text-white overflow-hidden relative"
+      >
+        {/* Sparkling stars animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-8 left-12 text-white/30"
+            animate={{
+              scale: [1, 1.5, 1],
+              rotate: [0, 180, 360],
+              opacity: [0.3, 0.7, 0.3]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <Sparkles className="h-6 w-6" />
+          </motion.div>
+          <motion.div
+            className="absolute top-16 right-20 text-white/25"
+            animate={{
+              scale: [1, 1.3, 1],
+              rotate: [0, -180, -360],
+              opacity: [0.2, 0.6, 0.2]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          >
+            <Sparkles className="h-4 w-4" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-8 left-16 text-white/20"
+            animate={{
+              scale: [1, 1.4, 1],
+              rotate: [0, 270, 540],
+              opacity: [0.2, 0.5, 0.2]
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          >
+            <Sparkles className="h-5 w-5" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-12 right-12 text-white/15"
+            animate={{
+              scale: [1, 1.2, 1],
+              rotate: [0, -90, -180],
+              opacity: [0.1, 0.4, 0.1]
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            }}
+          >
+            <Sparkles className="h-3 w-3" />
+          </motion.div>
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0"
+        >
+          <div>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+            >
+              Peer Recognition
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-orange-100 text-sm sm:text-base lg:text-lg"
+            >
+              Celebrate and recognize great work
+            </motion.p>
+          </div>
+          <button
+            onClick={() => setShowShoutoutForm(true)}
+            className="group bg-white/20 hover:bg-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl lg:rounded-2xl transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105 w-full lg:w-auto justify-center lg:justify-start backdrop-blur-sm"
+          >
+            <Award className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+            <span className="font-semibold text-sm sm:text-base">Give Shoutout</span>
+          </button>
+        </motion.div>
+      </motion.div>
 
       {/* Enhanced Integration Buttons */}
       <div className="flex flex-wrap gap-4">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { feedbackData } from '@/lib/dummy-data';
 import { MessageSquare, Send, Clock, Star, Heart, ThumbsUp, Users, TrendingUp, Award } from 'lucide-react';
 
@@ -89,24 +90,113 @@ export default function Feedback() {
   // Add margin to top so header doesn't cut content (same as 1on1 page)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
-      {/* Modern Header with Glassmorphism - Responsive */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/20 via-teal-600/20 to-cyan-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="p-3 sm:p-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl lg:rounded-3xl shadow-lg">
-              <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-emerald-900 to-teal-900 dark:from-gray-100 dark:via-emerald-100 dark:to-teal-100 bg-clip-text text-transparent">
-                Continuous Feedback
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">360° feedback system for continuous improvement</p>
-            </div>
-          </div>
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Heartbeat Animation */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-rose-500 via-pink-600 to-purple-600 text-white overflow-hidden relative"
+      >
+        {/* Heartbeat pulse animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-20 h-20 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"
+            animate={{
+              scale: [1, 1.2, 1, 1.1, 1],
+              opacity: [0.3, 0.6, 0.3, 0.5, 0.3]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2"
+            animate={{
+              scale: [1, 1.3, 1, 1.15, 1],
+              opacity: [0.2, 0.4, 0.2, 0.3, 0.2]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.2
+            }}
+          />
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-48 h-48 bg-white/3 rounded-full -translate-x-1/2 -translate-y-1/2"
+            animate={{
+              scale: [1, 1.4, 1, 1.2, 1],
+              opacity: [0.1, 0.3, 0.1, 0.2, 0.1]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.4
+            }}
+          />
+          
+          {/* Floating hearts */}
+          <motion.div
+            className="absolute top-8 right-16 text-white/20"
+            animate={{
+              y: [0, -10, 0],
+              rotate: [0, 5, 0]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <Heart className="h-6 w-6" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-12 left-20 text-white/15"
+            animate={{
+              y: [0, -8, 0],
+              rotate: [0, -3, 0]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          >
+            <Heart className="h-4 w-4" />
+          </motion.div>
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-10"
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+          >
+            Continuous Feedback
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-rose-100 text-sm sm:text-base lg:text-lg"
+          >
+            360° feedback system for continuous improvement
+          </motion.p>
+        </motion.div>
+      </motion.div>
 
       {/* Enhanced Tab Navigation - Responsive */}
       <div className="relative">

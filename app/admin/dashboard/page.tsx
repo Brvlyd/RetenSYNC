@@ -28,7 +28,6 @@ const item = {
 };
 
 export default function AdminDashboardPage() {
-  // Admin dashboard only, no user-based dashboard
   const organizationStats = {
     totalEmployees: 247,
     turnoverReduction: 23,
@@ -36,20 +35,113 @@ export default function AdminDashboardPage() {
     activeProjects: 18
   };
 
+  const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
+
   return (
     <>
       <motion.div 
         variants={container}
         initial="hidden"
         animate="show"
-        className="space-y-8"
+        className={`space-y-6 sm:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}
       >
+        {/* Modern Header - Responsive with Floating Elements Animation */}
+        <motion.div variants={item}>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 text-white overflow-hidden relative"
+          >
+            {/* Floating geometric shapes */}
+            <div className="absolute inset-0 overflow-hidden">
+              <motion.div 
+                className="absolute top-4 left-8 w-12 h-12 bg-white/10 rounded-lg rotate-45"
+                animate={{ 
+                  y: [0, -10, 0],
+                  rotate: [45, 135, 45]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              <motion.div 
+                className="absolute top-16 right-12 w-8 h-8 bg-white/15 rounded-full"
+                animate={{ 
+                  y: [0, -15, 0],
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 0.5
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-8 left-16 w-6 h-6 bg-white/20 rounded-full"
+                animate={{ 
+                  y: [0, -8, 0],
+                  x: [0, 5, 0]
+                }}
+                transition={{ 
+                  duration: 5, 
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                }}
+              />
+              <motion.div 
+                className="absolute bottom-4 right-8 w-10 h-10 bg-white/10 rounded-lg"
+                animate={{ 
+                  rotate: [0, 180, 360],
+                  scale: [1, 0.8, 1]
+                }}
+                transition={{ 
+                  duration: 6, 
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1.5
+                }}
+              />
+            </div>
+            
+            <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative z-10"
+            >
+              <motion.h1 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+              >
+                Admin Dashboard
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="text-orange-100 text-sm sm:text-base lg:text-lg"
+              >
+                Organization overview and quick actions
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
         {/* Modern Quick Actions */}
         <motion.div variants={item}>
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 mr-3 shadow-lg">
-                <Zap className="w-6 h-6 text-white" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 lg:mb-8 gap-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 mr-2 sm:mr-3 shadow-lg">
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </span>
               Quick Actions
             </h2>
@@ -58,7 +150,7 @@ export default function AdminDashboardPage() {
               <span>All systems operational</span>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
             <QuickActionCard
               title="Manage Users"
               description="Add, edit, or remove employee accounts"
@@ -112,10 +204,10 @@ export default function AdminDashboardPage() {
 
         {/* Modern Key Metrics */}
         <motion.div variants={item}>
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 mr-3 shadow-lg">
-                <Activity className="w-6 h-6 text-white" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 lg:mb-8 gap-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 mr-2 sm:mr-3 shadow-lg">
+                <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </span>
               Organization Overview
             </h2>
@@ -123,7 +215,7 @@ export default function AdminDashboardPage() {
               Last updated: 2 min ago
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
             <StatCard
               title="Total Employees"
               value={organizationStats.totalEmployees}
@@ -161,10 +253,10 @@ export default function AdminDashboardPage() {
 
         {/* Modern Charts Section */}
         <motion.div variants={item}>
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 mr-3 shadow-lg">
-                <BarChart3 className="w-6 h-6 text-white" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 lg:mb-8 gap-3">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center">
+              <span className="inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 mr-2 sm:mr-3 shadow-lg">
+                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </span>
               Organization Trends
             </h2>
@@ -176,22 +268,26 @@ export default function AdminDashboardPage() {
               </select>
             </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {/* Modern Employee Growth Chart */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Employee Growth</h3>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 p-4 sm:p-6 lg:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Employee Growth</h3>
                 <span className="text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full">+12% YoY</span>
               </div>
-              <EmployeeGrowthChart />
+              <div className="h-48 sm:h-64 lg:h-48">
+                <EmployeeGrowthChart />
+              </div>
             </div>
             {/* Modern Satisfaction Chart */}
-            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Satisfaction Overview</h3>
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 p-4 sm:p-6 lg:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Satisfaction Overview</h3>
                 <span className="text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">4.2/5 Avg</span>
               </div>
-              <SatisfactionPieChart />
+              <div className="h-48 sm:h-64 lg:h-48">
+                <SatisfactionPieChart />
+              </div>
             </div>
           </div>
         </motion.div>
@@ -235,7 +331,7 @@ function EmployeeGrowthChart() {
       x: { ticks: { color: '#64748b' } },
     },
   };
-  return <Line data={data} options={options} height={192} />;
+  return <Line data={data} options={options} height={window.innerWidth < 640 ? 120 : 192} />;
 }
 
 function SatisfactionPieChart() {
@@ -264,6 +360,6 @@ function SatisfactionPieChart() {
       title: { display: false },
     },
   };
-  return <Pie data={data} options={options} height={60} />;
+  return <Pie data={data} options={options} height={window.innerWidth < 640 ? 40 : 60} />;
 }
 

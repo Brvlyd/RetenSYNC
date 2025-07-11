@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { performanceReviewData, goalsData } from '@/lib/dummy-data';
-import { Star, Clock, Edit3, TrendingUp, Award, Target, CheckCircle, AlertCircle, Plus, Calendar } from 'lucide-react';
+import { Star, Clock, Edit3, TrendingUp, Award, Target, CheckCircle, AlertCircle, Plus, Calendar, Trophy } from 'lucide-react';
 
 export default function PerformanceReview() {
   const [currentRating, setCurrentRating] = useState(4.2);
@@ -88,24 +89,103 @@ export default function PerformanceReview() {
   // Add margin to top so header doesn't cut content (same as 1on1 page)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-8 ${pageTopMargin}`}>
-      {/* Modern Header with Glassmorphism */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-blue-600/20 rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex items-center space-x-4">
-            <div className="p-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl shadow-lg">
-              <Award className="h-10 w-10 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
-                My Performance Review
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-lg mt-1">Track progress and achievements</p>
-            </div>
-          </div>
+    <div className={`space-y-6 sm:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Trophy Animation */}
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-700 text-white overflow-hidden relative"
+      >
+        {/* Trophy and achievement icons floating animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute top-6 right-12 text-white/20"
+            animate={{
+              y: [0, -12, 0],
+              rotate: [0, 15, 0]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <Trophy className="h-8 w-8" />
+          </motion.div>
+          <motion.div
+            className="absolute top-20 left-16 text-white/15"
+            animate={{
+              y: [0, -8, 0],
+              rotate: [0, -10, 0]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
+          >
+            <Award className="h-6 w-6" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-8 right-20 text-white/25"
+            animate={{
+              y: [0, -10, 0],
+              rotate: [0, 20, 0]
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          >
+            <Target className="h-7 w-7" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-16 left-8 text-white/20"
+            animate={{
+              y: [0, -6, 0],
+              rotate: [0, -8, 0]
+            }}
+            transition={{
+              duration: 3.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            }}
+          >
+            <Star className="h-5 w-5" />
+          </motion.div>
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative z-10"
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+          >
+            Performance Review
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-indigo-100 text-sm sm:text-base lg:text-lg"
+          >
+            Track progress and achievements
+          </motion.p>
+        </motion.div>
+      </motion.div>
 
       {/* Enhanced Navigation Tabs */}
       <div className="flex space-x-2 bg-white dark:bg-gray-800 rounded-2xl p-2 border border-gray-100 dark:border-gray-700 shadow-lg">

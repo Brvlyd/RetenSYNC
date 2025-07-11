@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { feedbackData } from '@/lib/dummy-data';
 import { Users, Award, MessageSquare, Calendar, TrendingUp, Heart, Send, Clock, Star, ThumbsUp } from 'lucide-react';
@@ -151,24 +152,101 @@ export default function HRInteractionsPage() {
   // Add margin to top so header doesn't cut content (reduced margin)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
-      {/* Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-blue-600/20 to-teal-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl lg:rounded-3xl shadow-lg">
-              <Heart className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-purple-900 to-blue-900 dark:from-gray-100 dark:via-purple-100 dark:to-blue-100 bg-clip-text text-transparent">
-                HR Interactions
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Foster engagement through recognition and meaningful conversations</p>
-            </div>
-          </div>
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Connection Animation */}
+      <motion.div
+        initial={{ opacity: 0, rotateX: 10 }}
+        animate={{ opacity: 1, rotateX: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 text-white overflow-hidden relative"
+      >
+        {/* Connection network animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 400 200">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/> 
+                </feMerge>
+              </filter>
+            </defs>
+            
+            {/* Animated nodes */}
+            <motion.circle
+              cx="80" cy="50" r="4" fill="white"
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              filter="url(#glow)"
+            />
+            <motion.circle
+              cx="200" cy="80" r="4" fill="white"
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+              filter="url(#glow)"
+            />
+            <motion.circle
+              cx="320" cy="60" r="4" fill="white"
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+              filter="url(#glow)"
+            />
+            <motion.circle
+              cx="150" cy="120" r="4" fill="white"
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
+              filter="url(#glow)"
+            />
+            
+            {/* Animated connections */}
+            <motion.path
+              d="M80 50 L200 80 L320 60 L150 120 L80 50"
+              stroke="white"
+              strokeWidth="1"
+              fill="none"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.path
+              d="M200 80 L150 120"
+              stroke="white"
+              strokeWidth="1"
+              fill="none"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            />
+          </svg>
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative z-10"
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+          >
+            HR Interactions
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-green-100 text-sm sm:text-base lg:text-lg"
+          >
+            Foster engagement through recognition and meaningful conversations
+          </motion.p>
+        </motion.div>
+      </motion.div>
 
       {/* Interaction Type Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">

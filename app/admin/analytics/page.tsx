@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell } from 'recharts';
 import { engagementHeatmapData, turnoverRiskData } from '@/lib/dummy-data';
 import { TrendingUp, Users, AlertTriangle, Target, BarChart3, PieChart } from 'lucide-react';
@@ -88,15 +89,88 @@ export default function Analytics() {
   };
 
   return (
-    <div className={`space-y-6 lg:space-y-8 animate-fade-in ${pageTopMargin}`}>
-      {/* Modern Header - Responsive */}
-      <div className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/10 rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-        <div className="relative z-10 animate-slide-in-left">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">Performance Insights</h1>
-          <p className="text-purple-100 text-sm sm:text-base lg:text-lg">Advanced analytics and team engagement intelligence</p>
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Wave Animation */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-teal-600 via-blue-600 to-indigo-700 text-white overflow-hidden relative"
+      >
+        {/* Animated wave pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 400">
+            <defs>
+              <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
+                <stop offset="50%" stopColor="rgba(255,255,255,0.1)" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0.3)" />
+              </linearGradient>
+            </defs>
+            <motion.path
+              d="M0,200 Q200,150 400,200 T800,200 V400 H0 Z"
+              fill="url(#wave-gradient)"
+              initial={{ d: "M0,200 Q200,150 400,200 T800,200 V400 H0 Z" }}
+              animate={{ 
+                d: [
+                  "M0,200 Q200,150 400,200 T800,200 V400 H0 Z",
+                  "M0,200 Q200,250 400,200 T800,200 V400 H0 Z",
+                  "M0,200 Q200,150 400,200 T800,200 V400 H0 Z"
+                ]
+              }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.path
+              d="M0,220 Q200,180 400,220 T800,220 V400 H0 Z"
+              fill="rgba(255,255,255,0.1)"
+              initial={{ d: "M0,220 Q200,180 400,220 T800,220 V400 H0 Z" }}
+              animate={{ 
+                d: [
+                  "M0,220 Q200,180 400,220 T800,220 V400 H0 Z",
+                  "M0,220 Q200,260 400,220 T800,220 V400 H0 Z",
+                  "M0,220 Q200,180 400,220 T800,220 V400 H0 Z"
+                ]
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5
+              }}
+            />
+          </svg>
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative z-10"
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+          >
+            Performance Insights
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-blue-100 text-sm sm:text-base lg:text-lg"
+          >
+            Advanced analytics and team engagement intelligence
+          </motion.p>
+        </motion.div>
+      </motion.div>
 
       {/* Enhanced Key Metrics - Responsive Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
@@ -270,49 +344,49 @@ export default function Analytics() {
                   style={{animationDelay: `${index * 0.1}s`}}
                   onClick={() => handleEmployeeClick(employee)}
                 >
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                        <span className="text-sm font-bold text-white">
+                      <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                        <span className="text-xs sm:text-sm font-bold text-white">
                           {employee.name.split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
-                      <div className="ml-4">
-                        <div className="text-lg font-semibold text-gray-900 dark:text-white">{employee.name}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">Team Member</div>
+                      <div className="ml-3 sm:ml-4">
+                        <div className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">{employee.name}</div>
+                        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Team Member</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden sm:table-cell">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.performance}</div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <td className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 whitespace-nowrap hidden sm:table-cell">
+                    <div className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.performance}</div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
                       <div 
                         className="h-full bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full transition-all duration-700 ease-out" 
                         style={{ width: `${(employee.performance / 10) * 100}%` }}
                       />
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden md:table-cell">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.engagement}</div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <td className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 whitespace-nowrap hidden md:table-cell">
+                    <div className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.engagement}</div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
                       <div 
                         className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full transition-all duration-700 ease-out" 
                         style={{ width: `${(employee.engagement / 10) * 100}%` }}
                       />
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap hidden lg:table-cell">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.satisfaction}</div>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <td className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 whitespace-nowrap hidden lg:table-cell">
+                    <div className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-2">{employee.satisfaction}</div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 sm:h-2">
                       <div 
                         className="h-full bg-gradient-to-r from-amber-500 to-orange-600 rounded-full transition-all duration-700 ease-out" 
                         style={{ width: `${(employee.satisfaction / 10) * 100}%` }}
                       />
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 lg:px-8 py-6 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 whitespace-nowrap">
                     <span 
-                      className="px-3 py-1 rounded-full text-xs font-bold border"
+                      className="px-2 sm:px-3 py-1 rounded-full text-xs font-bold border"
                       style={{ 
                         backgroundColor: getRiskColor(employee.risk) + '20',
                         color: getRiskColor(employee.risk),

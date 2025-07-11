@@ -166,33 +166,122 @@ export default function GoalsPage() {
   // Add margin to top so header doesn't cut content (same as 1on1 page)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 ${pageTopMargin}`}>
-      {/* Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 via-purple-600/20 to-indigo-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 sm:p-4 bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl lg:rounded-3xl shadow-lg">
-                <Target className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-violet-900 to-purple-900 dark:from-gray-100 dark:via-violet-100 dark:to-purple-100 bg-clip-text text-transparent">
-                  Goals & OKRs
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Track your objectives and key results</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="group bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl lg:rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105 w-full lg:w-auto justify-center lg:justify-start"
-            >
-              <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              <span className="font-semibold text-sm sm:text-base">Add Goal</span>
-            </button>
+    <div className={`space-y-6 lg:space-y-8 animate-fade-in ${pageTopMargin}`}>
+      {/* Modern Header - Responsive with Target Animation */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-cyan-600 via-blue-600 to-violet-700 text-white overflow-hidden relative"
+      >
+        {/* Target ripple animation */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/2 left-1/4 transform -translate-x-1/2 -translate-y-1/2">
+            <motion.div
+              className="w-16 h-16 rounded-full border-2 border-white/20"
+              animate={{
+                scale: [1, 1.5, 2],
+                opacity: [0.3, 0.1, 0]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeOut"
+              }}
+            />
+            <motion.div
+              className="absolute top-0 left-0 w-16 h-16 rounded-full border-2 border-white/30"
+              animate={{
+                scale: [1, 1.3, 1.8],
+                opacity: [0.4, 0.2, 0]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: 0.5
+              }}
+            />
+            <motion.div
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white/40"
+              animate={{
+                scale: [1, 1.2, 1]
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
           </div>
+          
+          {/* Floating targets */}
+          <motion.div
+            className="absolute top-8 right-16 text-white/25"
+            animate={{
+              y: [0, -8, 0],
+              rotate: [0, 360, 0]
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <Target className="h-6 w-6" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-8 right-8 text-white/20"
+            animate={{
+              y: [0, -6, 0],
+              rotate: [0, -180, 0]
+            }}
+            transition={{
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          >
+            <Target className="h-4 w-4" />
+          </motion.div>
         </div>
-      </div>
+        
+        <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0"
+        >
+          <div>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2"
+            >
+              Goals & OKRs
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-cyan-100 text-sm sm:text-base lg:text-lg"
+            >
+              Track your objectives and key results
+            </motion.p>
+          </div>
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="group bg-white/20 hover:bg-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl lg:rounded-2xl transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105 w-full lg:w-auto justify-center lg:justify-start backdrop-blur-sm"
+          >
+            <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
+            <span className="font-semibold text-sm sm:text-base">Add Goal</span>
+          </button>
+        </motion.div>
+      </motion.div>
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
