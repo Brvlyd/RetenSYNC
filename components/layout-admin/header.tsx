@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
 import Image from 'next/image';
+import { logoutUser, getCurrentUser } from '@/app/api/demoAuth';
+import { User } from '@/types/auth';
 import {
   Bell,
   Search,
@@ -16,7 +18,7 @@ import {
   Command,
   ChevronDown,
   Menu,
-  User
+  User as UserIcon
 } from 'lucide-react';
 
 type Theme = 'light' | 'dark' | 'system';
@@ -28,13 +30,13 @@ export default function Header() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const updateUserData = () => {
-      const userData = localStorage.getItem('user');
+      const userData = getCurrentUser();
       if (userData) {
-        setUser(JSON.parse(userData));
+        setUser(userData);
       }
     };
 
@@ -72,9 +74,15 @@ export default function Header() {
       .toUpperCase();
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    router.push('/auth/login');
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force logout by clearing local storage and redirecting
+      router.push('/auth/login');
+    }
   };
 
   const getThemeIcon = () => {
@@ -112,7 +120,20 @@ export default function Header() {
     }
   ];
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-50">
+        <div className="flex items-center space-x-3">
+          <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+          <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Loading...</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+          <div className="w-20 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 h-16 sm:h-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm z-50">
@@ -275,28 +296,109 @@ export default function Header() {
           )}
         </div>
 
-        {/* User Profile - Compact Admin Design */}
-        <div className="flex items-center gap-3 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-r from-[#94c47d] to-[#d96f27] shadow-lg">
-          <div className="relative flex items-center justify-center h-8 w-8 rounded-lg bg-white/20">
-            <User className="h-4 w-4 text-white" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+        {/* User Profile - Enhanced with Dropdown */}
+        <div className="relative">
+          <motion.button
+            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-3 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gradient-to-r from-[#94c47d] to-[#d96f27] shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <div className="relative flex items-center justify-center h-8 w-8 rounded-lg bg-white/20">
+              <UserIcon className="h-4 w-4 text-white" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col min-w-0 text-left">
-            <span className="truncate text-sm font-semibold text-white leading-tight">{user.name}</span>
-            <span className="truncate text-xs font-medium text-white/80 leading-tight">Administrator</span>
-          </div>
+            <div className="flex flex-col min-w-0 text-left">
+              <span className="truncate text-sm font-semibold text-white leading-tight">{user?.name || 'Admin'}</span>
+              <span className="truncate text-xs font-medium text-white/80 leading-tight">
+                {user?.isAdmin ? 'Administrator' : user?.isHr ? 'HR Manager' : user?.isManager ? 'Manager' : user?.role || 'User'}
+              </span>
+            </div>
+            <ChevronDown className={`h-4 w-4 text-white/80 transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+          </motion.button>
+
+          {/* User Menu Dropdown */}
+          {isUserMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
+            >
+              {/* User Info Header */}
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <div className="flex items-center space-x-3">
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-[#94c47d] to-[#d96f27] flex items-center justify-center">
+                    <UserIcon className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                      {user?.name || 'Admin User'}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {user?.email || 'admin@example.com'}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {user?.employeeId || 'EMP001'} • {user?.position || 'Administrator'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* User Details */}
+              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Department:</span>
+                  </div>
+                  <span className="text-gray-900 dark:text-white font-medium truncate">
+                    {user?.department || 'IT'}
+                  </span>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Role:</span>
+                  </div>
+                  <span className="text-gray-900 dark:text-white font-medium truncate">
+                    {user?.isAdmin ? 'Administrator' : user?.isHr ? 'HR Manager' : user?.isManager ? 'Manager' : user?.role || 'User'}
+                  </span>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Status:</span>
+                  </div>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                    {user?.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="px-2 py-2 space-y-1">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                >
+                  <LogOut className="h-4 w-4 mr-3" />
+                  Logout
+                </button>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
 
       {/* Click outside to close dropdowns */}
-      {(isThemeOpen || isNotificationOpen) && (
+      {(isThemeOpen || isNotificationOpen || isUserMenuOpen) && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => {
             setIsThemeOpen(false);
             setIsNotificationOpen(false);
+            setIsUserMenuOpen(false);
           }}
         />
       )}

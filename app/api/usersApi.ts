@@ -31,7 +31,13 @@ export interface Department {
   riskLevel: 'low' | 'medium' | 'high';
 }
 
+// Get auth token from localStorage (compatible with new auth system)
 const getAuthToken = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('auth_token') || 
+           localStorage.getItem('api_token') || 
+           'b42b585b90fbb149294bf041aaef5085c1ca4935'; // fallback for backward compatibility
+  }
   return 'b42b585b90fbb149294bf041aaef5085c1ca4935';
 };
 

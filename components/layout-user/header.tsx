@@ -7,6 +7,7 @@ import { useTheme } from '@/contexts/theme-context';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { logoutUser, getCurrentUser } from '@/app/api/demoAuth';
 import {
   Bell,
   LogOut,
@@ -36,9 +37,9 @@ export default function Header() {
 
   useEffect(() => {
     const updateUserData = () => {
-      const userData = localStorage.getItem('user');
+      const userData = getCurrentUser();
       if (userData) {
-        setUser(JSON.parse(userData));
+        setUser(userData);
       }
     };
 
@@ -108,9 +109,15 @@ export default function Header() {
       .toUpperCase();
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    router.push('/auth/login');
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force logout by clearing local storage and redirecting
+      router.push('/auth/login');
+    }
   };
 
   const getThemeIcon = () => {
@@ -354,33 +361,51 @@ export default function Header() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
+                    className="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-50"
                   >
                     <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                           <span className="text-white text-sm font-bold">
                             {getInitials(user?.name || 'User')}
                           </span>
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
                             {user?.name || 'User'}
                           </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                             {user?.email || 'user@example.com'}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {user?.employeeId || 'EMP001'} • {user?.position || 'Employee'}
                           </p>
                         </div>
                       </div>
                     </div>
+                    
+                    {/* User Details */}
+                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-gray-600 dark:text-gray-400">Department:</span>
+                        </div>
+                        <span className="text-gray-900 dark:text-white font-medium truncate">
+                          {user?.department || 'General'}
+                        </span>
+                        
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                          <span className="text-gray-600 dark:text-gray-400">Role:</span>
+                        </div>
+                        <span className="text-gray-900 dark:text-white font-medium truncate">
+                          {user?.role || 'Employee'}
+                        </span>
+                      </div>
+                    </div>
+
                     <div className="py-2">
-                      <Link
-                        href="/user/profile"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <User className="h-4 w-4 mr-3" />
-                        My Profile
-                      </Link>
                       <Link
                         href="/user/settings"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"

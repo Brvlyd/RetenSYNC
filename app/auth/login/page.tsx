@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
+import { loginUser } from '@/app/api/demoAuth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -55,41 +56,44 @@ export default function LoginPage() {
     setErrors({});
     
     try {
-      // API login for all users
-      const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email.trim(),
-          password: formData.password
-        })
+      console.log('Attempting login with:', { email: formData.email });
+      
+      // Use demo authentication system
+      const loginResult = await loginUser({
+        email: formData.email.trim(),
+        password: formData.password
       });
-      const data = await response.json();
-      // Debug: log API response
-      console.log('Login API response:', data);
-      if (!response.ok || !data.success) {
-        let errorMsg = data.message || data.error || 'Login failed';
-        setErrors({ general: errorMsg });
+      
+      console.log('Login result:', loginResult);
+      
+      if (!loginResult.success) {
+        setErrors({ general: loginResult.message || 'Login failed' });
         setIsLoading(false);
         return;
       }
-      // Store user data and token in localStorage
-      if (data.data && data.data.user) {
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        // Dispatch custom event to notify components of user data update
-        window.dispatchEvent(new Event('userDataUpdated'));
-        // Redirect based on role
-        if (data.data.user.role === 'admin') {
-          setIsLoading(false);
+
+      // Login successful
+      console.log('Login successful:', loginResult);
+      
+      // Redirect based on user role
+      if (loginResult.data?.user) {
+        const user = loginResult.data.user;
+        if (user.isAdmin || user.role === 'admin') {
+          console.log('Redirecting admin to dashboard');
           router.push('/admin/dashboard');
-          return;
+        } else {
+          console.log('Redirecting user to dashboard');
+          router.push('/user/dashboard');
         }
+      } else {
+        // Default redirect
+        router.push('/user/dashboard');
       }
-      setIsLoading(false);
-      router.push('/user/dashboard');
+      
     } catch (err) {
       console.error('Login error:', err);
       setErrors({ general: 'Login failed. Please try again.' });
+    } finally {
       setIsLoading(false);
     }
   };

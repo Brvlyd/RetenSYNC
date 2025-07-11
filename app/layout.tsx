@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/contexts/theme-context';
 import LayoutWrapper from '@/components/layout-wrapper';
+import AuthInitializer from '@/components/AuthInitializer';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -40,9 +42,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body className={`${inter.className} h-full overflow-hidden`}>
-        <ThemeProvider>
-          <LayoutWrapper>{children}</LayoutWrapper>
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider>
+            <AuthInitializer />
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </ThemeProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

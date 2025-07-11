@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { getCurrentUser, isAuthenticated } from '@/app/api/demoAuth';
 import AdminLayoutWrapper from './layout-admin/layout-wrapper';
 import UserLayoutWrapper from './layout-user/layout-wrapper';
 
@@ -15,12 +16,29 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem('user');
+    // Get user data from the new auth system
+    const userData = getCurrentUser();
     if (userData) {
-      setUser(JSON.parse(userData));
+      setUser(userData);
     }
     setIsLoading(false);
+
+    // Listen for user data updates
+    const handleUserUpdate = (event: any) => {
+      if (event.detail) {
+        setUser(event.detail);
+      } else {
+        // If no detail, refresh from localStorage
+        const updatedUser = getCurrentUser();
+        setUser(updatedUser);
+      }
+    };
+
+    window.addEventListener('userDataUpdated', handleUserUpdate);
+
+    return () => {
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+    };
   }, []);
 
   // Show loading state while checking user
@@ -44,18 +62,21 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const isAdminRoute = pathname?.startsWith('/admin');
   const isUserRoute = pathname?.startsWith('/user');
   
-  // If user is admin and on admin route, use admin layout
-  if (user?.role === 'admin' && isAdminRoute) {
+  // Check if user is authenticated
+  const authenticated = isAuthenticated();
+  
+  // If user is admin (check both role and isAdmin flag) and on admin route, use admin layout
+  if (user && (user.isAdmin || user.role === 'admin') && isAdminRoute) {
     return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>;
   }
   
   // If user is on user route or is not admin, use user layout
-  if (isUserRoute || user?.role !== 'admin') {
+  if (isUserRoute || (user && !user.isAdmin && user.role !== 'admin')) {
     return <UserLayoutWrapper>{children}</UserLayoutWrapper>;
   }
   
   // Default to admin layout for admin users
-  if (user?.role === 'admin') {
+  if (user && (user.isAdmin || user.role === 'admin')) {
     return <AdminLayoutWrapper>{children}</AdminLayoutWrapper>;
   }
   

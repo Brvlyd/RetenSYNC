@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Key, Save, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
+import { Key, Save, Eye, EyeOff, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import { setAuthToken, getAuthToken, isAuthenticated, fetchUserProfile } from '@/app/api/authApi';
 
 interface TokenManagerProps {
   onTokenSet?: (token: string) => void;
@@ -13,38 +14,66 @@ export default function TokenManager({ onTokenSet }: TokenManagerProps) {
   const [showToken, setShowToken] = useState(false);
   const [isTokenSet, setIsTokenSet] = useState(false);
   const [message, setMessage] = useState('');
+  const [isValidating, setIsValidating] = useState(false);
 
   useEffect(() => {
     // Check if token is already set
-    const existingToken = localStorage.getItem('api_token') || localStorage.getItem('authToken');
-    if (existingToken && existingToken !== 'your-api-token-here') {
+    const authenticated = isAuthenticated();
+    if (authenticated) {
       setIsTokenSet(true);
-      setToken(existingToken);
+      const existingToken = getAuthToken();
+      if (existingToken) {
+        setToken(existingToken);
+      }
     }
   }, []);
 
-  const handleSaveToken = () => {
+  const validateToken = async (tokenToValidate: string) => {
+    setIsValidating(true);
+    try {
+      // Set the token to test it
+      setAuthToken(tokenToValidate);
+      
+      // Try to fetch user profile to validate the token
+      await fetchUserProfile();
+      
+      return true;
+    } catch (error) {
+      console.error('Token validation failed:', error);
+      return false;
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const handleSaveToken = async () => {
     if (!token.trim()) {
       setMessage('Please enter a valid token');
       return;
     }
 
-    try {
-      localStorage.setItem('api_token', token.trim());
+    setMessage('Validating token...');
+    
+    const isValid = await validateToken(token.trim());
+    
+    if (isValid) {
       setIsTokenSet(true);
-      setMessage('Token saved successfully!');
+      setMessage('Token saved and validated successfully!');
       onTokenSet?.(token.trim());
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setMessage(''), 3000);
-    } catch (error) {
-      setMessage('Failed to save token');
+    } else {
+      setMessage('Invalid token. Please check your token and try again.');
     }
+    
+    // Clear message after 5 seconds
+    setTimeout(() => setMessage(''), 5000);
   };
 
   const handleClearToken = () => {
-    localStorage.removeItem('api_token');
-    localStorage.removeItem('authToken');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('api_token');
+      localStorage.removeItem('user');
+    }
     setToken('');
     setIsTokenSet(false);
     setMessage('Token cleared');
@@ -70,7 +99,7 @@ export default function TokenManager({ onTokenSet }: TokenManagerProps) {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            ML Performance API Token
+            Authentication Token
           </label>
           <div className="relative">
             <input
@@ -90,14 +119,17 @@ export default function TokenManager({ onTokenSet }: TokenManagerProps) {
           </div>
         </div>
 
-        <div className="flex gap-3">
-          <button
+        <div className="flex gap-3">            <button
             onClick={handleSaveToken}
-            disabled={!token.trim()}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+            disabled={!token.trim() || isValidating}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white rounded-lg transition-colors disabled:cursor-not-allowed"
           >
-            <Save className="h-4 w-4" />
-            Save Token
+            {isValidating ? (
+              <RefreshCw className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            {isValidating ? 'Validating...' : 'Save & Validate Token'}
           </button>
           
           {isTokenSet && (
@@ -117,11 +149,15 @@ export default function TokenManager({ onTokenSet }: TokenManagerProps) {
             className={`flex items-center gap-2 p-3 rounded-lg ${
               message.includes('success') || message.includes('saved')
                 ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                : message.includes('Validating')
+                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
                 : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
             }`}
           >
             {message.includes('success') || message.includes('saved') ? (
               <CheckCircle className="h-4 w-4" />
+            ) : message.includes('Validating') ? (
+              <RefreshCw className="h-4 w-4 animate-spin" />
             ) : (
               <AlertCircle className="h-4 w-4" />
             )}
