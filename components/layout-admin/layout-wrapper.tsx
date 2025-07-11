@@ -50,7 +50,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
         style={{ marginLeft: isSidebarCollapsed ? '5rem' : '18rem' }}
       >
         <Header />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative z-10">
+        <main className="flex-1 overflow-y-auto pb-4 px-4 sm:pb-6 sm:px-6 lg:pb-8 lg:px-8 relative z-10">
           <div className="animate-fade-in max-w-7xl mx-auto">
             {children}
           </div>

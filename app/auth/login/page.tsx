@@ -76,6 +76,8 @@ export default function LoginPage() {
       // Store user data and token in localStorage
       if (data.data && data.data.user) {
         localStorage.setItem('user', JSON.stringify(data.data.user));
+        // Dispatch custom event to notify components of user data update
+        window.dispatchEvent(new Event('userDataUpdated'));
         // Redirect based on role
         if (data.data.user.role === 'admin') {
           setIsLoading(false);

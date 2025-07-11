@@ -35,17 +35,41 @@ export default function Header() {
   const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    const updateUserData = () => {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    };
+
+    // Initial load
+    updateUserData();
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        updateUserData();
+      }
+    };
+
+    // Listen for custom events (for same-tab updates)
+    const handleUserUpdate = () => {
+      updateUserData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userDataUpdated', handleUserUpdate);
 
     // Update time every minute
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 60000);
 
-    return () => clearInterval(timer);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+      clearInterval(timer);
+    };
   }, []);
 
   useEffect(() => {

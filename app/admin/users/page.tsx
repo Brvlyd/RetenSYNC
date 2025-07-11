@@ -2,89 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Plus, Search, Filter, Edit, Trash2, UserPlus, Mail, Phone, MapPin, Calendar, X } from 'lucide-react';
-
-interface User {
-  id: number;
-  employeeId: string;
-  name: string;
-  email: string;
-  position: string;
-  department: string;
-  joinDate: string;
-  status: 'active' | 'inactive';
-  phone?: string;
-  location?: string;
-}
+import { Users, Plus, Search, Filter, Edit, Trash2, UserPlus, Mail, Phone, MapPin, Calendar, X, RefreshCw, AlertTriangle } from 'lucide-react';
+import { User, fetchUsers, getDepartmentStats, searchUsers, filterUsersByDepartment, hardDeleteUser, addUser, updateUser } from '@/app/api/usersApi';
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: 1,
-      employeeId: 'EMP001',
-      name: 'Dzikri Razzan Athallah',
-      email: 'dzikri.razzan@company.com',
-      position: 'Senior Software Engineer',
-      department: 'Engineering',
-      joinDate: '2023-01-15',
-      status: 'active',
-      phone: '+62 812-3456-7890',
-      location: 'Jakarta'
-    },
-    {
-      id: 2,
-      employeeId: 'EMP002',
-      name: 'Bravely Dirgayuska',
-      email: 'bravely.dirgayuska@company.com',
-      position: 'Team Lead',
-      department: 'Engineering',
-      joinDate: '2022-08-20',
-      status: 'active',
-      phone: '+62 813-4567-8901',
-      location: 'Bandung'
-    },
-    {
-      id: 3,
-      employeeId: 'EMP003',
-      name: 'Putri Aulia Simanjuntak',
-      email: 'putri.aulia@company.com',
-      position: 'Product Manager',
-      department: 'Product',
-      joinDate: '2023-03-10',
-      status: 'active',
-      phone: '+62 814-5678-9012',
-      location: 'Jakarta'
-    },
-    {
-      id: 4,
-      employeeId: 'EMP004',
-      name: 'Tasya Salsabila',
-      email: 'tasya.salsabila@company.com',
-      position: 'Senior Developer',
-      department: 'Engineering',
-      joinDate: '2022-11-05',
-      status: 'active',
-      phone: '+62 815-6789-0123',
-      location: 'Surabaya'
-    },
-    {
-      id: 5,
-      employeeId: 'EMP005',
-      name: 'Annisa Azalia Maulana',
-      email: 'annisa.azalia@company.com',
-      position: 'UX Designer',
-      department: 'Design',
-      joinDate: '2023-06-12',
-      status: 'active',
-      phone: '+62 816-7890-1234',
-      location: 'Jakarta'
-    }
-  ]);
-
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [departments, setDepartments] = useState<string[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [newUser, setNewUser] = useState({
     employeeId: '',
@@ -96,56 +28,180 @@ export default function UsersPage() {
     location: ''
   });
 
-  const departments = ['Engineering', 'Product', 'Design', 'Marketing', 'Sales', 'HR', 'Finance'];
   const positions = [
     'Software Engineer', 'Senior Software Engineer', 'Team Lead', 'Product Manager',
-    'UX Designer', 'Marketing Specialist', 'Sales Representative', 'HR Specialist'
+    'UX Designer', 'Marketing Specialist', 'Sales Representative', 'HR Specialist',
+    'DevOps Engineer', 'Technical Lead', 'HR Manager', 'Recruiter', 'Financial Analyst',
+    'Marketing Manager', 'Account Manager', 'Operations Manager', 'Product Designer'
   ];
 
+  // Load users and departments on component mount
+  useEffect(() => {
+    loadUsers();
+    loadDepartments();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const usersData = await fetchUsers();
+      setUsers(usersData);
+    } catch (err) {
+      console.error('Error loading users:', err);
+      setError('Failed to load users. Please check your API connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadDepartments = async () => {
+    try {
+      const deptStats = await getDepartmentStats();
+      setDepartments(deptStats.map(dept => dept.name));
+    } catch (err) {
+      console.error('Error loading departments:', err);
+      // Fallback to basic departments
+      setDepartments(['IT Department', 'HR Department', 'Finance Department', 'Marketing Department']);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadUsers();
+    await loadDepartments();
+    setRefreshing(false);
+  };
+
+  const handleSearch = async (query: string) => {
+    setSearchTerm(query);
+    if (!query.trim()) {
+      loadUsers();
+      return;
+    }
+    
+    try {
+      const searchResults = await searchUsers(query);
+      setUsers(searchResults);
+    } catch (err) {
+      console.error('Error searching users:', err);
+    }
+  };
+
+  const handleDepartmentFilter = async (department: string) => {
+    setFilterDepartment(department);
+    
+    try {
+      const filteredUsers = await filterUsersByDepartment(department);
+      setUsers(filteredUsers);
+    } catch (err) {
+      console.error('Error filtering users:', err);
+    }
+  };
+
   const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.employeeId.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = searchTerm === '' || 
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.employeeId.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDepartment = filterDepartment === '' || user.department === filterDepartment;
     return matchesSearch && matchesDepartment;
   });
 
-  const handleAddUser = (e: React.FormEvent) => {
+  const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    const user: User = {
-      id: users.length + 1,
-      ...newUser,
-      joinDate: new Date().toISOString().split('T')[0],
-      status: 'active'
-    };
-    setUsers([...users, user]);
-    setNewUser({
-      employeeId: '',
-      name: '',
-      email: '',
-      position: '',
-      department: '',
-      phone: '',
-      location: ''
-    });
-    setShowAddForm(false);
+    try {
+      const createdUser = await addUser(newUser);
+      await loadUsers(); // Refresh the user list
+      setShowAddForm(false);
+      setNewUser({
+        employeeId: '',
+        name: '',
+        email: '',
+        position: '',
+        department: '',
+        phone: '',
+        location: ''
+      });
+    } catch (error) {
+      console.error('Error adding user:', error);
+      alert('Failed to add user. Please try again.');
+    }
   };
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
   };
 
-  const handleUpdateUser = (e: React.FormEvent) => {
+  const handleUpdateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingUser) {
-      setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
+    if (!editingUser) return;
+    
+    try {
+      await updateUser(editingUser.id, editingUser);
+      await loadUsers(); // Refresh the user list
       setEditingUser(null);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      alert('Failed to update user. Please try again.');
     }
   };
 
-  const handleDeleteUser = (id: number) => {
-    setUsers(users.filter(u => u.id !== id));
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
   };
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      await hardDeleteUser(userToDelete.id);
+      await loadUsers(); // Refresh the user list to update all components
+      setUserToDelete(null);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Failed to delete user. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const cancelDeleteUser = () => {
+    setUserToDelete(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 mt-16 sm:mt-20 lg:mt-24">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading users...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 mt-16 sm:mt-20 lg:mt-24">
+        <div className="text-center py-12">
+          <div className="text-red-500 mb-4">
+            <Users className="h-16 w-16 mx-auto mb-2" />
+            <p className="text-lg font-semibold">Error loading users</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // No top margin for this page
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
@@ -222,7 +278,7 @@ export default function UsersPage() {
               type="text"
               placeholder="Search users..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
             />
           </div>
@@ -230,7 +286,7 @@ export default function UsersPage() {
             <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <select
               value={filterDepartment}
-              onChange={(e) => setFilterDepartment(e.target.value)}
+              onChange={(e) => handleDepartmentFilter(e.target.value)}
               className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="">All Departments</option>
@@ -238,6 +294,16 @@ export default function UsersPage() {
                 <option key={dept} value={dept}>{dept}</option>
               ))}
             </select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-xl font-medium transition-colors duration-200"
+            >
+              <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
           </div>
         </div>
       </div>
@@ -318,7 +384,7 @@ export default function UsersPage() {
                         <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteUser(user.id)}
+                        onClick={() => handleDeleteUser(user)}
                         className="p-1.5 sm:p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -576,6 +642,77 @@ export default function UsersPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {userToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl">
+            <div className="flex items-center justify-center mb-6">
+              <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
+                <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+              </div>
+            </div>
+            
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                Delete User
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Are you sure you want to permanently delete this user? This action cannot be undone.
+              </p>
+              
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4">
+                <div className="flex items-center justify-center space-x-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                    <span className="text-sm font-bold text-white">
+                      {userToDelete.name.split(' ').map((n: string) => n[0]).join('')}
+                    </span>
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900 dark:text-white">
+                      {userToDelete.name}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {userToDelete.employeeId} • {userToDelete.department}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+                ⚠️ This will permanently remove the user and all associated data from the system.
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelDeleteUser}
+                disabled={isDeleting}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-medium disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteUser}
+                disabled={isDeleting}
+                className="px-6 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete Permanently
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

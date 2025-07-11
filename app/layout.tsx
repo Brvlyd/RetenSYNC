@@ -9,6 +9,27 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'RetenSYNC - Modern Employee Experience Platform',
   description: 'ML-powered platform for predicting and preventing employee turnover with modern design',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.ico',
+        sizes: '16x16',
+        type: 'image/x-icon',
+      },
+      {
+        url: '/assets/Logo.png',
+        sizes: '16x16',
+        type: 'image/png',
+      },
+      {
+        url: '/assets/Logo.png',
+        sizes: '32x32',
+        type: 'image/png',
+      }
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/assets/Logo.png',
+  },
 };
 
 export default function RootLayout({

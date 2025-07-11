@@ -125,7 +125,7 @@ export default function HRInteractionsPage() {
         'Team celebrations',
         'Achievement tracking'
       ],
-      route: '/admin/shoutouts'
+      route: '/admin/peer-recognition'
     },
     {
       id: 'meetings',

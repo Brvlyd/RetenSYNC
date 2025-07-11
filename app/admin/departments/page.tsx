@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Building, Users, Plus, Edit, Trash2, X, UserPlus, TrendingUp, BarChart3, Target, Award } from 'lucide-react';
+import { Building, Users, Plus, Edit, Trash2, X, UserPlus, TrendingUp, BarChart3, Target, Award, RefreshCw, AlertTriangle } from 'lucide-react';
+import { getDepartmentStats } from '@/app/api/usersApi';
 
 interface Department {
   id: number;

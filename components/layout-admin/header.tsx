@@ -31,10 +31,35 @@ export default function Header() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    const updateUserData = () => {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    };
+
+    // Initial load
+    updateUserData();
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        updateUserData();
+      }
+    };
+
+    // Listen for custom events (for same-tab updates)
+    const handleUserUpdate = () => {
+      updateUserData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userDataUpdated', handleUserUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+    };
   }, []);
 
   const getInitials = (name: string | undefined | null) => {

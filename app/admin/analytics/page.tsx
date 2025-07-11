@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell } from 'recharts';
-import { engagementHeatmapData, turnoverRiskData } from '@/lib/dummy-data';
-import { TrendingUp, Users, AlertTriangle, Target, BarChart3, PieChart } from 'lucide-react';
+import { TrendingUp, Users, AlertTriangle, Target, BarChart3, PieChart, RefreshCw } from 'lucide-react';
 import { useTheme } from '@/contexts/theme-context';
+import { fetchUsers } from '@/app/api/usersApi';
+import { calculateRiskLevel } from '@/app/api/mlPerformanceApi';
 
 // Custom tooltip for Risk Trend
 function CustomRiskTooltip({ active, payload }: any) {
@@ -43,6 +44,17 @@ export default function Analytics() {
   const router = useRouter();
   const [animateProgress, setAnimateProgress] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [performanceData, setPerformanceData] = useState<any[]>([]);
+  const [engagementData, setEngagementData] = useState<any[]>([]);
+  const [turnoverData, setTurnoverData] = useState<any[]>([]);
+  const [organizationMetrics, setOrganizationMetrics] = useState({
+    teamEngagement: 0,
+    activeEmployees: 0,
+    atRiskCount: 0,
+    goalCompletion: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setAnimateProgress(true);
@@ -59,21 +71,148 @@ export default function Analytics() {
         return;
       }
     }
+    
+    loadPerformanceData();
   }, [router]);
+
+  const loadPerformanceData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchUsers();
+      
+      // Convert to performance analytics format
+      const analyticsData = data.map(user => ({
+        id: user.id,
+        name: user.name,
+        performance: Math.round((user.last_evaluation || 0) * 100) / 10,
+        engagement: Math.round((user.satisfaction_level || 0) * 100) / 10,
+        feedback: Math.round(((user.last_evaluation || 0) + (user.satisfaction_level || 0)) * 50) / 10,
+        satisfaction: Math.round((user.satisfaction_level || 0) * 100) / 10,
+        department: user.department,
+        risk: calculateRiskLevel({
+          satisfaction_level: user.satisfaction_level || 0,
+          last_evaluation: user.last_evaluation || 0,
+          work_accident: user.work_accident || false,
+          promotion_last_5years: user.promotion_last_5years || false,
+          employee: user.id,
+          employee_name: user.name,
+          employee_email: user.email,
+          department_name: user.department,
+          number_project: user.number_project || 0,
+          average_monthly_hours: user.average_monthly_hours || 0,
+          time_spend_company: user.time_spend_company || 0,
+          left: user.left || false,
+          created_at: '',
+          updated_at: ''
+        }).level.toLowerCase()
+      }));
+      
+      setPerformanceData(analyticsData);
+      
+      // Generate engagement heatmap data by department
+      const departmentMap = new Map();
+      analyticsData.forEach(emp => {
+        const dept = emp.department;
+        if (!departmentMap.has(dept)) {
+          departmentMap.set(dept, { 
+            team: dept, 
+            engagementTotal: 0, 
+            stressTotal: 0, 
+            count: 0 
+          });
+        }
+        const deptData = departmentMap.get(dept);
+        deptData.engagementTotal += emp.engagement;
+        deptData.stressTotal += (10 - emp.satisfaction) * 0.5; // Convert satisfaction to stress
+        deptData.count += 1;
+      });
+      
+      const engagementHeatmap = Array.from(departmentMap.values()).map(dept => ({
+        team: dept.team,
+        engagement: Math.round((dept.engagementTotal / dept.count) * 10) / 10,
+        stress: Math.round((dept.stressTotal / dept.count) * 10) / 10,
+        size: dept.count
+      }));
+      
+      setEngagementData(engagementHeatmap);
+      
+      // Generate turnover risk trend data
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const riskData = months.map(month => {
+        const riskCount = analyticsData.filter(emp => emp.risk === 'high').length;
+        const baseRisk = riskCount + Math.floor(Math.random() * 5);
+        const actualTurnover = Math.floor(baseRisk * 0.7) + Math.floor(Math.random() * 3);
+        return {
+          month,
+          risk: baseRisk,
+          actual: actualTurnover
+        };
+      });
+      
+      setTurnoverData(riskData);
+      
+      // Calculate organization metrics
+      const totalEmployees = analyticsData.length;
+      const avgEngagement = analyticsData.reduce((sum, emp) => sum + emp.engagement, 0) / totalEmployees;
+      const atRiskCount = analyticsData.filter(emp => emp.risk === 'high').length;
+      const goalCompletion = 70 + Math.random() * 20; // Simulated goal completion
+      
+      setOrganizationMetrics({
+        teamEngagement: Math.round(avgEngagement * 10) / 10,
+        activeEmployees: totalEmployees,
+        atRiskCount,
+        goalCompletion: Math.round(goalCompletion)
+      });
+      
+    } catch (err) {
+      console.error('Error loading performance data:', err);
+      setError('Failed to load performance data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    loadPerformanceData();
+  };
 
   // Don't render anything for non-admin users
   if (!user || user.role !== 'admin') {
     return null;
   }
 
-  const performanceData = [
-    { id: 1, name: 'Bravely Dirgayuska', performance: 9.2, engagement: 8.8, feedback: 9.1, satisfaction: 8.9, risk: 'low' },
-    { id: 2, name: 'Dzikri Razzan Athallah', performance: 7.5, engagement: 6.2, feedback: 7.8, satisfaction: 6.5, risk: 'medium' },
-    { id: 3, name: 'Tasya Salsabila', performance: 8.9, engagement: 9.1, feedback: 8.7, satisfaction: 8.8, risk: 'low' },
-    { id: 4, name: 'Annisa', performance: 6.8, engagement: 5.9, feedback: 6.5, satisfaction: 6.2, risk: 'high' },
-    { id: 5, name: 'Putri Aulia', performance: 8.1, engagement: 8.3, feedback: 8.0, satisfaction: 8.2, risk: 'low' },
-    { id: 6, name: 'Zenith', performance: 7.2, engagement: 6.8, feedback: 7.1, satisfaction: 7.0, risk: 'medium' },
-  ];
+  if (loading) {
+    return (
+      <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+        <div className="text-center py-12">
+          <div className="text-red-500 mb-4">
+            <AlertTriangle className="h-16 w-16 mx-auto mb-2" />
+            <p className="text-lg font-semibold">Error loading analytics</p>
+            <p className="text-sm">{error}</p>
+          </div>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
@@ -177,7 +316,7 @@ export default function Analytics() {
         {[
           { 
             title: "Team Engagement", 
-            value: "8.2/10", 
+            value: `${organizationMetrics.teamEngagement}/10`, 
             change: "↑ 0.3 from last month", 
             icon: TrendingUp, 
             gradient: "from-green-500 to-emerald-600",
@@ -185,7 +324,7 @@ export default function Analytics() {
           },
           { 
             title: "Active Employees", 
-            value: "247", 
+            value: organizationMetrics.activeEmployees.toString(), 
             change: "98.4% participation", 
             icon: Users, 
             gradient: "from-blue-500 to-blue-600",
@@ -193,15 +332,15 @@ export default function Analytics() {
           },
           { 
             title: "At-Risk Count", 
-            value: "23", 
-            change: "9.3% of workforce", 
+            value: organizationMetrics.atRiskCount.toString(), 
+            change: `${Math.round((organizationMetrics.atRiskCount / organizationMetrics.activeEmployees) * 100)}% of workforce`, 
             icon: AlertTriangle, 
             gradient: "from-orange-500 to-orange-600",
             bgGradient: "from-orange-50 to-orange-50 dark:from-orange-900/30 dark:to-orange-900/30"
           },
           { 
             title: "Goal Completion", 
-            value: "76%", 
+            value: `${organizationMetrics.goalCompletion}%`, 
             change: "Above target", 
             icon: Target, 
             gradient: "from-purple-500 to-purple-600",
@@ -246,7 +385,7 @@ export default function Analytics() {
           </div>
           <div className="h-64 sm:h-72 lg:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart data={engagementHeatmapData}>
+              <ScatterChart data={engagementData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:stroke-gray-700" />
                 <XAxis 
                   name="Engagement Score"
@@ -265,7 +404,7 @@ export default function Analytics() {
                   content={CustomEngagementTooltip}
                 />
                 <Scatter dataKey="engagement">
-                  {engagementHeatmapData.map((entry, index) => (
+                  {engagementData.map((entry: any, index: number) => (
                     <Cell 
                       key={`cell-${index}`} 
                       fill={entry.stress > 3.5 ? '#ef4444' : entry.engagement > 8 ? '#10b981' : '#f59e0b'} 
@@ -287,7 +426,7 @@ export default function Analytics() {
           </div>
           <div className="h-64 sm:h-72 lg:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={turnoverRiskData.slice(-6)}>
+              <BarChart data={turnoverData.slice(-6)}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:stroke-gray-700" />
                 <XAxis 
                   dataKey="month" 
@@ -348,7 +487,7 @@ export default function Analytics() {
                     <div className="flex items-center">
                       <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                         <span className="text-xs sm:text-sm font-bold text-white">
-                          {employee.name.split(' ').map(n => n[0]).join('')}
+                          {employee.name.split(' ').map((n: string) => n[0]).join('')}
                         </span>
                       </div>
                       <div className="ml-3 sm:ml-4">

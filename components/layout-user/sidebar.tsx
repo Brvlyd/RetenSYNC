@@ -38,10 +38,35 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    const updateUserData = () => {
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    };
+
+    // Initial load
+    updateUserData();
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        updateUserData();
+      }
+    };
+
+    // Listen for custom events (for same-tab updates)
+    const handleUserUpdate = () => {
+      updateUserData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userDataUpdated', handleUserUpdate);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+    };
   }, []);
 
   // Define navigation item type to include optional isParent and isChild

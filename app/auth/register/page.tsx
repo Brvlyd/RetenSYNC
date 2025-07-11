@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, User, Building, Briefcase, Hash, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Building, Briefcase, Hash, AlertCircle, CheckCircle, Phone } from 'lucide-react';
 import Image from 'next/image';
 
 export default function RegisterPage() {
@@ -82,10 +82,47 @@ export default function RegisterPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Special handling for phone number
+    if (name === 'phone_number') {
+      let formattedValue = value;
+      
+      // Remove any non-digit characters except + and space
+      formattedValue = formattedValue.replace(/[^\d+\s-]/g, '');
+      
+      // If user starts typing without +62 or 08, auto-add +62
+      if (formattedValue.length === 1 && formattedValue !== '+' && formattedValue !== '0') {
+        formattedValue = '+62' + formattedValue;
+      }
+      
+      // If user types 08, keep it as is
+      if (formattedValue.startsWith('08')) {
+        // Format: 08XX-XXXX-XXXX
+        formattedValue = formattedValue.replace(/(\d{4})(\d{4})(\d{4})/, '$1-$2-$3');
+      }
+      // If user types +62, format accordingly
+      else if (formattedValue.startsWith('+62')) {
+        // Remove +62 temporarily for formatting
+        const numberPart = formattedValue.substring(3);
+        if (numberPart.length > 0) {
+          // Format: +62 XXX-XXXX-XXXX
+          const formatted = numberPart.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+          formattedValue = '+62 ' + formatted;
+        }
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: formattedValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+    
+    // Clear error if field is being corrected
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -96,25 +133,65 @@ export default function RegisterPage() {
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
+    
+    // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/^([a-zA-Z0-9_.+-]+)@company\.com$/.test(formData.email)) {
       newErrors.email = 'Email must use @company.com domain';
     }
+    
+    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
     }
+    
+    // Password confirmation validation
     if (!formData.password_confirm) {
       newErrors.password_confirm = 'Please confirm your password';
     } else if (formData.password !== formData.password_confirm) {
       newErrors.password_confirm = 'Passwords do not match';
     }
+    
+    // Name validation
     if (!formData.first_name) newErrors.first_name = 'First name is required';
     if (!formData.last_name) newErrors.last_name = 'Last name is required';
-    if (!formData.phone_number) newErrors.phone_number = 'Phone number is required';
-    if (!formData.date_of_birth) newErrors.date_of_birth = 'Date of birth is required';
+    
+    // Phone number validation
+    if (!formData.phone_number) {
+      newErrors.phone_number = 'Phone number is required';
+    } else {
+      // Remove any non-digit characters except + for validation
+      const cleanPhone = formData.phone_number.replace(/[^\d+]/g, '');
+      const indonesianPhoneRegex = /^(\+62|62|08)\d{8,13}$/;
+      
+      // Check total digit count (10-15 digits)
+      const digitCount = cleanPhone.replace(/[^\d]/g, '').length;
+      if (!indonesianPhoneRegex.test(cleanPhone) || digitCount < 10 || digitCount > 15) {
+        newErrors.phone_number = 'Phone number must start with +62 or 08 and contain 10-15 digits';
+      }
+    }
+    
+    // Date of birth and age validation
+    if (!formData.date_of_birth) {
+      newErrors.date_of_birth = 'Date of birth is required';
+    } else {
+      const birthDate = new Date(formData.date_of_birth);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      // Check if birthday has passed this year
+      const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
+      
+      if (actualAge < 21) {
+        newErrors.date_of_birth = 'You must be at least 21 years old to register';
+      }
+    }
+    
+    // Other field validations
     if (!formData.gender) newErrors.gender = 'Gender is required';
     if (!formData.marital_status) newErrors.marital_status = 'Marital status is required';
     if (!formData.education_level) newErrors.education_level = 'Education level is required';
@@ -126,6 +203,7 @@ export default function RegisterPage() {
       newErrors.department = 'Department must be selected';
     }
     if (!formData.hire_date) newErrors.hire_date = 'Hire date is required';
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -207,12 +285,23 @@ export default function RegisterPage() {
         return;
       }
 
+      // Store user data in localStorage after successful registration
+      if (data.data && data.data.user) {
+        localStorage.setItem('user', JSON.stringify(data.data.user));
+        // Dispatch custom event to notify components of user data update
+        window.dispatchEvent(new Event('userDataUpdated'));
+      }
+
       setSuccess(true);
       setIsLoading(false);
 
-      // Redirect to login page after successful registration
+      // Redirect to dashboard based on user role after successful registration
       setTimeout(() => {
-        router.push('/auth/login');
+        if (data.data && data.data.user && data.data.user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/user/dashboard');
+        }
       }, 1500);
     } catch (err) {
       // Debug: log error
@@ -300,7 +389,7 @@ export default function RegisterPage() {
         >
           {/* Register Card - vertical, scrollable, responsive form */}
           <div
-            className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-1 sm:p-4 flex flex-col items-center max-w-md w-full mx-auto z-10 group transition-transform duration-300 custom-scrollbar"
+            className="relative bg-white/90 dark:bg-[#23232a]/90 bg-gradient-to-br from-[#fff7e6]/90 via-white/95 to-[#f0f4e8]/90 dark:from-[#23232a]/90 dark:via-[#23281a]/90 dark:to-[#23281a]/90 rounded-3xl shadow-2xl border-2 border-[#f7cfa6]/60 dark:border-[#23281a]/60 p-2 sm:p-5 flex flex-col items-center max-w-md w-full mx-auto z-10 group transition-transform duration-300 custom-scrollbar backdrop-blur-lg"
             style={{ 
               maxHeight: '75vh', 
               minHeight: '400px', 
@@ -311,7 +400,7 @@ export default function RegisterPage() {
             }}
           >
           {/* Subtle animated gradient accent at the top */}
-          <div className="pointer-events-none absolute left-0 top-0 w-full h-3 rounded-t-[2.5rem] bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
+          <div className="pointer-events-none absolute left-0 top-0 w-full h-4 rounded-t-3xl bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-70 animate-gradient-x shadow-sm" />
           
           <p className="text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-2 py-1 rounded-lg inline-block shadow-sm animate-fade-in text-sm sm:text-base font-semibold mb-3 mt-3">Create your account</p>
 
@@ -332,15 +421,15 @@ export default function RegisterPage() {
             {/* Organized Form Sections */}
             <div className="space-y-4">
               {/* Personal Information Section */}
-              <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-lg p-3 border border-gray-200/50 dark:border-gray-700/50">
-                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-3 flex items-center">
-                  <span className="w-5 h-5 bg-[#d96f27] dark:bg-[#94c47d] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-2">1</span>
+              <div className="bg-gradient-to-br from-gray-50/80 to-gray-100/50 dark:from-gray-800/40 dark:to-gray-700/30 rounded-2xl p-4 border border-gray-200/60 dark:border-gray-600/50 shadow-lg backdrop-blur-sm">
+                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-4 flex items-center">
+                  <span className="w-6 h-6 bg-gradient-to-r from-[#d96f27] to-[#b95a1f] dark:from-[#94c47d] dark:to-[#7ea864] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-3 shadow-lg">1</span>
                   Personal Information
                 </h3>
                 <div className="grid grid-cols-1 gap-3">
                   {/* Email */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address *</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Mail className="h-4 w-4 text-gray-400" />
@@ -350,7 +439,7 @@ export default function RegisterPage() {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full pl-10 pr-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.email ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                         placeholder="email@company.com"
                       />
                     </div>
@@ -360,25 +449,25 @@ export default function RegisterPage() {
                   {/* Name Fields - Side by Side */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">First Name *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">First Name <span className="text-red-500">*</span></label>
                       <input 
                         type="text" 
                         name="first_name" 
                         value={formData.first_name} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.first_name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.first_name ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`} 
                         placeholder="First name" 
                       />
                       {errors.first_name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.first_name}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Last Name *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Last Name <span className="text-red-500">*</span></label>
                       <input 
                         type="text" 
                         name="last_name" 
                         value={formData.last_name} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.last_name ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.last_name ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`} 
                         placeholder="Last name" 
                       />
                       {errors.last_name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.last_name}</p>}
@@ -388,25 +477,31 @@ export default function RegisterPage() {
                   {/* Phone and Date of Birth - Side by Side */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone Number *</label>
-                      <input 
-                        type="tel" 
-                        name="phone_number" 
-                        value={formData.phone_number} 
-                        onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.phone_number ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
-                        placeholder="Phone number" 
-                      />
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone Number <span className="text-red-500">*</span></label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Phone className="h-4 w-4 text-gray-400" />
+                        </div>
+                        <input 
+                          type="tel" 
+                          name="phone_number" 
+                          value={formData.phone_number} 
+                          onChange={handleInputChange} 
+                          className={`w-full pl-10 pr-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.phone_number ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`} 
+                          placeholder="+62 812-3456-7890 or 08123456789" 
+                          maxLength={25}
+                        />
+                      </div>
                       {errors.phone_number && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone_number}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Date of Birth *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Date of Birth <span className="text-red-500">*</span></label>
                       <input 
                         type="date" 
                         name="date_of_birth" 
                         value={formData.date_of_birth} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.date_of_birth ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.date_of_birth ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`} 
                       />
                       {errors.date_of_birth && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.date_of_birth}</p>}
                     </div>
@@ -415,12 +510,12 @@ export default function RegisterPage() {
                   {/* Gender and Marital Status - Side by Side */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Gender *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Gender <span className="text-red-500">*</span></label>
                       <select 
                         name="gender" 
                         value={formData.gender} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.gender ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.gender ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                       >
                         <option value="">Select gender</option>
                         {genders.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
@@ -428,12 +523,12 @@ export default function RegisterPage() {
                       {errors.gender && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.gender}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Marital Status *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Marital Status <span className="text-red-500">*</span></label>
                       <select 
                         name="marital_status" 
                         value={formData.marital_status} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.marital_status ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.marital_status ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                       >
                         <option value="">Select status</option>
                         {maritalStatuses.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
@@ -444,12 +539,12 @@ export default function RegisterPage() {
 
                   {/* Education Level */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Education Level *</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Education Level <span className="text-red-500">*</span></label>
                     <select 
                       name="education_level" 
                       value={formData.education_level} 
                       onChange={handleInputChange} 
-                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.education_level ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                      className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.education_level ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                     >
                       <option value="">Select education level</option>
                       {educationLevels.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
@@ -459,13 +554,13 @@ export default function RegisterPage() {
 
                   {/* Address */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Address *</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Address <span className="text-red-500">*</span></label>
                     <input 
                       type="text" 
                       name="address" 
                       value={formData.address} 
                       onChange={handleInputChange} 
-                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.address ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                      className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.address ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`} 
                       placeholder="Enter your address" 
                     />
                     {errors.address && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.address}</p>}
@@ -474,15 +569,15 @@ export default function RegisterPage() {
               </div>
 
               {/* Account Security Section */}
-              <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-lg p-3 border border-gray-200/50 dark:border-gray-700/50">
-                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-3 flex items-center">
-                  <span className="w-5 h-5 bg-[#d96f27] dark:bg-[#94c47d] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-2">2</span>
+              <div className="bg-gradient-to-br from-gray-50/80 to-gray-100/50 dark:from-gray-800/40 dark:to-gray-700/30 rounded-2xl p-4 border border-gray-200/60 dark:border-gray-600/50 shadow-lg backdrop-blur-sm">
+                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-4 flex items-center">
+                  <span className="w-6 h-6 bg-gradient-to-r from-[#d96f27] to-[#b95a1f] dark:from-[#94c47d] dark:to-[#7ea864] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-3 shadow-lg">2</span>
                   Account Security
                 </h3>
                 <div className="grid grid-cols-1 gap-3">
                   {/* Password */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password *</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Lock className="h-4 w-4 text-gray-400" />
@@ -492,7 +587,7 @@ export default function RegisterPage() {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full pl-10 pr-10 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.password ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                         placeholder="Enter password"
                       />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -504,7 +599,7 @@ export default function RegisterPage() {
 
                   {/* Confirm Password */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm Password *</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Confirm Password <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Lock className="h-4 w-4 text-gray-400" />
@@ -514,7 +609,7 @@ export default function RegisterPage() {
                         name="password_confirm"
                         value={formData.password_confirm}
                         onChange={handleInputChange}
-                        className={`w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.password_confirm ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full pl-10 pr-10 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.password_confirm ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                         placeholder="Confirm password"
                       />
                       <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -527,21 +622,21 @@ export default function RegisterPage() {
               </div>
 
               {/* Work Information Section */}
-              <div className="bg-gray-50/50 dark:bg-gray-800/30 rounded-lg p-3 border border-gray-200/50 dark:border-gray-700/50">
-                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-3 flex items-center">
-                  <span className="w-5 h-5 bg-[#d96f27] dark:bg-[#94c47d] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-2">3</span>
+              <div className="bg-gradient-to-br from-gray-50/80 to-gray-100/50 dark:from-gray-800/40 dark:to-gray-700/30 rounded-2xl p-4 border border-gray-200/60 dark:border-gray-600/50 shadow-lg backdrop-blur-sm">
+                <h3 className="text-sm font-bold text-[#d96f27] dark:text-[#94c47d] mb-4 flex items-center">
+                  <span className="w-6 h-6 bg-gradient-to-r from-[#d96f27] to-[#b95a1f] dark:from-[#94c47d] dark:to-[#7ea864] rounded-full text-white dark:text-[#23232a] flex items-center justify-center text-xs mr-3 shadow-lg">3</span>
                   Work Information
                 </h3>
                 <div className="grid grid-cols-1 gap-3">
                   {/* Position and Department - Side by Side */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position <span className="text-red-500">*</span></label>
                       <select 
                         name="position" 
                         value={formData.position} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.position ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.position ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                       >
                         <option value="">Select position</option>
                         {positions.map(position => <option key={position} value={position}>{position}</option>)}
@@ -549,12 +644,12 @@ export default function RegisterPage() {
                       {errors.position && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.position}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department *</label>
+                      <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department <span className="text-red-500">*</span></label>
                       <select 
                         name="department" 
                         value={formData.department} 
                         onChange={handleInputChange} 
-                        className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.department ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`}
+                        className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.department ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`}
                       >
                         <option value="">Select department</option>
                         {departments.map(dept => <option key={dept.id} value={dept.id}>{dept.name}</option>)}
@@ -565,13 +660,13 @@ export default function RegisterPage() {
 
                   {/* Hire Date */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hire Date *</label>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Hire Date <span className="text-red-500">*</span></label>
                     <input 
                       type="date" 
                       name="hire_date" 
                       value={formData.hire_date} 
                       onChange={handleInputChange} 
-                      className={`w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-900 dark:text-white ${errors.hire_date ? 'border-red-300 dark:border-red-600' : 'border-gray-200 dark:border-gray-600'}`} 
+                      className={`w-full px-3 py-3 bg-white/80 dark:bg-gray-800/80 border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27]/50 dark:focus:ring-[#94c47d]/50 focus:border-[#d96f27] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white shadow-sm backdrop-blur-sm ${errors.hire_date ? 'border-red-400 dark:border-red-500' : 'border-gray-300/60 dark:border-gray-600/60 hover:border-gray-400 dark:hover:border-gray-500'}`} 
                     />
                     {errors.hire_date && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.hire_date}</p>}
                   </div>
@@ -584,7 +679,7 @@ export default function RegisterPage() {
             {/* Form Help Text */}
             <div className="mt-4 mb-3 text-center">
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Fields marked with <span className="text-red-500">*</span> are required
+                Fields marked with <span className="text-red-500 font-bold">*</span> are required
               </p>
             </div>
 
@@ -594,8 +689,8 @@ export default function RegisterPage() {
               disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-[#d96f27] hover:bg-[#b95a1f] dark:bg-[#94c47d] dark:hover:bg-[#7ea864] text-white dark:text-[#23232a] py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-base tracking-wide border-2 border-[#f7cfa6] dark:border-[#23281a]"
-              style={{ minHeight: '48px' }}
+              className="w-full bg-gradient-to-r from-[#d96f27] to-[#b95a1f] hover:from-[#b95a1f] hover:to-[#d96f27] dark:from-[#94c47d] dark:to-[#7ea864] dark:hover:from-[#7ea864] dark:hover:to-[#94c47d] text-white dark:text-[#23232a] py-3.5 rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-base tracking-wide border-2 border-[#f7cfa6]/50 dark:border-[#23281a]/50 backdrop-blur-sm"
+              style={{ minHeight: '52px' }}
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
