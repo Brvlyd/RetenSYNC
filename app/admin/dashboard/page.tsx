@@ -27,8 +27,6 @@ const item = {
   show: { opacity: 1, y: 0 }
 };
 
-// No extra top margin for this page
-const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
 export default function AdminDashboardPage() {
   // Admin dashboard only, no user-based dashboard
   const organizationStats = {
@@ -40,35 +38,12 @@ export default function AdminDashboardPage() {
 
   return (
     <>
-      {/* Removed company logo for a cleaner admin dashboard */}
       <motion.div 
         variants={container}
         initial="hidden"
         animate="show"
-        className={`space-y-8 p-6 ${pageTopMargin}`}
+        className="space-y-8"
       >
-        {/* Modern Welcome Section */}
-        <motion.div variants={item} className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 rounded-2xl p-8 border border-gray-100 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-3 flex items-center text-gray-900 dark:text-white">
-                <span className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 mr-4 shadow-lg">
-                  <Users className="w-8 h-8 text-white" />
-                </span>
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">Admin Dashboard</span>
-              </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-300">Welcome back, <span className="font-bold text-blue-700 dark:text-blue-300">Admin</span>! Here's your organization overview.</p>
-            </div>
-            <div className="hidden lg:block">
-              <div className="flex space-x-3">
-                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Modern Quick Actions */}
         <motion.div variants={item}>
           <div className="flex items-center justify-between mb-8">

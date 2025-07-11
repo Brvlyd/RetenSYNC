@@ -9,16 +9,13 @@ import {
   Filter, 
   Download,
   TrendingUp,
-  TrendingDown,
   Users,
-  Clock,
   Award,
   AlertTriangle,
   Edit,
   Trash2,
   Eye,
-  X,
-  Key
+  X
 } from 'lucide-react';
 import { 
   fetchPerformanceData, 
@@ -172,33 +169,16 @@ export default function MLPerformancePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <Brain className="h-8 w-8 text-purple-600" />
-                ML Performance Analytics
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Analyze employee performance data using machine learning insights
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
-              >
-                <Plus className="h-5 w-5" />
-                Add Performance Data
-              </button>
-            </div>
-          </div>
-        </motion.div>
+        {/* Add Performance Data Button */}
+        <div className="flex justify-end mb-8">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
+          >
+            <Plus className="h-5 w-5" />
+            Add Performance Data
+          </button>
+        </div>
 
         {/* API Status Notice */}
         {performanceData.length === 0 && !loading && !error && (
@@ -682,7 +662,7 @@ export default function MLPerformancePage() {
                                 }
                               >
                                 {predictionResult.prediction.risk_level.charAt(0).toUpperCase() + predictionResult.prediction.risk_level.slice(1)}
-                              </span>
+                              </span> 
                             ) : (
                               '-'
                             )}
