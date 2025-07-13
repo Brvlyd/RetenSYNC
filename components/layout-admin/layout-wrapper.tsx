@@ -49,7 +49,10 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
         className="flex-1 transition-all duration-400 ease-out flex flex-col"
         style={{ marginLeft: isSidebarCollapsed ? '5rem' : '18rem' }}
       >
-        <Header />
+        <Header 
+          onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          isSidebarCollapsed={isSidebarCollapsed} 
+        />
         <main className="flex-1 overflow-y-auto pb-4 px-4 sm:pb-6 sm:px-6 lg:pb-8 lg:px-8 relative z-10">
           <div className="animate-fade-in max-w-7xl mx-auto">
             {children}

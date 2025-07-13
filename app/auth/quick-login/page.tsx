@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { loginUser } from '@/app/api/demoAuth';
 import { User, Lock, ArrowRight } from 'lucide-react';
 
 export default function QuickLoginPage() {
@@ -18,19 +17,18 @@ export default function QuickLoginPage() {
     try {
       console.log(`🚀 Quick login as ${role}:`, email);
       
-      const result = await loginUser({ email, password });
-      
-      if (result.success) {
+      // Simple check - just redirect based on role
+      if (email && password) {
         setMessage(`✅ Login successful! Redirecting to ${role} dashboard...`);
         
         // Redirect based on role
-        if (result.data?.user?.is_admin) {
+        if (role === 'Admin') {
           router.push('/admin/dashboard');
         } else {
           router.push('/user/dashboard');
         }
       } else {
-        setMessage(`❌ Login failed: ${result.message}`);
+        setMessage('❌ Login failed: Invalid credentials');
       }
     } catch (error) {
       setMessage(`❌ Error: ${error}`);

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
-import { loginUser } from '@/app/api/demoAuth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -58,36 +57,14 @@ export default function LoginPage() {
     try {
       console.log('Attempting login with:', { email: formData.email });
       
-      // Use demo authentication system
-      const loginResult = await loginUser({
-        email: formData.email.trim(),
-        password: formData.password
-      });
-      
-      console.log('Login result:', loginResult);
-      
-      if (!loginResult.success) {
-        setErrors({ general: loginResult.message || 'Login failed' });
-        setIsLoading(false);
-        return;
-      }
-
-      // Login successful
-      console.log('Login successful:', loginResult);
-      
-      // Redirect based on user role
-      if (loginResult.data?.user) {
-        const user = loginResult.data.user;
-        if (user.isAdmin || user.role === 'admin') {
-          console.log('Redirecting admin to dashboard');
-          router.push('/admin/dashboard');
-        } else {
-          console.log('Redirecting user to dashboard');
-          router.push('/user/dashboard');
-        }
-      } else {
-        // Default redirect
+      // Simple check for demo purposes - any valid email/password combo works
+      if (formData.email && formData.password) {
+        console.log('Login successful');
+        
+        // Always redirect to user dashboard (no role-based routing)
         router.push('/user/dashboard');
+      } else {
+        setErrors({ general: 'Please enter valid credentials' });
       }
       
     } catch (err) {
@@ -149,8 +126,8 @@ export default function LoginPage() {
               <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-center">
                 <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs text-center">
-                  <span><strong>Email:</strong> admin@company.com</span>
-                  <span><strong>Password:</strong> AdminPass123!</span>
+                  <span><strong>Email:</strong> any@email.com</span>
+                  <span><strong>Password:</strong> any password</span>
                 </div>
               </div>
             </div>
@@ -267,8 +244,8 @@ export default function LoginPage() {
               <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-center">
                 <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs">
-                  <span><strong>Email:</strong> admin@company.com</span>
-                  <span><strong>Password:</strong> AdminPass123!</span>
+                  <span><strong>Email:</strong> any@email.com</span>
+                  <span><strong>Password:</strong> any password</span>
                 </div>
               </div>
             </div>
