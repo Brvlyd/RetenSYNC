@@ -138,8 +138,8 @@ export const registerUser = async (userData: RegisterRequest): Promise<LoginResp
     }
     
     // Store the token in localStorage
-    if (data.token) {
-      localStorage.setItem('authToken', data.token);
+    if (data.data?.user?.token) {
+      localStorage.setItem('authToken', data.data.user.token);
     }
 
     return data;

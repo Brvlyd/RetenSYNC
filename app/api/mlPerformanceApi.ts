@@ -1,3 +1,6 @@
+// ML Performance API for real turnover prediction data
+import { getAuthToken } from '@/lib/auth-token';
+
 // Predict turnover risk for an employee
 export interface PredictionResult {
   success: boolean;
@@ -28,18 +31,10 @@ export const predictTurnoverRisk = async (employee_id: number): Promise<Predicti
     };
   }
 
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('Authentication token not found. Please login or set a valid API token.');
-  }
-
   try {
     const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/predict/', {
       method: 'POST',
-      headers: {
-        'Authorization': `Token ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({ employee_id }),
     });
 
@@ -82,22 +77,21 @@ const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api/performa
 // Helper function to check if we're in demo mode
 const isUsingDemoMode = (): boolean => {
   if (typeof window === 'undefined') return true;
-  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-  return !token || token === 'demo-token' || token.startsWith('demo-');
+  const authInfo = getAuthToken();
+  return !authInfo.isValid || !authInfo.token || authInfo.token === 'demo-token' || authInfo.token.startsWith('demo-');
 };
 
-// Helper function to get stored token
-const getAuthToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-  
-  // If we have a demo token, return null to trigger demo mode
-  if (token && (token === 'demo-token' || token.startsWith('demo-'))) {
-    return null;
+// Helper function to get authenticated headers
+const getAuthHeaders = (): Record<string, string> => {
+  const authInfo = getAuthToken();
+  if (!authInfo.isValid || !authInfo.token) {
+    throw new Error('Authentication required. Please login.');
   }
   
-  // Fallback to hardcoded token for real API calls if no user token
-  return token || 'b42b585b90fbb149294bf041aaef5085c1ca4935';
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${authInfo.token}`,
+  };
 };
 
 export interface PerformanceData {
@@ -307,18 +301,9 @@ export const fetchPerformanceData = async (): Promise<PerformanceData[]> => {
   }
 
   try {
-    const token = getAuthToken();
-    
-    if (!token) {
-      throw new Error('Authentication token not found. Please login or set a valid API token.');
-    }
-
     const response = await fetch(API_BASE_URL, {
       method: 'GET',
-      headers: {
-        'Authorization': `Token ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
     });
 
     if (response.status === 401) {
@@ -361,18 +346,9 @@ export const createPerformanceData = async (data: CreatePerformanceData): Promis
   }
 
   try {
-    const token = getAuthToken();
-    
-    if (!token) {
-      throw new Error('Authentication token not found. Please login or set a valid API token.');
-    }
-
     const response = await fetch(API_BASE_URL, {
       method: 'POST',
-      headers: {
-        'Authorization': `Token ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
 

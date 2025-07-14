@@ -1,4 +1,6 @@
 // API utility functions for Department management with fallback to demo data
+import { getAuthToken } from '@/lib/auth-token';
+
 const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api';
 
 // Demo data for fallback when real API is not available
@@ -116,22 +118,20 @@ export interface ApiError {
 // Helper function to check if we're in demo mode
 const isUsingDemoMode = (): boolean => {
   if (typeof window === 'undefined') return true;
-  const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-  return !token || token === 'demo-token' || token.startsWith('demo-');
-};
-
-// Helper function to get stored token
-const getAuthToken = (): string | null => {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('authToken') || localStorage.getItem('token');
+  const authInfo = getAuthToken();
+  return !authInfo.isValid || !authInfo.token || authInfo.token === 'demo-token' || authInfo.token.startsWith('demo-');
 };
 
 // Helper function to create authenticated headers
 const getAuthHeaders = (): Record<string, string> => {
-  const token = getAuthToken();
+  const authInfo = getAuthToken();
+  if (!authInfo.isValid || !authInfo.token) {
+    throw new Error('Authentication required. Please login.');
+  }
+  
   return {
     'Content-Type': 'application/json',
-    ...(token && { 'Authorization': `Token ${token}` }),
+    'Authorization': `Token ${authInfo.token}`,
   };
 };
 
@@ -167,11 +167,6 @@ export const getDepartments = async (page?: number, pageSize?: number): Promise<
       previous: null,
       results: DEMO_DEPARTMENTS
     };
-  }
-
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
   }
 
   try {
@@ -212,11 +207,6 @@ export const getDepartmentById = async (id: number): Promise<Department> => {
     return department;
   }
 
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-
   try {
     const response = await fetch(`${API_BASE_URL}/departments/${id}/`, {
       method: 'GET',
@@ -250,11 +240,6 @@ export const createDepartment = async (departmentData: CreateDepartmentRequest):
     };
     DEMO_DEPARTMENTS.push(newDepartment);
     return newDepartment;
-  }
-
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
   }
 
   try {
@@ -299,11 +284,6 @@ export const updateDepartment = async (id: number, departmentData: UpdateDepartm
     return DEMO_DEPARTMENTS[index];
   }
 
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-
   try {
     const response = await fetch(`${API_BASE_URL}/departments/${id}/`, {
       method: 'PUT',
@@ -343,11 +323,6 @@ export const deleteDepartment = async (id: number): Promise<void> => {
     return;
   }
 
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-
   try {
     const response = await fetch(`${API_BASE_URL}/departments/${id}/`, {
       method: 'DELETE',
@@ -376,11 +351,6 @@ export const deleteDepartment = async (id: number): Promise<void> => {
 export const getDepartmentEmployees = async (id: number): Promise<Employee[]> => {
   if (isUsingDemoMode()) {
     return DEMO_EMPLOYEES.filter(emp => emp.department === id);
-  }
-
-  const token = getAuthToken();
-  if (!token) {
-    throw new Error('No authentication token found');
   }
 
   try {

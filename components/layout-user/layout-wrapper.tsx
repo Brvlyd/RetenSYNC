@@ -1,18 +1,17 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
-import Sidebar from './sidebar';
-import Header from './header';
+import SidebarNew from './sidebar-new';
+import HeaderNew from './header-new';
 
 interface LayoutWrapperProps {
   children: React.ReactNode;
 }
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated } = useAuth();
@@ -41,17 +40,14 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
       <div className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-blue-400/10 dark:bg-blue-600/10 rounded-full blur-3xl floating pointer-events-none"></div>
       <div className="absolute top-3/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 lg:w-96 lg:h-96 bg-indigo-400/10 dark:bg-indigo-600/10 rounded-full blur-3xl floating-delayed pointer-events-none"></div>
       
-      <Sidebar onCollapseChange={setIsSidebarCollapsed} />
+      <SidebarNew />
       
       {/* Main content area with Header */}
       <div 
         className="flex-1 transition-all duration-400 ease-out flex flex-col"
-        style={{ marginLeft: isSidebarCollapsed ? '5rem' : '18rem' }}
+        style={{ marginLeft: '18rem' }}
       >
-        <Header 
-          onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          isSidebarCollapsed={isSidebarCollapsed} 
-        />
+        <HeaderNew />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative z-10">
           <div className="animate-fade-in max-w-7xl mx-auto">
             {children}

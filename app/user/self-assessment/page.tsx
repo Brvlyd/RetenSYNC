@@ -1,459 +1,560 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ClipboardList, Plus, Calendar, Clock, CheckCircle, AlertCircle, 
-  Users, TrendingUp, BarChart3, X, Send, Eye, Edit, Trash2
+import { useState } from 'react';
+import { useAuth } from '@/contexts/auth-context';
+import {
+  ClipboardList,
+  Calendar,
+  Clock,
+  Star,
+  TrendingUp,
+  CheckCircle,
+  AlertCircle,
+  Filter,
+  Search,
+  Play,
+  BarChart3,
+  Target,
+  Award,
+  ArrowRight,
+  FileText,
+  Users,
+  Brain
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-interface Survey {
+interface Assessment {
   id: number;
   title: string;
   description: string;
-  type: 'engagement' | 'feedback' | 'pulse' | 'custom';
-  status: 'draft' | 'active' | 'completed';
+  type: 'quarterly' | 'monthly' | 'annual' | 'project';
+  status: 'pending' | 'in-progress' | 'completed' | 'overdue';
   dueDate: string;
-  responses: number;
-  totalTargets: number;
-  createdBy: string;
-  createdAt: string;
-  questions: SurveyQuestion[];
+  completedDate?: string;
+  score?: number;
+  category: string;
+  estimatedTime: string;
+  questions: number;
 }
 
-interface SurveyQuestion {
-  id: number;
-  type: 'multiple-choice' | 'rating' | 'text' | 'yes-no';
-  question: string;
-  options?: string[];
-  required: boolean;
+interface AssessmentResult {
+  category: string;
+  score: number;
+  maxScore: number;
+  improvement: number;
 }
 
-export default function SurveysPage() {
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'assigned' | 'created'>('assigned');
-  const [newSurvey, setNewSurvey] = useState({
-    title: '',
-    description: '',
-    type: 'pulse' as Survey['type'],
-    dueDate: '',
-    questions: [] as SurveyQuestion[]
+export default function SelfAssessmentPage() {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('available');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const assessments: Assessment[] = [
+    {
+      id: 1,
+      title: 'Q4 2024 Performance Review',
+      description: 'Comprehensive quarterly performance self-evaluation covering goals, achievements, and development areas.',
+      type: 'quarterly',
+      status: 'pending',
+      dueDate: '2024-12-31',
+      category: 'Performance',
+      estimatedTime: '45 minutes',
+      questions: 25
+    },
+    {
+      id: 2,
+      title: 'Leadership Skills Assessment',
+      description: 'Evaluate your leadership capabilities, communication skills, and team management abilities.',
+      type: 'monthly',
+      status: 'in-progress',
+      dueDate: '2024-11-30',
+      category: 'Leadership',
+      estimatedTime: '30 minutes',
+      questions: 20
+    },
+    {
+      id: 3,
+      title: 'Technical Competency Review',
+      description: 'Assessment of technical skills, problem-solving abilities, and knowledge in your domain.',
+      type: 'quarterly',
+      status: 'completed',
+      dueDate: '2024-11-15',
+      completedDate: '2024-11-10',
+      score: 87,
+      category: 'Technical',
+      estimatedTime: '60 minutes',
+      questions: 35
+    },
+    {
+      id: 4,
+      title: 'Team Collaboration Assessment',
+      description: 'Evaluate your collaboration skills, teamwork, and contribution to team dynamics.',
+      type: 'monthly',
+      status: 'completed',
+      dueDate: '2024-10-31',
+      completedDate: '2024-10-28',
+      score: 92,
+      category: 'Collaboration',
+      estimatedTime: '25 minutes',
+      questions: 15
+    },
+    {
+      id: 5,
+      title: 'Annual Development Planning',
+      description: 'Comprehensive review of career goals, learning objectives, and professional development plans.',
+      type: 'annual',
+      status: 'overdue',
+      dueDate: '2024-10-15',
+      category: 'Development',
+      estimatedTime: '90 minutes',
+      questions: 50
+    },
+    {
+      id: 6,
+      title: 'Project X Retrospective',
+      description: 'Reflect on your contributions, learnings, and experiences from the recent project.',
+      type: 'project',
+      status: 'pending',
+      dueDate: '2024-12-05',
+      category: 'Project',
+      estimatedTime: '40 minutes',
+      questions: 22
+    }
+  ];
+
+  const assessmentResults: AssessmentResult[] = [
+    {
+      category: 'Technical Skills',
+      score: 87,
+      maxScore: 100,
+      improvement: 5
+    },
+    {
+      category: 'Leadership',
+      score: 78,
+      maxScore: 100,
+      improvement: 12
+    },
+    {
+      category: 'Collaboration',
+      score: 92,
+      maxScore: 100,
+      improvement: 3
+    },
+    {
+      category: 'Communication',
+      score: 85,
+      maxScore: 100,
+      improvement: 8
+    },
+    {
+      category: 'Problem Solving',
+      score: 90,
+      maxScore: 100,
+      improvement: 7
+    }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+      case 'in-progress': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+      case 'pending': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+      case 'overdue': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'quarterly': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300';
+      case 'monthly': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+      case 'annual': return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300';
+      case 'project': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed': return CheckCircle;
+      case 'in-progress': return Play;
+      case 'pending': return Clock;
+      case 'overdue': return AlertCircle;
+      default: return Clock;
+    }
+  };
+
+  const filteredAssessments = assessments.filter(assessment => {
+    const matchesSearch = assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         assessment.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = filterType === 'all' || assessment.type === filterType;
+    const matchesStatus = filterStatus === 'all' || assessment.status === filterStatus;
+    
+    if (activeTab === 'available') {
+      return matchesSearch && matchesType && matchesStatus && ['pending', 'in-progress', 'overdue'].includes(assessment.status);
+    } else {
+      return matchesSearch && matchesType && matchesStatus && assessment.status === 'completed';
+    }
   });
 
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
+  const tabs = [
+    { id: 'available', label: 'Available Assessments', count: assessments.filter(a => ['pending', 'in-progress', 'overdue'].includes(a.status)).length },
+    { id: 'completed', label: 'Completed', count: assessments.filter(a => a.status === 'completed').length },
+    { id: 'results', label: 'Results & Analytics', count: assessmentResults.length }
+  ];
+
+  const stats = [
+    {
+      title: 'Completed This Quarter',
+      value: '6',
+      icon: CheckCircle,
+      color: 'text-green-600'
+    },
+    {
+      title: 'In Progress',
+      value: '2',
+      icon: Play,
+      color: 'text-blue-600'
+    },
+    {
+      title: 'Average Score',
+      value: '87%',
+      icon: Star,
+      color: 'text-yellow-600'
+    },
+    {
+      title: 'Improvement',
+      value: '+12%',
+      icon: TrendingUp,
+      color: 'text-purple-600'
     }
-
-    // Mock survey data
-    setSurveys([
-      {
-        id: 1,
-        title: 'Q4 Employee Engagement Survey',
-        description: 'Annual comprehensive survey to measure employee satisfaction and engagement levels.',
-        type: 'engagement',
-        status: 'active',
-        dueDate: '2024-12-31',
-        responses: 156,
-        totalTargets: 200,
-        createdBy: 'HR Team',
-        createdAt: '2024-11-01',
-        questions: [
-          {
-            id: 1,
-            type: 'rating',
-            question: 'How satisfied are you with your current role?',
-            required: true
-          },
-          {
-            id: 2,
-            type: 'multiple-choice',
-            question: 'What motivates you most at work?',
-            options: ['Career growth', 'Recognition', 'Work-life balance', 'Compensation'],
-            required: true
-          }
-        ]
-      },
-      {
-        id: 2,
-        title: 'Team Collaboration Feedback',
-        description: 'Quick pulse survey about team dynamics and collaboration effectiveness.',
-        type: 'pulse',
-        status: 'completed',
-        dueDate: '2024-11-15',
-        responses: 45,
-        totalTargets: 45,
-        createdBy: 'Team Lead',
-        createdAt: '2024-11-01',
-        questions: [
-          {
-            id: 1,
-            type: 'yes-no',
-            question: 'Do you feel comfortable sharing ideas with your team?',
-            required: true
-          }
-        ]
-      }
-    ]);
-  }, []);
-
-  const handleCreateSurvey = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!newSurvey.title || !newSurvey.description || !newSurvey.dueDate) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
-    const survey: Survey = {
-      id: surveys.length + 1,
-      ...newSurvey,
-      status: 'draft',
-      responses: 0,
-      totalTargets: 0,
-      createdBy: user?.name || 'You',
-      createdAt: new Date().toISOString().split('T')[0],
-      questions: newSurvey.questions.length > 0 ? newSurvey.questions : [
-        {
-          id: 1,
-          type: 'rating',
-          question: 'Sample question - please edit',
-          required: true
-        }
-      ]
-    };
-
-    setSurveys([survey, ...surveys]);
-    setNewSurvey({
-      title: '',
-      description: '',
-      type: 'pulse',
-      dueDate: '',
-      questions: []
-    });
-    setShowCreateForm(false);
-  };
-
-  const addQuestion = () => {
-    const newQuestion: SurveyQuestion = {
-      id: newSurvey.questions.length + 1,
-      type: 'rating',
-      question: '',
-      required: true
-    };
-    setNewSurvey({
-      ...newSurvey,
-      questions: [...newSurvey.questions, newQuestion]
-    });
-  };
-
-  const updateQuestion = (index: number, field: keyof SurveyQuestion, value: any) => {
-    const updatedQuestions = [...newSurvey.questions];
-    updatedQuestions[index] = { ...updatedQuestions[index], [field]: value };
-    setNewSurvey({ ...newSurvey, questions: updatedQuestions });
-  };
-
-  const removeQuestion = (index: number) => {
-    setNewSurvey({
-      ...newSurvey,
-      questions: newSurvey.questions.filter((_, i) => i !== index)
-    });
-  };
-
-  const getStatusColor = (status: Survey['status']) => {
-    switch (status) {
-      case 'active': return 'text-green-600 bg-green-100 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700';
-      case 'completed': return 'text-blue-600 bg-blue-100 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700';
-      case 'draft': return 'text-gray-600 bg-gray-100 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-700';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
-    }
-  };
-
-  const getTypeColor = (type: Survey['type']) => {
-    switch (type) {
-      case 'engagement': return 'text-purple-600 bg-purple-100 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-700';
-      case 'feedback': return 'text-emerald-600 bg-emerald-100 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-700';
-      case 'pulse': return 'text-blue-600 bg-blue-100 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700';
-      case 'custom': return 'text-amber-600 bg-amber-100 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-700';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
-    }
-  };
-
-  const assignedSurveys = surveys.filter(survey => survey.createdBy !== user?.name);
-  const createdSurveys = surveys.filter(survey => survey.createdBy === user?.name);
+  ];
 
   return (
-    <div className="space-y-6 lg:space-y-8">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-blue-600/20 rounded-2xl lg:rounded-3xl blur-xl"></div>
-        <div className="relative bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 dark:border-gray-700/20 shadow-2xl">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="p-3 sm:p-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl lg:rounded-3xl shadow-lg">
-                <ClipboardList className="h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-indigo-900 to-purple-900 dark:from-gray-100 dark:via-indigo-100 dark:to-purple-100 bg-clip-text text-transparent">
-                  Surveys
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base lg:text-lg mt-1">Gather insights and feedback from your team</p>
+      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 rounded-2xl p-8 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 opacity-50"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Self Assessment</h1>
+              <p className="text-purple-100 text-lg">
+                Track your progress and reflect on your professional development
+              </p>
+            </div>
+            <div className="hidden md:block">
+              <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <ClipboardList className="w-12 h-12 text-white" />
               </div>
             </div>
-            <button
-              onClick={() => setShowCreateForm(true)}
-              className="group bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl lg:rounded-2xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl hover:scale-105 w-full lg:w-auto justify-center lg:justify-start"
-            >
-              <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-              <span className="font-semibold text-sm sm:text-base">Create Survey</span>
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        {[
-          { label: 'Total Surveys', value: surveys.length, icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
-          { label: 'Active Surveys', value: surveys.filter(s => s.status === 'active').length, icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
-          { label: 'Total Responses', value: surveys.reduce((sum, s) => sum + s.responses, 0), icon: Users, color: 'from-blue-500 to-cyan-500' },
-          { label: 'Completion Rate', value: '78%', icon: BarChart3, color: 'from-amber-500 to-orange-500' }
-        ].map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-4 lg:p-6"
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <div
+            key={stat.title}
+            className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}>
-                <stat.icon className="h-6 w-6 text-white" />
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {stat.value}
+                </p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {stat.title}
+                </p>
               </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {stat.value}
+              <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                <stat.icon className={cn("w-6 h-6", stat.color)} />
               </div>
             </div>
-            <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">{stat.label}</div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-2 bg-white dark:bg-gray-800 rounded-xl p-2 border border-gray-100 dark:border-gray-700 shadow-lg">
-        <button
-          onClick={() => setActiveTab('assigned')}
-          className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
-            activeTab === 'assigned'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
-          }`}
-        >
-          <ClipboardList className="h-5 w-5" />
-          <span>Assigned to Me ({assignedSurveys.length})</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('created')}
-          className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
-            activeTab === 'created'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
-          }`}
-        >
-          <Plus className="h-5 w-5" />
-          <span>Created by Me ({createdSurveys.length})</span>
-        </button>
+      {/* Navigation Tabs */}
+      <div className="border-b border-gray-200 dark:border-gray-700">
+        <nav className="-mb-px flex space-x-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                'flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors',
+                activeTab === tab.id
+                  ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+              )}
+            >
+              {tab.label}
+              <span className="ml-2 px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded-full">
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </nav>
       </div>
 
-      {/* Surveys List */}
-      <div className="space-y-6">
-        <AnimatePresence>
-          {(activeTab === 'assigned' ? assignedSurveys : createdSurveys).map((survey, index) => (
-            <motion.div
-              key={survey.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ delay: index * 0.1 }}
-              className="group bg-white dark:bg-gray-800 rounded-2xl lg:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden"
-            >
-              <div className="p-6 lg:p-8">
-                <div className="flex flex-col lg:flex-row lg:items-start justify-between space-y-4 lg:space-y-0">
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-0">{survey.title}</h3>
-                      <div className="flex items-center space-x-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(survey.status)}`}>
-                          {survey.status.toUpperCase()}
-                        </span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getTypeColor(survey.type)}`}>
-                          {survey.type.toUpperCase()}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">{survey.description}</p>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                      <div className="flex items-center text-gray-600 dark:text-gray-400">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        <span className="text-sm">Due: {new Date(survey.dueDate).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600 dark:text-gray-400">
-                        <Users className="h-4 w-4 mr-2" />
-                        <span className="text-sm">Responses: {survey.responses}/{survey.totalTargets}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600 dark:text-gray-400">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span className="text-sm">Created: {new Date(survey.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center text-gray-600 dark:text-gray-400">
-                        <ClipboardList className="h-4 w-4 mr-2" />
-                        <span className="text-sm">{survey.questions.length} Questions</span>
-                      </div>
-                    </div>
+      {/* Filters */}
+      {(activeTab === 'available' || activeTab === 'completed') && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search assessments..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
+              </div>
+              
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              >
+                <option value="all">All Types</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="monthly">Monthly</option>
+                <option value="annual">Annual</option>
+                <option value="project">Project</option>
+              </select>
 
-                    {/* Progress Bar */}
-                    {survey.totalTargets > 0 && (
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Response Progress</span>
-                          <span className="text-sm font-bold text-gray-900 dark:text-white">
-                            {Math.round((survey.responses / survey.totalTargets) * 100)}%
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="overdue">Overdue</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab Content */}
+      {(activeTab === 'available' || activeTab === 'completed') && (
+        <div className="space-y-6">
+          {filteredAssessments.map((assessment) => {
+            const StatusIcon = getStatusIcon(assessment.status);
+            return (
+              <div
+                key={assessment.id}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <ClipboardList className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {assessment.title}
+                        </h3>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(assessment.status)}`}>
+                            {assessment.status.replace('-', ' ')}
+                          </span>
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(assessment.type)}`}>
+                            {assessment.type}
                           </span>
                         </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-1000"
-                            style={{ width: `${(survey.responses / survey.totalTargets) * 100}%` }}
-                          />
+                      </div>
+                    </div>
+                    
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      {assessment.description}
+                    </p>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Due: {new Date(assessment.dueDate).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-4 h-4 mr-2" />
+                        {assessment.estimatedTime}
+                      </div>
+                      <div className="flex items-center">
+                        <FileText className="w-4 h-4 mr-2" />
+                        {assessment.questions} questions
+                      </div>
+                      {assessment.score && (
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 mr-2" />
+                          Score: {assessment.score}%
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col items-end space-y-2">
+                    {assessment.status === 'completed' && assessment.score && (
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                          {assessment.score}%
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Completed {assessment.completedDate && new Date(assessment.completedDate).toLocaleDateString()}
                         </div>
                       </div>
                     )}
-                  </div>
-
-                  <div className="flex flex-row lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 lg:ml-6">
-                    {activeTab === 'assigned' && survey.status === 'active' && (
-                      <button className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 text-sm font-medium flex-1 lg:flex-initial">
-                        <Send className="h-4 w-4 mr-2" />
-                        Take Survey
+                    
+                    {assessment.status !== 'completed' && (
+                      <button className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        {assessment.status === 'in-progress' ? (
+                          <>
+                            <Play className="w-4 h-4 mr-2" />
+                            Continue
+                          </>
+                        ) : (
+                          <>
+                            <ArrowRight className="w-4 h-4 mr-2" />
+                            Start
+                          </>
+                        )}
                       </button>
                     )}
                     
-                    {activeTab === 'created' && (
-                      <>
-                        <button className="flex items-center justify-center px-4 py-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-xl transition-all duration-300 text-sm font-medium flex-1 lg:flex-initial">
-                          <Eye className="h-4 w-4 mr-2" />
-                          View
-                        </button>
-                        <button className="flex items-center justify-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-all duration-300 text-sm font-medium flex-1 lg:flex-initial">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit
-                        </button>
-                      </>
+                    {assessment.status === 'completed' && (
+                      <button className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        <FileText className="w-4 h-4 mr-2" />
+                        View Results
+                      </button>
                     )}
                   </div>
                 </div>
               </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {/* Create Survey Modal */}
-      {showCreateForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-                <ClipboardList className="h-6 w-6 mr-3 text-indigo-600" />
-                Create New Survey
+            );
+          })}
+          
+          {filteredAssessments.length === 0 && (
+            <div className="text-center py-12">
+              <ClipboardList className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                No assessments found
               </h3>
-              <button
-                onClick={() => setShowCreateForm(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-              >
-                <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-              </button>
+              <p className="text-gray-500 dark:text-gray-400">
+                Try adjusting your search criteria or filters.
+              </p>
             </div>
-            
-            <form onSubmit={handleCreateSurvey} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Survey Title</label>
-                <input
-                  type="text"
-                  value={newSurvey.title}
-                  onChange={(e) => setNewSurvey({...newSurvey, title: e.target.value})}
-                  className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                  placeholder="Enter survey title"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
-                <textarea
-                  rows={3}
-                  value={newSurvey.description}
-                  onChange={(e) => setNewSurvey({...newSurvey, description: e.target.value})}
-                  className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
-                  placeholder="Describe the purpose of this survey"
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Survey Type</label>
-                  <select
-                    value={newSurvey.type}
-                    onChange={(e) => setNewSurvey({...newSurvey, type: e.target.value as Survey['type']})}
-                    className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="pulse">Pulse Survey</option>
-                    <option value="engagement">Engagement Survey</option>
-                    <option value="feedback">Feedback Survey</option>
-                    <option value="custom">Custom Survey</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Due Date</label>
-                  <input
-                    type="date"
-                    value={newSurvey.dueDate}
-                    onChange={(e) => setNewSurvey({...newSurvey, dueDate: e.target.value})}
-                    className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-end space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateForm(false)}
-                  className="px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 font-semibold"
+          )}
+        </div>
+      )}
+
+      {activeTab === 'results' && (
+        <div className="space-y-8">
+          {/* Performance Overview */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+              Performance Overview
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {assessmentResults.map((result, index) => (
+                <div
+                  key={index}
+                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center font-semibold"
-                >
-                  <ClipboardList className="h-5 w-5 mr-2" />
-                  Create Survey
-                </button>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-gray-900 dark:text-white">
+                      {result.category}
+                    </h4>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900 dark:text-white">
+                        {result.score}%
+                      </div>
+                      <div className={cn(
+                        "text-xs font-medium",
+                        result.improvement > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                      )}>
+                        {result.improvement > 0 ? '+' : ''}{result.improvement}% from last
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                      <span>Progress</span>
+                      <span>{result.score}/{result.maxScore}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(result.score / result.maxScore) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Analytics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Assessment Trends
+                </h3>
+                <BarChart3 className="w-5 h-5 text-gray-400" />
               </div>
-            </form>
-          </motion.div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Completion Rate</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">85%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Average Score</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">87%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Improvement</span>
+                  <span className="font-semibold text-green-600 dark:text-green-400">+12%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Time Investment</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">15h/month</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Development Areas
+                </h3>
+                <Target className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="space-y-3">
+                {[
+                  { area: 'Leadership Skills', priority: 'High', color: 'text-red-600' },
+                  { area: 'Technical Writing', priority: 'Medium', color: 'text-yellow-600' },
+                  { area: 'Public Speaking', priority: 'Medium', color: 'text-yellow-600' },
+                  { area: 'Data Analysis', priority: 'Low', color: 'text-green-600' }
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <span className="text-sm text-gray-900 dark:text-white">{item.area}</span>
+                    <span className={`text-xs font-medium ${item.color}`}>{item.priority}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

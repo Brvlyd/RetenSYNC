@@ -56,7 +56,7 @@ export default function AdminHeader({ onToggleSidebar, isSidebarCollapsed }: Hea
   };
 
   return (
-    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 h-16 flex items-center justify-between px-4 sm:px-6 relative z-50 shadow-sm">
+    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 h-16 flex items-center justify-between px-4 sm:px-6 relative z-50 shadow-sm pt-4 pb-4">
       {/* Left Section */}
       <div className="flex items-center space-x-4">
         {/* Sidebar Toggle */}

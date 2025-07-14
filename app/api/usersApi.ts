@@ -1,5 +1,7 @@
 // Users API service for fetching real user data
 import { PerformanceData, fetchPerformanceData } from './mlPerformanceApi';
+import { authenticatedFetch } from '@/lib/api-client';
+import { getAuthToken } from '@/lib/auth-token';
 
 export interface User {
   id: number;
@@ -31,14 +33,20 @@ export interface Department {
   riskLevel: 'low' | 'medium' | 'high';
 }
 
-// Get auth token from localStorage (compatible with new auth system)
-const getAuthToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('auth_token') || 
-           localStorage.getItem('api_token') || 
-           'b42b585b90fbb149294bf041aaef5085c1ca4935'; // fallback for backward compatibility
+// API Base URL
+const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api';
+
+// Get authenticated headers
+const getAuthHeaders = () => {
+  const authInfo = getAuthToken();
+  if (!authInfo.isValid || !authInfo.token) {
+    throw new Error('Authentication required. Please login.');
   }
-  return 'b42b585b90fbb149294bf041aaef5085c1ca4935';
+  
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Token ${authInfo.token}`
+  };
 };
 
 // Convert performance data to user format
@@ -234,13 +242,9 @@ export const filterUsersByDepartment = async (department: string): Promise<User[
 // Hard delete user
 export const hardDeleteUser = async (userId: number): Promise<boolean> => {
   try {
-    const token = getAuthToken();
-    const response = await fetch(`https://turnover-api-hd7ze.ondigitalocean.app/api/performance/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/performance/${userId}`, {
       method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
     });
     
     if (!response.ok) {
@@ -259,13 +263,9 @@ export const hardDeleteUser = async (userId: number): Promise<boolean> => {
 // Add user
 export const addUser = async (userData: Partial<User>): Promise<User> => {
   try {
-    const token = getAuthToken();
-    const response = await fetch(`https://turnover-api-hd7ze.ondigitalocean.app/api/performance`, {
+    const response = await fetch(`${API_BASE_URL}/performance`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         employee_name: userData.name,
         employee_email: userData.email,
@@ -296,13 +296,9 @@ export const addUser = async (userData: Partial<User>): Promise<User> => {
 // Update user
 export const updateUser = async (userId: number, userData: Partial<User>): Promise<User> => {
   try {
-    const token = getAuthToken();
-    const response = await fetch(`https://turnover-api-hd7ze.ondigitalocean.app/api/performance/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/performance/${userId}`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         employee_name: userData.name,
         employee_email: userData.email,

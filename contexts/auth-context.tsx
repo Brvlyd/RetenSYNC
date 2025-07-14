@@ -82,6 +82,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Demo user data for different roles
   const createDemoUser = (email: string, role: 'user' | 'admin' | 'hr' | 'manager' = 'user'): User => {
+    // Special handling for admin@company.com
+    if (email === 'admin@company.com' && role === 'admin') {
+      return {
+        id: 'admin-1',
+        email,
+        first_name: 'System',
+        last_name: 'Administrator',
+        phone_number: '+1234567890',
+        date_of_birth: '1985-01-01',
+        gender: 'Not specified',
+        marital_status: 'Single',
+        education_level: 'Master\'s Degree',
+        address: '123 Company HQ, Business District, BD 12345',
+        position: 'System Administrator',
+        department: 1,
+        hire_date: '2020-01-01',
+        role,
+        avatar: '',
+        bio: 'System Administrator with full access to all RetenSYNC features.',
+        skills: ['System Administration', 'User Management', 'Analytics', 'Security'],
+        experience_years: 10,
+        status: 'active' as const
+      };
+    }
+
+    // Default demo user creation for other users
     const baseUser = {
       id: `demo-${Date.now()}`,
       email,
@@ -165,13 +191,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     setUser(null);
 
+    // Check for specific admin credentials first (immediate response)
+    if (email === 'admin@company.com' && password === 'AdminPass123!') {
+      const role: 'admin' = 'admin';
+      const demoUser = createDemoUser(email, role);
+      setUser(demoUser);
+      
+      // Create demo token data
+      const demoTokenData: TokenData = {
+        token: `admin-token-${Date.now()}`,
+        role,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+        userId: demoUser.id,
+        email: demoUser.email
+      };
+      
+      // Save demo token
+      saveAuthToken(demoTokenData);
+      setIsLoading(false);
+      
+      // Redirect to admin dashboard
+      router.push('/admin/dashboard');
+      return true;
+    }
+
     try {
-      // Try real API login first
+      // Try real API login first with shorter timeout
       const authApi = await import('@/app/api/authApi');
-      const response = await authApi.loginUser({
+      
+      // Create a promise that will timeout quickly
+      const loginPromise = authApi.loginUser({
         email: email,
         password: password
       });
+      
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('API timeout')), 3000) // 3 second timeout
+      );
+      
+      const response = await Promise.race([loginPromise, timeoutPromise]) as any;
       
       if (response.success && response.data?.user) {
         const user = response.data.user;
@@ -236,10 +294,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Fallback to demo login logic
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Remove artificial delay for faster login
+      // await new Promise(resolve => setTimeout(resolve, 1000));
       
       if (email && password) {
-        // Determine role based on email or other criteria
+        // Determine role based on email or other criteria for other users
         let role: 'user' | 'admin' | 'hr' | 'manager' = 'user';
         
         if (email.includes('admin')) {
@@ -357,8 +416,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (apiError) {
         console.warn('Real API registration failed, using demo mode:', apiError);
         
-        // Fallback to demo registration
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Fallback to demo registration (removed artificial delay)
+        // await new Promise(resolve => setTimeout(resolve, 1000));
         
         // Create demo user from registration data
         const demoUser: User = {
