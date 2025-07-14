@@ -78,7 +78,8 @@ const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api/performa
 const isUsingDemoMode = (): boolean => {
   if (typeof window === 'undefined') return true;
   const authInfo = getAuthToken();
-  return !authInfo.isValid || !authInfo.token || authInfo.token === 'demo-token' || authInfo.token.startsWith('demo-');
+  // Check if no valid token or if token is clearly a demo token
+  return !authInfo.isValid || !authInfo.token || authInfo.token.startsWith('demo-');
 };
 
 // Helper function to get authenticated headers
@@ -86,6 +87,11 @@ const getAuthHeaders = (): Record<string, string> => {
   const authInfo = getAuthToken();
   if (!authInfo.isValid || !authInfo.token) {
     throw new Error('Authentication required. Please login.');
+  }
+  
+  // Don't provide headers for demo tokens - this will force demo mode
+  if (authInfo.token.startsWith('demo-')) {
+    throw new Error('Demo mode - using local data');
   }
   
   return {

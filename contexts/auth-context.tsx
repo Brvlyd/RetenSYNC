@@ -191,29 +191,93 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
       
-      // For demo purposes, accept any email/password combination
-      // In production, this would make an actual API call
-      const mockUser = {
-        id: '1',
-        email: email,
-        first_name: 'Demo',
-        last_name: 'User',
-        role: 'user',
-        department: 'Engineering',
-        position: 'Software Developer',
-        avatar: '/assets/avatar.png',
-        // Add authentication token for API calls
-        token: 'demo-auth-token-' + Date.now()
-      };
-      
-      setUser(mockUser);
-      // Store token in localStorage for API calls
-      localStorage.setItem('auth-token', mockUser.token);
-      
-      // Navigate to dashboard
-      router.push('/user/dashboard');
-      
-      return true;
+      // Try to login with real API first
+      try {
+        const { loginUser } = await import('@/app/api/authApi');
+        
+        const response = await loginUser({ email, password });
+        
+        if (response.success && response.data?.user) {
+          const apiUser = response.data.user;
+          
+          // Determine role based on flags
+          let userRole: 'user' | 'admin' | 'hr' | 'manager' = 'user';
+          if (apiUser.is_admin) userRole = 'admin';
+          else if (apiUser.is_hr) userRole = 'hr';
+          else if (apiUser.is_manager) userRole = 'manager';
+          
+          // Create user object from API response
+          const authenticatedUser: User = {
+            id: apiUser.id.toString(),
+            email: apiUser.email,
+            first_name: apiUser.first_name,
+            last_name: apiUser.last_name,
+            phone_number: apiUser.phone_number || '',
+            date_of_birth: apiUser.date_of_birth || '',
+            gender: apiUser.gender || '',
+            marital_status: apiUser.marital_status || '',
+            education_level: apiUser.education_level || '',
+            address: apiUser.address || '',
+            position: apiUser.position || '',
+            department: apiUser.department,
+            hire_date: apiUser.hire_date || '',
+            role: userRole,
+            avatar: '',
+            bio: '',
+            skills: [],
+            experience_years: 0,
+            status: apiUser.is_active ? 'active' : 'inactive'
+          };
+          
+          setUser(authenticatedUser);
+          
+          // Save token using proper auth system (token is in user object)
+          const tokenData: TokenData = {
+            token: apiUser.token,
+            role: userRole,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            userId: authenticatedUser.id,
+            email: authenticatedUser.email
+          };
+          saveAuthToken(tokenData);
+          
+          // Navigate to appropriate dashboard
+          const dashboardPath = userRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+          router.push(dashboardPath);
+          
+          return true;
+        } else {
+          throw new Error(response.message || 'Login failed');
+        }
+      } catch (apiError) {
+        console.warn('Real API login failed, using demo mode:', apiError);
+        
+        // Fallback to demo login
+        // Determine demo role based on email
+        let demoRole: 'user' | 'admin' | 'hr' | 'manager' = 'user';
+        if (email === 'admin@company.com') demoRole = 'admin';
+        else if (email.includes('hr@') || email.includes('hr.')) demoRole = 'hr';
+        else if (email.includes('manager@') || email.includes('manager.')) demoRole = 'manager';
+        
+        const demoUser = createDemoUser(email, demoRole);
+        setUser(demoUser);
+        
+        // Save demo token using proper auth system
+        const demoTokenData: TokenData = {
+          token: `demo-token-${demoRole}-${Date.now()}`,
+          role: demoRole,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          userId: demoUser.id,
+          email: demoUser.email
+        };
+        saveAuthToken(demoTokenData);
+        
+        // Navigate to appropriate dashboard
+        const dashboardPath = demoRole === 'admin' ? '/admin/dashboard' : '/user/dashboard';
+        router.push(dashboardPath);
+        
+        return true;
+      }
     } catch (error) {
       console.error('Login error:', error);
       return false;
@@ -354,11 +418,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await logoutUser();
     } catch (error) {
       console.warn('API logout failed, clearing local state:', error);
-      // Always clear local state even if API fails
-      localStorage.removeItem('authToken');
     }
     
+    // Always clear local state and tokens
     setUser(null);
+    removeAuthToken(); // Use proper token removal function
     router.push('/auth/login');
   };
 
