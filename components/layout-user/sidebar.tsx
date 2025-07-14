@@ -172,7 +172,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
               <div className="relative">
                 <div className="rounded-xl w-12 h-12 overflow-hidden shadow-lg transition-transform group-hover:scale-105">
                   <Image
-                    src="C:/ebeb/Tugas/Codingan/RetenSYNC/RetenSYNC/assets/Logo.png"
+                    src="/assets/Logo.png"
                     alt="RetenSYNC Logo"
                     width={48}
                     height={48}

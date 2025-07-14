@@ -7,7 +7,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
-import Logo from '@/assets/Logo.png';
 import {
   BarChart3,
   MessageSquare,
@@ -176,7 +175,7 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <Image
-                src={Logo}
+                src="/assets/Logo.png"
                 alt="RetenSYNC Logo"
                 width={48}
                 height={48}

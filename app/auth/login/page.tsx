@@ -93,15 +93,15 @@ export default function LoginPage() {
           <div className="pointer-events-none absolute left-0 top-0 w-full h-2 sm:h-3 rounded-t-2xl sm:rounded-t-[2.5rem] bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
           
           {/* Left: Logo and Welcome */}
-          <div className="flex flex-col items-center justify-center md:w-1/2 w-full px-2 py-4 md:py-0 border-b md:border-b-0 md:border-r border-blue-100 dark:border-blue-900 relative z-30">
+          <div className="flex flex-col items-start justify-center md:w-1/2 w-full px-2 py-4 md:py-0 border-b md:border-b-0 md:border-r border-blue-100 dark:border-blue-900 relative z-30">
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-center justify-center mb-2 drop-shadow-2xl"
+              className="inline-flex items-start justify-start mb-2 drop-shadow-2xl"
               style={{ position: 'relative', zIndex: 30 }}
             >
-              <span className="relative flex items-center justify-center">
+              <span className="relative flex items-start justify-start">
                 <span className="absolute w-72 h-20 sm:w-[420px] sm:h-[110px] rounded-xl sm:rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10" style={{filter:'blur(0.5px)'}}></span>
                 <Image
                   src="/assets/RetenSYNC.png"
@@ -113,13 +113,13 @@ export default function LoginPage() {
                 />
               </span>
             </motion.div>
-            <p className="text-sm sm:text-base lg:text-lg mt-2 font-semibold text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-3 py-1 rounded-xl inline-block shadow-sm animate-fade-in text-center">Welcome! Please sign in</p>
+            <p className="text-sm sm:text-base lg:text-lg mt-2 font-semibold text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-3 py-1 rounded-xl shadow-sm animate-fade-in text-left">Welcome! Please sign in</p>
             
             {/* Demo Credentials (mobile only) */}
             <div className="block md:hidden mt-4 w-full px-2">
-              <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-center">
+              <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-start">
                 <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
-                <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs text-center">
+                <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs text-left">
                   <span><strong>Email:</strong> any@email.com</span>
                   <span><strong>Password:</strong> any password</span>
                 </div>
