@@ -17,20 +17,10 @@ export const metadata: Metadata = {
         url: '/favicon.ico',
         sizes: '16x16',
         type: 'image/x-icon',
-      },
-      {
-        url: '/assets/Logo.png',
-        sizes: '16x16',
-        type: 'image/png',
-      },
-      {
-        url: '/assets/Logo.png',
-        sizes: '32x32',
-        type: 'image/png',
       }
     ],
     shortcut: '/favicon.ico',
-    apple: '/assets/Logo.png',
+    apple: '/favicon.ico',
   },
 };
 
