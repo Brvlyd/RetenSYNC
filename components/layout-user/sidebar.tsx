@@ -52,9 +52,8 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   const baseNavigation: NavigationItem[] = [
     { name: 'Dashboard', href: '/user/dashboard', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
     { name: 'Performance Review', href: '/user/performance-review', icon: ClipboardList, color: 'from-indigo-500 to-purple-500' },
-    { name: 'Goals', href: '/user/goals', icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
+    { name: 'Self Assessment', href: '/user/self-assessment', icon: TrendingUp, color: 'from-emerald-500 to-teal-500' },
     { name: 'Learning', href: '/user/learning', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
-    { name: 'Surveys', href: '/user/surveys', icon: FileText, color: 'from-violet-500 to-purple-500' },
   ];
   
   // Admin-only navigation items
@@ -64,9 +63,9 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
     { name: 'Departments', href: '/admin/departments', icon: Building, color: 'from-purple-500 to-violet-500' },
   ];
   
-  // HR Interactions section
+  // HR Interactions section (updated to use correct paths)
   const hrInteractions: NavigationItem[] = [
-    { name: 'HR Interactions', href: '/user/hr-interactions', icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
+    { name: 'HR Interactions', href: '/user/Interactions', icon: Heart, color: 'from-pink-500 to-rose-500', isParent: true },
     { name: 'Peer Recognition', href: '/user/shoutouts', icon: Award, color: 'from-amber-500 to-orange-500', isChild: true },
     { name: '1-on-1 Meetings', href: '/user/1on1', icon: Calendar, color: 'from-blue-500 to-cyan-500', isChild: true },
     { name: 'Feedback', href: '/user/feedback', icon: MessageSquare, color: 'from-emerald-500 to-teal-500', isChild: true },
