@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/contexts/theme-context';
+import { AuthProvider } from '@/contexts/auth-context';
 import LayoutWrapper from '@/components/layout-wrapper';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -43,7 +44,9 @@ export default function RootLayout({
       <body className={`${inter.className} h-full overflow-hidden`}>
         <ErrorBoundary>
           <ThemeProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
+            <AuthProvider>
+              <LayoutWrapper>{children}</LayoutWrapper>
+            </AuthProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </body>

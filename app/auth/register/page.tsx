@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, Building, Briefcase, Hash, AlertCircle, CheckCircle, Phone } from 'lucide-react';
 import Image from 'next/image';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { register, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,7 +29,6 @@ export default function RegisterPage() {
     hire_date: ''
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   // These should ideally come from the API, but for demo purposes:
@@ -213,9 +214,7 @@ export default function RegisterPage() {
 
     if (!validateForm()) return;
 
-    setIsLoading(true);
-
-    // Prepare payload for the external API (all required fields, correct types, trimmed, no empty string)
+    // Prepare payload with form data
     const payload = {
       email: formData.email.trim(),
       password: formData.password.trim(),
@@ -232,7 +231,8 @@ export default function RegisterPage() {
       department: parseInt(formData.department, 10),
       hire_date: formData.hire_date.trim()
     };
-    // Final check: if any field is empty or department is not a valid number, do not submit
+
+    // Final validation check
     if (
       !payload.email ||
       !payload.password ||
@@ -253,64 +253,28 @@ export default function RegisterPage() {
         ...prev,
         general: 'Please fill all fields correctly.'
       }));
-      setIsLoading(false);
       return;
     }
 
     try {
-      // Debug: log payload
       console.log('Register payload:', payload);
-      // Call the external API directly (with trailing slash)
-      const response = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      // Debug: log API response
-      console.log('Register API response:', data);
-
-      if (!response.ok || !data.success) {
-        // Show all field errors if available
-        let errorMsg = data.message || data.error || 'Registration failed';
-        if (data.errors) {
-          errorMsg += ': ' + Object.values(data.errors).flat().join(', ');
-        }
+      
+      const success = await register(payload);
+      
+      if (success) {
+        setSuccess(true);
+      } else {
         setErrors(prev => ({
           ...prev,
-          general: errorMsg
+          general: 'Registration failed. Please try again.'
         }));
-        setIsLoading(false);
-        return;
       }
-
-      // Store user data in localStorage after successful registration
-      if (data.data && data.data.user) {
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        // Dispatch custom event to notify components of user data update
-        window.dispatchEvent(new Event('userDataUpdated'));
-      }
-
-      setSuccess(true);
-      setIsLoading(false);
-
-      // Redirect to dashboard based on user role after successful registration
-      setTimeout(() => {
-        if (data.data && data.data.user && data.data.user.role === 'admin') {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/user/dashboard');
-        }
-      }, 1500);
     } catch (err) {
-      // Debug: log error
       console.error('Register error:', err);
       setErrors(prev => ({
         ...prev,
         general: 'Registration failed. Please try again.'
       }));
-      setIsLoading(false);
     }
   };
 

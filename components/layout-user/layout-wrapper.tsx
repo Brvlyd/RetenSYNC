@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
 import Sidebar from './sidebar';
 import Header from './header';
@@ -14,19 +15,17 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const { isAuthenticated } = useAuth();
 
   // Check if current route is an auth route
   const isAuthRoute = pathname?.startsWith('/auth');
 
   useEffect(() => {
     // Only check authentication for non-auth routes
-    if (!isAuthRoute) {
-      const user = localStorage.getItem('user');
-      if (!user) {
-        router.push('/auth/login');
-      }
+    if (!isAuthRoute && !isAuthenticated) {
+      router.push('/auth/login');
     }
-  }, [router, isAuthRoute]);
+  }, [router, isAuthRoute, isAuthenticated]);
 
   // If it's an auth route, render children without layout
   if (isAuthRoute) {

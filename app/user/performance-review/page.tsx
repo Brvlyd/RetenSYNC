@@ -1,10 +1,17 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+'use client  const [activeSection, setActiveSection] = useState<'overview' | 'goals' | 'history'>('overview');
+  const [showAddGoal, setShowAddGoal] = useState(false);
+  const [newGoal, setNewGoal] = useState({
+    title: '',
+    description: '',
+    dueDate: '',
+    priority: 'medium'
+  });ort { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/auth-context';
 import { performanceReviewData, goalsData } from '@/lib/dummy-data';
 import { Star, Clock, Edit3, TrendingUp, Award, Target, CheckCircle, AlertCircle, Plus, Calendar } from 'lucide-react';
 
 export default function PerformanceReview() {
+  const { user } = useAuth();
   const [currentRating, setCurrentRating] = useState(4.2);
   const [animateProgress, setAnimateProgress] = useState(false);
   const [activeSection, setActiveSection] = useState<'overview' | 'goals' | 'history'>('overview');

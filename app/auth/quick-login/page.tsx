@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-context';
 import { motion } from 'framer-motion';
 import { User, Lock, ArrowRight } from 'lucide-react';
 
 export default function QuickLoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -17,16 +19,12 @@ export default function QuickLoginPage() {
     try {
       console.log(`🚀 Quick login as ${role}:`, email);
       
-      // Simple check - just redirect based on role
-      if (email && password) {
+      // Use the auth context login function
+      const success = await login(email, password);
+      
+      if (success) {
         setMessage(`✅ Login successful! Redirecting to ${role} dashboard...`);
-        
-        // Redirect based on role
-        if (role === 'Admin') {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/user/dashboard');
-        }
+        // The login function will handle the redirect automatically based on user role
       } else {
         setMessage('❌ Login failed: Invalid credentials');
       }
@@ -41,16 +39,16 @@ export default function QuickLoginPage() {
     {
       role: 'Admin',
       email: 'admin@company.com',
-      password: 'AdminPass123!',
-      description: 'Full access to all features',
+      password: 'admin123',
+      description: 'Full access to all features including analytics',
       color: 'bg-blue-600 hover:bg-blue-700',
       icon: <User className="h-5 w-5" />
     },
     {
       role: 'User',
       email: 'user@company.com',
-      password: 'UserPass123!',
-      description: 'Standard user access',
+      password: 'user123',
+      description: 'Standard user access to personal features',
       color: 'bg-purple-600 hover:bg-purple-700',
       icon: <User className="h-5 w-5" />
     }

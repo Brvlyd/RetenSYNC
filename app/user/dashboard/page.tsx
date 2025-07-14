@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-context';
 import { motion } from 'framer-motion';
 import { 
   Users, TrendingUp, Award, BarChart3, UserPlus, Settings,
@@ -53,24 +54,8 @@ const slideIn = {
 };
 
 export default function UserDashboardPage() {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
-      
-      // Redirect admin users
-      if (parsedUser.role === 'user') {
-        router.push('/user/dashboard');
-        return;
-      }
-    } else {
-      router.push('/auth/login');
-    }
-  }, [router]);
 
   const userStats = {
     tasksCompleted: 12,

@@ -1,54 +1,64 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/auth-context';
 import { User, Mail, Phone, MapPin, Calendar, Edit, Save, X, Camera, Award, Target, TrendingUp, Clock } from 'lucide-react';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
+  const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [enhancedUser, setEnhancedUser] = useState<any>(null);
   const [editedUser, setEditedUser] = useState<any>({});
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
+    if (user) {
       // Enhanced user data with additional fields
-      const enhancedUser = {
-        ...parsedUser,
-        phone: '+62 815-6789-0123',
-        location: 'Jakarta, Indonesia',
-        joinDate: '2022-11-05',
-        employeeId: 'EMP004',
-        department: 'Engineering',
-        position: 'Senior Developer',
+      const enhanced = {
+        ...user,
+        name: `${user.first_name} ${user.last_name}`,
+        phone: user.phone_number || '+62 815-6789-0123',
+        location: user.address || 'Jakarta, Indonesia',
+        joinDate: user.hire_date || '2022-11-05',
+        employeeId: `EMP${String(user.id).padStart(3, '0')}`,
+        department: user.department === 1 ? 'Engineering' : 'Other Department',
         manager: 'Bravely Dirgayuska',
-        bio: 'Passionate software developer with expertise in modern web technologies. Love creating efficient and scalable solutions.',
-        skills: ['React', 'TypeScript', 'Node.js', 'Python', 'AWS'],
+        bio: user.bio || 'Passionate software developer with expertise in modern web technologies. Love creating efficient and scalable solutions.',
+        skills: user.skills || ['React', 'TypeScript', 'Node.js', 'Python', 'AWS'],
         achievements: [
           { title: 'Employee of the Month', date: 'December 2023', description: 'Outstanding performance in Q4 projects' },
           { title: 'Innovation Award', date: 'September 2023', description: 'Led successful migration to new tech stack' },
           { title: 'Team Leadership', date: 'June 2023', description: 'Successfully mentored 3 junior developers' }
         ]
       };
-      setUser(enhancedUser);
-      setEditedUser(enhancedUser);
+      setEnhancedUser(enhanced);
+      setEditedUser(enhanced);
     }
-  }, []);
+  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    setUser(editedUser);
-    localStorage.setItem('user', JSON.stringify(editedUser));
+    updateUser(editedUser);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setEditedUser(user);
+    setEditedUser(enhancedUser);
     setIsEditing(false);
   };
+
+  if (!enhancedUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
@@ -114,7 +124,7 @@ export default function ProfilePage() {
               <div className="relative inline-block mb-6">
                 <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg mx-auto">
                   <span className="text-2xl sm:text-3xl font-bold text-white">
-                    {user.name.split(' ').map((n: string) => n[0]).join('')}
+                    {enhancedUser.name.split(' ').map((n: string) => n[0]).join('')}
                   </span>
                 </div>
                 {isEditing && (
@@ -124,9 +134,9 @@ export default function ProfilePage() {
                 )}
               </div>
               
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{user.name}</h2>
-              <p className="text-emerald-600 dark:text-emerald-400 font-semibold mb-1">{user.position}</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{user.department}</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{enhancedUser.name}</h2>
+              <p className="text-emerald-600 dark:text-emerald-400 font-semibold mb-1">{enhancedUser.position}</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{enhancedUser.department}</p>
               
               <div className="space-y-3 text-left">
                 <div className="flex items-center text-gray-600 dark:text-gray-400">

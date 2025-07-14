@@ -5,16 +5,17 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,27 +52,20 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    setIsLoading(true);
     setErrors({});
     
     try {
       console.log('Attempting login with:', { email: formData.email });
       
-      // Simple check for demo purposes - any valid email/password combo works
-      if (formData.email && formData.password) {
-        console.log('Login successful');
-        
-        // Always redirect to user dashboard (no role-based routing)
-        router.push('/user/dashboard');
-      } else {
-        setErrors({ general: 'Please enter valid credentials' });
+      const success = await login(formData.email, formData.password);
+      
+      if (!success) {
+        setErrors({ general: 'Invalid email or password' });
       }
       
     } catch (err) {
       console.error('Login error:', err);
       setErrors({ general: 'Login failed. Please try again.' });
-    } finally {
-      setIsLoading(false);
     }
   };
 

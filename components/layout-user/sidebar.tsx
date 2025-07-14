@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
+import { useAuth } from '@/contexts/auth-context';
 import {
   BarChart3,
   MessageSquare,
@@ -34,40 +35,8 @@ export default function Sidebar({ onCollapseChange }: { onCollapseChange?: (coll
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const { user } = useAuth();
   const sidebarRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const updateUserData = () => {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        setUser(JSON.parse(userData));
-      }
-    };
-
-    // Initial load
-    updateUserData();
-
-    // Listen for storage changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'user') {
-        updateUserData();
-      }
-    };
-
-    // Listen for custom events (for same-tab updates)
-    const handleUserUpdate = () => {
-      updateUserData();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('userDataUpdated', handleUserUpdate);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('userDataUpdated', handleUserUpdate);
-    };
-  }, []);
 
   // Define navigation item type to include optional isParent and isChild
   type NavigationItem = {

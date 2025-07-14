@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
+import { useAuth } from '@/contexts/auth-context';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -37,14 +38,14 @@ interface HeaderProps {
 
 export default function UserHeader({ onToggleSidebar, isSidebarCollapsed }: HeaderProps) {
   const { theme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
   const router = useRouter();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const handleLogout = () => {
-    // Simple logout - just redirect to login
-    router.push('/auth/login');
+    logout();
   };
 
   const getThemeIcon = () => {
@@ -124,7 +125,9 @@ export default function UserHeader({ onToggleSidebar, isSidebarCollapsed }: Head
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900 dark:text-white">Welcome back!</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">User</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {user ? `${user.first_name} ${user.last_name}` : 'User'}
+              </p>
             </div>
           </motion.div>
         </div>
@@ -278,8 +281,12 @@ export default function UserHeader({ onToggleSidebar, isSidebarCollapsed }: Head
                       <User className="h-5 w-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">User</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">user@company.com</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {user ? `${user.first_name} ${user.last_name}` : 'User'}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {user?.email || 'user@company.com'}
+                      </p>
                     </div>
                   </div>
                 </div>

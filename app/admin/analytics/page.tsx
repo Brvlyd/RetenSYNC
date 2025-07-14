@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/auth-context';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell } from 'recharts';
 import { TrendingUp, Users, AlertTriangle, Target, BarChart3, PieChart, RefreshCw } from 'lucide-react';
@@ -41,9 +42,9 @@ function CustomEngagementTooltip({ active, payload }: any) {
 // Add margin to top so header doesn't cut content (same as 1on1 page)
 const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
 export default function Analytics() {
+  const { user } = useAuth();
   const router = useRouter();
   const [animateProgress, setAnimateProgress] = useState(false);
-  const [user, setUser] = useState<any>(null);
   const [performanceData, setPerformanceData] = useState<any[]>([]);
   const [engagementData, setEngagementData] = useState<any[]>([]);
   const [turnoverData, setTurnoverData] = useState<any[]>([]);
@@ -59,21 +60,19 @@ export default function Analytics() {
   useEffect(() => {
     setAnimateProgress(true);
     
-    // Check user role
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
-      
-      // Redirect non-admin users
-      if (parsedUser.role !== 'admin') {
-        router.push('/user/dashboard');
-        return;
-      }
+    // Check if user is logged in and is admin
+    if (!user) {
+      router.push('/auth/login');
+      return;
+    }
+
+    if (user.role !== 'admin') {
+      router.push('/user/dashboard');
+      return;
     }
     
     loadPerformanceData();
-  }, [router]);
+  }, [router, user]);
 
   const loadPerformanceData = async () => {
     try {
