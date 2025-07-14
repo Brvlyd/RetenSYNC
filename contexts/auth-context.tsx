@@ -188,155 +188,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    setIsLoading(true);
-    setUser(null);
-
-    // Check for specific admin credentials first (immediate response)
-    if (email === 'admin@company.com' && password === 'AdminPass123!') {
-      const role: 'admin' = 'admin';
-      const demoUser = createDemoUser(email, role);
-      setUser(demoUser);
+    try {
+      setIsLoading(true);
       
-      // Create demo token data
-      const demoTokenData: TokenData = {
-        token: `admin-token-${Date.now()}`,
-        role,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-        userId: demoUser.id,
-        email: demoUser.email
+      // For demo purposes, accept any email/password combination
+      // In production, this would make an actual API call
+      const mockUser = {
+        id: '1',
+        email: email,
+        first_name: 'Demo',
+        last_name: 'User',
+        role: 'user',
+        department: 'Engineering',
+        position: 'Software Developer',
+        avatar: '/assets/avatar.png',
+        // Add authentication token for API calls
+        token: 'demo-auth-token-' + Date.now()
       };
       
-      // Save demo token
-      saveAuthToken(demoTokenData);
-      setIsLoading(false);
+      setUser(mockUser);
+      // Store token in localStorage for API calls
+      localStorage.setItem('auth-token', mockUser.token);
       
-      // Redirect to admin dashboard
-      router.push('/admin/dashboard');
+      // Navigate to dashboard
+      router.push('/user/dashboard');
+      
       return true;
-    }
-
-    try {
-      // Try real API login first with shorter timeout
-      const authApi = await import('@/app/api/authApi');
-      
-      // Create a promise that will timeout quickly
-      const loginPromise = authApi.loginUser({
-        email: email,
-        password: password
-      });
-      
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('API timeout')), 3000) // 3 second timeout
-      );
-      
-      const response = await Promise.race([loginPromise, timeoutPromise]) as any;
-      
-      if (response.success && response.data?.user) {
-        const user = response.data.user;
-        
-        // Determine role based on flags
-        let userRole: 'user' | 'admin' | 'hr' | 'manager' = 'user';
-        if (user.is_admin) userRole = 'admin';
-        else if (user.is_hr) userRole = 'hr';
-        else if (user.is_manager) userRole = 'manager';
-        
-        // Create token data
-        const tokenData: TokenData = {
-          token: user.token,
-          role: userRole,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days default
-          userId: user.id.toString(),
-          email: user.email
-        };
-        
-        // Save token securely
-        const saved = saveAuthToken(tokenData);
-        
-        if (saved) {
-          // Create authenticated user
-          const authenticatedUser: User = {
-            id: user.id.toString(),
-            email: user.email,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            phone_number: user.phone_number || '',
-            date_of_birth: user.date_of_birth || '',
-            gender: user.gender || '',
-            marital_status: user.marital_status || '',
-            education_level: user.education_level || '',
-            address: user.address || '',
-            position: user.position || '',
-            department: user.department,
-            hire_date: user.hire_date || '',
-            role: userRole,
-            avatar: '',
-            bio: '',
-            skills: [],
-            experience_years: 0,
-            status: user.is_active ? 'active' : 'inactive'
-          };
-          
-          setUser(authenticatedUser);
-          
-          // Redirect based on role
-          const redirectPath = userRole === 'admin' ? '/admin/dashboard' 
-                            : userRole === 'hr' ? '/hr/dashboard'
-                            : userRole === 'manager' ? '/manager/dashboard'
-                            : '/user/dashboard';
-          router.push(redirectPath);
-          
-          return true;
-        }
-      }
-    } catch (apiError) {
-      console.warn('Real API login failed, falling back to demo mode:', apiError);
-    }
-    
-    // Fallback to demo login logic
-    try {
-      // Remove artificial delay for faster login
-      // await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (email && password) {
-        // Determine role based on email or other criteria for other users
-        let role: 'user' | 'admin' | 'hr' | 'manager' = 'user';
-        
-        if (email.includes('admin')) {
-          role = 'admin';
-        } else if (email.includes('hr')) {
-          role = 'hr';
-        } else if (email.includes('manager')) {
-          role = 'manager';
-        }
-        
-        const demoUser = createDemoUser(email, role);
-        setUser(demoUser);
-        
-        // Create demo token data
-        const demoTokenData: TokenData = {
-          token: `demo-token-${role}-${Date.now()}`,
-          role,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-          userId: demoUser.id,
-          email: demoUser.email
-        };
-        
-        // Save demo token
-        saveAuthToken(demoTokenData);
-        
-        // Redirect based on role
-        const redirectPath = role === 'admin' ? '/admin/dashboard' 
-                          : role === 'hr' ? '/hr/dashboard'
-                          : role === 'manager' ? '/manager/dashboard'
-                          : '/user/dashboard';
-        router.push(redirectPath);
-        
-        return true;
-      }
-      
-      return false;
     } catch (error) {
-      console.error('Demo login failed:', error);
+      console.error('Login error:', error);
       return false;
     } finally {
       setIsLoading(false);
