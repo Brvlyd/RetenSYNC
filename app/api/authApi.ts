@@ -3,28 +3,51 @@ const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api';
 
 // TypeScript interfaces for authentication
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
-export interface LoginResponse {
+export type UserData = {
+  id: number;
+  employee_id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  phone_number?: string;
+  date_of_birth?: string;
+  gender?: string;
+  marital_status?: string;
+  education_level?: string;
+  address?: string;
+  position?: string;
+  department: number;
+  department_name: string;
+  hire_date?: string;
+  role: string;
+  is_admin: boolean;
+  is_manager: boolean;
+  is_hr: boolean;
+  is_active: boolean;
+  created_at: string;
   token: string;
-  user: {
-    id: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    role?: string;
+};
+
+export interface LoginResponse {
+  success: boolean;
+  message?: string;
+  data?: {
+    user: UserData;
   };
 }
 
 export interface RegisterRequest {
-  username: string;
   email: string;
   password: string;
+  password_confirm: string;
   first_name: string;
   last_name: string;
+  department: string;
 }
 
 export interface ApiError {
@@ -59,7 +82,7 @@ const handleApiError = async (response: Response): Promise<never> => {
 // Login function
 export const loginUser = async (credentials: LoginRequest): Promise<LoginResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+    const response = await fetch(`${API_BASE_URL}/login/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,15 +90,20 @@ export const loginUser = async (credentials: LoginRequest): Promise<LoginRespons
       body: JSON.stringify(credentials),
     });
 
-    if (!response.ok) {
-      await handleApiError(response);
-    }
-
     const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      const error: ApiError = {
+        message: data.message || `Request failed with status ${response.status}`,
+        status: response.status,
+        details: data.errors || data,
+      };
+      throw error;
+    }
     
     // Store the token in localStorage
-    if (data.token) {
-      localStorage.setItem('authToken', data.token);
+    if (data.data?.user?.token) {
+      localStorage.setItem('authToken', data.data.user.token);
     }
 
     return data;
@@ -90,7 +118,7 @@ export const loginUser = async (credentials: LoginRequest): Promise<LoginRespons
 // Register function
 export const registerUser = async (userData: RegisterRequest): Promise<LoginResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/register/`, {
+    const response = await fetch(`${API_BASE_URL}/register/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,11 +126,16 @@ export const registerUser = async (userData: RegisterRequest): Promise<LoginResp
       body: JSON.stringify(userData),
     });
 
-    if (!response.ok) {
-      await handleApiError(response);
-    }
-
     const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      const error: ApiError = {
+        message: data.message || `Request failed with status ${response.status}`,
+        status: response.status,
+        details: data.errors || data,
+      };
+      throw error;
+    }
     
     // Store the token in localStorage
     if (data.token) {
@@ -128,7 +161,7 @@ export const logoutUser = async (): Promise<void> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/logout/`, {
+    const response = await fetch(`${API_BASE_URL}/logout/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -147,7 +180,7 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 // Get current user profile
-export const getCurrentUser = async (): Promise<LoginResponse['user']> => {
+export const getCurrentUser = async (): Promise<UserData> => {
   const token = localStorage.getItem('authToken');
   
   if (!token) {
@@ -155,7 +188,7 @@ export const getCurrentUser = async (): Promise<LoginResponse['user']> => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/user/`, {
+    const response = await fetch(`${API_BASE_URL}/profile/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

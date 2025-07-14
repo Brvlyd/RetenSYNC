@@ -1,11 +1,6 @@
-'use client  const [activeSection, setActiveSection] = useState<'overview' | 'goals' | 'history'>('overview');
-  const [showAddGoal, setShowAddGoal] = useState(false);
-  const [newGoal, setNewGoal] = useState({
-    title: '',
-    description: '',
-    dueDate: '',
-    priority: 'medium'
-  });ort { useState, useEffect } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { performanceReviewData, goalsData } from '@/lib/dummy-data';
 import { Star, Clock, Edit3, TrendingUp, Award, Target, CheckCircle, AlertCircle, Plus, Calendar } from 'lucide-react';
@@ -16,7 +11,6 @@ export default function PerformanceReview() {
   const [animateProgress, setAnimateProgress] = useState(false);
   const [activeSection, setActiveSection] = useState<'overview' | 'goals' | 'history'>('overview');
   const [showAddGoalForm, setShowAddGoalForm] = useState(false);
-  const [user, setUser] = useState<any>(null);
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -26,12 +20,6 @@ export default function PerformanceReview() {
 
   useEffect(() => {
     setAnimateProgress(true);
-    
-    // Get user data
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
   }, []);
 
   // Moved renderStars to top-level scope so it's available everywhere
