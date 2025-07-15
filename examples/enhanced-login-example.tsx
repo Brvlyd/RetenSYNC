@@ -3,7 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, Users, Shield, Settings, User } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  AlertCircle,
+  CheckCircle,
+  Users,
+  Shield,
+  Settings,
+  User,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
 import { isTokenExpired, getTokenExpirationTime } from '@/lib/auth-token';
@@ -22,48 +33,78 @@ const demoUsers: DemoUser[] = [
     password: 'admin123',
     role: 'admin',
     description: 'Full system access with all administrative privileges',
-    permissions: ['User Management', 'System Settings', 'Analytics', 'All Features']
+    permissions: [
+      'User Management',
+      'System Settings',
+      'Analytics',
+      'All Features',
+    ],
   },
   {
     email: 'hr@retensync.com',
     password: 'hr123',
     role: 'hr',
     description: 'HR specialist with employee management capabilities',
-    permissions: ['Employee Management', 'Recruitment', 'Performance Reviews', 'Reports']
+    permissions: [
+      'Employee Management',
+      'Recruitment',
+      'Performance Reviews',
+      'Reports',
+    ],
   },
   {
     email: 'manager@retensync.com',
     password: 'manager123',
     role: 'manager',
     description: 'Team manager with performance and goal tracking',
-    permissions: ['Team Management', 'Performance Tracking', 'Goal Setting', 'Team Reports']
+    permissions: [
+      'Team Management',
+      'Performance Tracking',
+      'Goal Setting',
+      'Team Reports',
+    ],
   },
   {
     email: 'employee@retensync.com',
     password: 'user123',
     role: 'user',
     description: 'Regular employee with personal dashboard access',
-    permissions: ['Personal Profile', 'Own Performance', 'Personal Goals', 'Feedback']
-  }
+    permissions: [
+      'Personal Profile',
+      'Own Performance',
+      'Personal Goals',
+      'Feedback',
+    ],
+  },
 ];
 
 const getRoleIcon = (role: string) => {
   switch (role) {
-    case 'admin': return <Shield className="w-5 h-5 text-red-500" />;
-    case 'hr': return <Users className="w-5 h-5 text-blue-500" />;
-    case 'manager': return <Settings className="w-5 h-5 text-green-500" />;
-    case 'user': return <User className="w-5 h-5 text-gray-500" />;
-    default: return <User className="w-5 h-5 text-gray-500" />;
+  case 'admin':
+    return <Shield className="w-5 h-5 text-red-500" />;
+  case 'hr':
+    return <Users className="w-5 h-5 text-blue-500" />;
+  case 'manager':
+    return <Settings className="w-5 h-5 text-green-500" />;
+  case 'user':
+    return <User className="w-5 h-5 text-gray-500" />;
+  default:
+    return <User className="w-5 h-5 text-gray-500" />;
   }
 };
 
 const getRoleColor = (role: string) => {
   switch (role) {
-    case 'admin': return 'border-red-200 bg-red-50 hover:bg-red-100';
-    case 'hr': return 'border-blue-200 bg-blue-50 hover:bg-blue-100';
-    case 'manager': return 'border-green-200 bg-green-50 hover:bg-green-100';
-    case 'user': return 'border-gray-200 bg-gray-50 hover:bg-gray-100';
-    default: return 'border-gray-200 bg-gray-50 hover:bg-gray-100';
+  case 'admin':
+    return 'border-red-200 bg-red-50 hover:bg-red-100';
+  case 'hr':
+    return 'border-blue-200 bg-blue-50 hover:bg-blue-100';
+  case 'manager':
+    return 'border-green-200 bg-green-50 hover:bg-green-100';
+  case 'user':
+    return 'border-gray-200 bg-gray-50 hover:bg-gray-100';
+  default:
+    return 'border-gray-200 bg-gray-50 hover:bg-gray-100';
   }
 };
 
@@ -75,18 +116,22 @@ export default function EnhancedLoginPage() {
   const [selectedDemo, setSelectedDemo] = useState<DemoUser | null>(null);
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loginSuccess, setLoginSuccess] = useState(false);
 
   // Check if user is already authenticated
   useEffect(() => {
     if (isAuthenticated && !isTokenExpired()) {
-      const redirectPath = userRole === 'admin' ? '/admin/dashboard' 
-                        : userRole === 'hr' ? '/hr/dashboard'
-                        : userRole === 'manager' ? '/manager/dashboard'
-                        : '/user/dashboard';
+      const redirectPath =
+        userRole === 'admin'
+          ? '/admin/dashboard'
+          : userRole === 'hr'
+            ? '/hr/dashboard'
+            : userRole === 'manager'
+              ? '/manager/dashboard'
+              : '/user/dashboard';
       router.push(redirectPath);
     }
   }, [isAuthenticated, userRole, router]);
@@ -95,13 +140,13 @@ export default function EnhancedLoginPage() {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: '',
       }));
     }
   };
@@ -110,13 +155,13 @@ export default function EnhancedLoginPage() {
     setSelectedDemo(demoUser);
     setFormData({
       email: demoUser.email,
-      password: demoUser.password
+      password: demoUser.password,
     });
     setErrors({});
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
@@ -137,36 +182,43 @@ export default function EnhancedLoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setErrors({});
     setLoginSuccess(false);
-    
+
     try {
-      console.log('Attempting login with:', { 
-        email: formData.email, 
-        role: selectedDemo?.role || 'unknown' 
+      console.log('Attempting login with:', {
+        email: formData.email,
+        role: selectedDemo?.role || 'unknown',
       });
-      
+
       const success = await login(formData.email, formData.password);
-      
+
       if (success) {
         setLoginSuccess(true);
         // Success feedback will be shown briefly before redirect
         setTimeout(() => {
-          const redirectPath = selectedDemo?.role === 'admin' ? '/admin/dashboard' 
-                            : selectedDemo?.role === 'hr' ? '/hr/dashboard'
-                            : selectedDemo?.role === 'manager' ? '/manager/dashboard'
-                            : '/user/dashboard';
+          const redirectPath =
+            selectedDemo?.role === 'admin'
+              ? '/admin/dashboard'
+              : selectedDemo?.role === 'hr'
+                ? '/hr/dashboard'
+                : selectedDemo?.role === 'manager'
+                  ? '/manager/dashboard'
+                  : '/user/dashboard';
           router.push(redirectPath);
         }, 1500);
       } else {
-        setErrors({ general: 'Invalid email or password. Please try the demo credentials.' });
+        setErrors({
+          general:
+            'Invalid email or password. Please try the demo credentials.',
+        });
       }
-      
     } catch (err: any) {
       console.error('Login error:', err);
-      setErrors({ 
-        general: 'Login failed. Please try again or use the demo credentials below.' 
+      setErrors({
+        general:
+          'Login failed. Please try again or use the demo credentials below.',
       });
     }
   };
@@ -177,7 +229,10 @@ export default function EnhancedLoginPage() {
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-24 left-1/4 w-96 h-96 bg-gradient-to-br from-[#d96f27]/30 via-[#fff7e6]/20 to-[#94c47d]/30 rounded-full blur-3xl animate-blob1" />
         <div className="absolute bottom-0 right-0 w-[30rem] h-[30rem] bg-gradient-to-tr from-[#94c47d]/30 via-[#fff7e6]/20 to-[#d96f27]/30 rounded-full blur-3xl animate-blob2" />
-        <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-gradient-to-br from-[#fff7e6]/40 via-[#d96f27]/20 to-[#94c47d]/30 rounded-full blur-2xl animate-blob3" style={{transform:'translate(-50%,-50%)'}} />
+        <div
+          className="absolute top-1/2 left-1/2 w-60 h-60 bg-gradient-to-br from-[#fff7e6]/40 via-[#d96f27]/20 to-[#94c47d]/30 rounded-full blur-2xl animate-blob3"
+          style={{ transform: 'translate(-50%,-50%)' }}
+        />
       </div>
 
       <motion.div
@@ -188,12 +243,16 @@ export default function EnhancedLoginPage() {
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           {/* Login Form */}
-          <div className="bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-8 relative overflow-hidden"
-            style={{boxShadow:'0 8px 48px 0 rgba(217,111,39,0.10), 0 0 0 4px rgba(148,196,125,0.10)'}}>
-            
+          <div
+            className="bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-8 relative overflow-hidden"
+            style={{
+              boxShadow:
+                '0 8px 48px 0 rgba(217,111,39,0.10), 0 0 0 4px rgba(148,196,125,0.10)',
+            }}
+          >
             {/* Gradient accent */}
             <div className="absolute left-0 top-0 w-full h-3 rounded-t-2xl bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] opacity-60 animate-gradient-x" />
-            
+
             {/* Logo and Title */}
             <div className="text-center mb-8">
               <motion.div
@@ -223,7 +282,9 @@ export default function EnhancedLoginPage() {
               >
                 <CheckCircle className="w-5 h-5 text-green-500" />
                 <div>
-                  <p className="text-green-800 font-medium">Login Successful!</p>
+                  <p className="text-green-800 font-medium">
+                    Login Successful!
+                  </p>
                   <p className="text-green-600 text-sm">
                     Redirecting to your {selectedDemo?.role} dashboard...
                   </p>
@@ -252,9 +313,11 @@ export default function EnhancedLoginPage() {
                     {selectedDemo.role} Login Selected
                   </span>
                 </div>
-                <p className="text-blue-700 text-sm mb-2">{selectedDemo.description}</p>
+                <p className="text-blue-700 text-sm mb-2">
+                  {selectedDemo.description}
+                </p>
                 <div className="flex flex-wrap gap-1">
-                  {selectedDemo.permissions.slice(0, 3).map((permission) => (
+                  {selectedDemo.permissions.slice(0, 3).map(permission => (
                     <span
                       key={permission}
                       className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
@@ -275,7 +338,10 @@ export default function EnhancedLoginPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -290,8 +356,8 @@ export default function EnhancedLoginPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#d96f27] focus:border-transparent transition-colors ${
-                      errors.email 
-                        ? 'border-red-300 bg-red-50' 
+                      errors.email
+                        ? 'border-red-300 bg-red-50'
                         : 'border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600'
                     }`}
                     placeholder="Enter your email"
@@ -304,7 +370,10 @@ export default function EnhancedLoginPage() {
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -319,8 +388,8 @@ export default function EnhancedLoginPage() {
                     value={formData.password}
                     onChange={handleInputChange}
                     className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-[#d96f27] focus:border-transparent transition-colors ${
-                      errors.password 
-                        ? 'border-red-300 bg-red-50' 
+                      errors.password
+                        ? 'border-red-300 bg-red-50'
                         : 'border-gray-300 bg-white dark:bg-gray-700 dark:border-gray-600'
                     }`}
                     placeholder="Enter your password"
@@ -376,22 +445,23 @@ export default function EnhancedLoginPage() {
                   {showDemoUsers ? 'Hide' : 'Show'} Demo Users
                 </button>
               </div>
-              
+
               {showDemoUsers && (
                 <div className="space-y-3">
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                    Try different user roles to see how the authentication system works:
+                    Try different user roles to see how the authentication
+                    system works:
                   </p>
-                  
-                  {demoUsers.map((user) => (
+
+                  {demoUsers.map(user => (
                     <motion.button
                       key={user.email}
                       onClick={() => handleDemoUserSelect(user)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className={`w-full p-4 border-2 rounded-lg text-left transition-all duration-200 ${
-                        selectedDemo?.email === user.email 
-                          ? 'border-[#d96f27] bg-orange-50 dark:bg-orange-900/20' 
+                        selectedDemo?.email === user.email
+                          ? 'border-[#d96f27] bg-orange-50 dark:bg-orange-900/20'
                           : getRoleColor(user.role)
                       }`}
                     >
@@ -410,7 +480,7 @@ export default function EnhancedLoginPage() {
                             {user.description}
                           </p>
                           <div className="flex flex-wrap gap-1">
-                            {user.permissions.slice(0, 2).map((permission) => (
+                            {user.permissions.slice(0, 2).map(permission => (
                               <span
                                 key={permission}
                                 className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full"

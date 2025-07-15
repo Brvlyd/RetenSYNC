@@ -3,16 +3,19 @@
 ## Changes Made
 
 ### 🗑️ Removed Manager Demo User from `app/api/demoAuth.ts`
+
 - Removed the entire manager user object from `DEMO_USERS` array
 - Manager credentials: `manager@company.com` / `ManagerPass123!`
 - This was the third user in the demo database
 
 ### 🗑️ Updated Quick Login Page (`app/auth/quick-login/page.tsx`)
+
 - Removed manager login option from `loginOptions` array
 - Changed grid layout from 3 columns to 2 columns (`md:grid-cols-3` → `md:grid-cols-2`)
 - Now only shows Admin and User login options
 
 ### ✅ Files Already Correct (No Changes Needed)
+
 - `LOGIN_GUIDE.md` - Only contained Admin and User credentials
 - `app/auth/test/page.tsx` - Demo credentials section only showed Admin and User
 - `app/auth/debug/page.tsx` - No manager references found
@@ -22,12 +25,14 @@
 The system now supports only these two roles:
 
 ### Admin User
+
 - **Email:** `admin@company.com`
 - **Password:** `AdminPass123!`
 - **Access:** Full admin dashboard and features
 - **Flags:** `is_admin: true`, `is_manager: true`, `is_hr: false`
 
 ### Regular User
+
 - **Email:** `user@company.com`
 - **Password:** `UserPass123!`
 - **Access:** Standard user dashboard

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  getAllDepartments, 
-  createDepartment, 
-  isDepartmentNameTaken 
+import {
+  getAllDepartments,
+  createDepartment,
+  isDepartmentNameTaken,
 } from '@/lib/data/departments';
 
 // Helper function to check authentication
@@ -11,7 +11,7 @@ function checkAuth(request: NextRequest) {
   if (!authHeader || !authHeader.startsWith('Token ')) {
     return false;
   }
-  
+
   const token = authHeader.replace('Token ', '');
   // For demo purposes, accept any token that starts with 'demo-token-'
   return token.startsWith('demo-token-');
@@ -22,12 +22,12 @@ function createPaginatedResponse(data: any[], page: number, pageSize: number) {
   const startIndex = (page - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const results = data.slice(startIndex, endIndex);
-  
+
   return {
     count: data.length,
     next: endIndex < data.length ? `page=${page + 1}` : null,
     previous: page > 1 ? `page=${page - 1}` : null,
-    results
+    results,
   };
 }
 

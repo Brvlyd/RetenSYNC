@@ -12,29 +12,28 @@ export default function NotFoundPage() {
         <div className="mx-auto w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
           <span className="text-2xl font-bold text-white">404</span>
         </div>
-        
+
         {/* Title */}
         <div className="space-y-4">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Page Not Found
-          </h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900">Page Not Found</h1>
+
           <p className="text-gray-600">
-            Sorry, we couldn't find the page you're looking for. It may have been moved, deleted, or is temporarily unavailable.
+            Sorry, we couldn&apos;t find the page you&apos;re looking for. It may have
+            been moved, deleted, or is temporarily unavailable.
           </p>
         </div>
-        
+
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Link 
+          <Link
             href="/user/dashboard"
             className="w-full flex justify-center items-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             <Home className="h-4 w-4 mr-2" />
             Go to Dashboard
           </Link>
-          
-          <button 
+
+          <button
             onClick={() => window.history.back()}
             className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
           >
@@ -42,7 +41,7 @@ export default function NotFoundPage() {
             Go Back
           </button>
         </div>
-        
+
         {/* Help Text */}
         <div className="text-sm text-gray-500">
           <p>If you believe this is an error, please contact support.</p>

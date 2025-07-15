@@ -2,7 +2,11 @@
 // You can add this to your existing admin/departments/page.tsx
 
 import { useDepartments } from '@/hooks/useDepartments';
-import { getDepartments, createDepartment, getDepartmentEmployees } from '@/app/api/departmentsApi';
+import {
+  getDepartments,
+  createDepartment,
+  getDepartmentEmployees,
+} from '@/app/api/departmentsApi';
 
 // Simple component showing how to integrate the API
 export function DepartmentAPIExample() {
@@ -12,15 +16,15 @@ export function DepartmentAPIExample() {
     error,
     createNewDepartment,
     deleteExistingDepartment,
-    refreshDepartments
+    refreshDepartments,
   } = useDepartments();
 
   const handleCreateDepartment = async () => {
     const newDept = await createNewDepartment({
       name: 'New Department',
-      description: 'Department created via API'
+      description: 'Department created via API',
     });
-    
+
     if (newDept) {
       console.log('Created department:', newDept);
     }
@@ -41,7 +45,7 @@ export function DepartmentAPIExample() {
       <h2>Real API Departments</h2>
       <button onClick={handleCreateDepartment}>Create Test Department</button>
       <button onClick={refreshDepartments}>Refresh</button>
-      
+
       <div>
         {departments.map(dept => (
           <div key={dept.id} className="border p-4 m-2">
@@ -69,7 +73,7 @@ export async function exampleDirectAPIUsage() {
     console.log('Creating department...');
     const newDepartment = await createDepartment({
       name: 'Research & Development',
-      description: 'Innovation and product research division'
+      description: 'Innovation and product research division',
     });
     console.log('Created department:', newDepartment);
 
@@ -79,7 +83,6 @@ export async function exampleDirectAPIUsage() {
       const employees = await getDepartmentEmployees(newDepartment.id);
       console.log('Department employees:', employees);
     }
-
   } catch (error) {
     console.error('API Error:', error);
   }

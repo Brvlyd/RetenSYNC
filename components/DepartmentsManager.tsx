@@ -2,23 +2,28 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Building2, 
-  Users, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Eye, 
+import {
+  Building2,
+  Users,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
   Search,
   X,
   Save,
   AlertCircle,
   Loader,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 import { useDepartments, useDepartment } from '@/hooks/useDepartments';
-import { Department, Employee, CreateDepartmentRequest, UpdateDepartmentRequest } from '@/app/api/departmentsApi';
+import {
+  Department,
+  Employee,
+  CreateDepartmentRequest,
+  UpdateDepartmentRequest,
+} from '@/app/api/departmentsApi';
 
 // Main Departments Management Component
 export default function DepartmentsManager() {
@@ -34,17 +39,22 @@ export default function DepartmentsManager() {
     clearError,
   } = useDepartments();
 
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null);
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<
+    number | null
+  >(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showEmployeesModal, setShowEmployeesModal] = useState(false);
-  const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
+  const [editingDepartment, setEditingDepartment] = useState<Department | null>(
+    null
+  );
   const [searchTerm, setSearchTerm] = useState('');
 
   // Filter departments based on search term
-  const filteredDepartments = departments.filter(dept =>
-    dept.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    dept.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDepartments = departments.filter(
+    dept =>
+      dept.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      dept.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleCreateDepartment = (department: Department) => {
@@ -117,7 +127,7 @@ export default function DepartmentsManager() {
             type="text"
             placeholder="Search departments..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
@@ -139,7 +149,7 @@ export default function DepartmentsManager() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {filteredDepartments.map((department) => (
+          {filteredDepartments.map(department => (
             <DepartmentCard
               key={department.id}
               department={department}
@@ -271,7 +281,9 @@ function CreateDepartmentModal({
 }: {
   onClose: () => void;
   onSuccess: (department: Department) => void;
-  createDepartment: (data: CreateDepartmentRequest) => Promise<Department | null>;
+  createDepartment: (
+    data: CreateDepartmentRequest
+  ) => Promise<Department | null>;
 }) {
   const [formData, setFormData] = useState<CreateDepartmentRequest>({
     name: '',
@@ -307,7 +319,7 @@ function CreateDepartmentModal({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <div className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -329,7 +341,9 @@ function CreateDepartmentModal({
                 type="text"
                 required
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({ ...prev, name: e.target.value }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter department name"
               />
@@ -342,7 +356,12 @@ function CreateDepartmentModal({
               <textarea
                 required
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter department description"
@@ -388,7 +407,10 @@ function EditDepartmentModal({
   department: Department;
   onClose: () => void;
   onSuccess: (department: Department) => void;
-  updateDepartment: (id: number, data: UpdateDepartmentRequest) => Promise<Department | null>;
+  updateDepartment: (
+    id: number,
+    data: UpdateDepartmentRequest
+  ) => Promise<Department | null>;
 }) {
   const [formData, setFormData] = useState<UpdateDepartmentRequest>({
     name: department.name,
@@ -424,7 +446,7 @@ function EditDepartmentModal({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <div className="p-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -446,7 +468,9 @@ function EditDepartmentModal({
                 type="text"
                 required
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({ ...prev, name: e.target.value }))
+                }
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -458,7 +482,12 @@ function EditDepartmentModal({
               <textarea
                 required
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -501,7 +530,8 @@ function DepartmentEmployeesModal({
   departmentId: number;
   onClose: () => void;
 }) {
-  const { department, employees, loading, employeesLoading, error } = useDepartment(departmentId);
+  const { department, employees, loading, employeesLoading, error } =
+    useDepartment(departmentId);
 
   return (
     <motion.div
@@ -516,7 +546,7 @@ function DepartmentEmployeesModal({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
@@ -551,18 +581,21 @@ function DepartmentEmployeesModal({
           ) : employees.length === 0 ? (
             <div className="text-center py-8">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">No employees in this department</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No employees in this department
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {employees.map((employee) => (
+              {employees.map(employee => (
                 <div
                   key={employee.id}
                   className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
                 >
                   <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                     <span className="text-blue-600 dark:text-blue-400 font-medium">
-                      {employee.first_name?.[0]}{employee.last_name?.[0]}
+                      {employee.first_name?.[0]}
+                      {employee.last_name?.[0]}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -579,11 +612,13 @@ function DepartmentEmployeesModal({
                     )}
                   </div>
                   {employee.role && (
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      employee.role === 'admin' 
-                        ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
-                        : 'bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-300'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        employee.role === 'admin'
+                          ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                          : 'bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-300'
+                      }`}
+                    >
                       {employee.role}
                     </span>
                   )}
@@ -616,9 +651,10 @@ function Pagination({
   return (
     <div className="flex items-center justify-between">
       <p className="text-sm text-gray-700 dark:text-gray-300">
-        Showing page {currentPage} of {totalPages} ({totalCount} total departments)
+        Showing page {currentPage} of {totalPages} ({totalCount} total
+        departments)
       </p>
-      
+
       <div className="flex space-x-2">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -628,7 +664,7 @@ function Pagination({
           <ChevronLeft className="h-4 w-4" />
           <span>Previous</span>
         </button>
-        
+
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={!hasNext}

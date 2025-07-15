@@ -22,7 +22,7 @@ import {
   Video,
   FileText,
   Headphones,
-  Zap
+  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -58,7 +58,7 @@ const courses: Course[] = [
     enrolled: 1250,
     thumbnail: '/api/placeholder/300/200',
     tags: ['leadership', 'remote work', 'management'],
-    status: 'in-progress'
+    status: 'in-progress',
   },
   {
     id: '2',
@@ -74,7 +74,7 @@ const courses: Course[] = [
     enrolled: 890,
     thumbnail: '/api/placeholder/300/200',
     tags: ['communication', 'teamwork', 'presentation'],
-    status: 'completed'
+    status: 'completed',
   },
   {
     id: '3',
@@ -90,12 +90,13 @@ const courses: Course[] = [
     enrolled: 2100,
     thumbnail: '/api/placeholder/300/200',
     tags: ['data', 'analytics', 'excel'],
-    status: 'not-started'
+    status: 'not-started',
   },
   {
     id: '4',
     title: 'Time Management Mastery',
-    description: 'Optimize your productivity with proven time management techniques.',
+    description:
+      'Optimize your productivity with proven time management techniques.',
     instructor: 'David Kim',
     duration: '2h 20m',
     level: 'beginner',
@@ -106,7 +107,7 @@ const courses: Course[] = [
     enrolled: 1500,
     thumbnail: '/api/placeholder/300/200',
     tags: ['productivity', 'planning', 'efficiency'],
-    status: 'in-progress'
+    status: 'in-progress',
   },
   {
     id: '5',
@@ -122,7 +123,7 @@ const courses: Course[] = [
     enrolled: 750,
     thumbnail: '/api/placeholder/300/200',
     tags: ['project management', 'agile', 'leadership'],
-    status: 'not-started'
+    status: 'not-started',
   },
   {
     id: '6',
@@ -138,28 +139,45 @@ const courses: Course[] = [
     enrolled: 950,
     thumbnail: '/api/placeholder/300/200',
     tags: ['mindfulness', 'stress management', 'wellbeing'],
-    status: 'completed'
-  }
+    status: 'completed',
+  },
 ];
 
-const categories = ['All', 'Leadership', 'Communication', 'Technical', 'Productivity', 'Management', 'Wellbeing'];
+const categories = [
+  'All',
+  'Leadership',
+  'Communication',
+  'Technical',
+  'Productivity',
+  'Management',
+  'Wellbeing',
+];
 
 const getTypeIcon = (type: string) => {
   switch (type) {
-    case 'video': return Video;
-    case 'article': return FileText;
-    case 'podcast': return Headphones;
-    case 'interactive': return Play;
-    default: return BookOpen;
+  case 'video':
+    return Video;
+  case 'article':
+    return FileText;
+  case 'podcast':
+    return Headphones;
+  case 'interactive':
+    return Play;
+  default:
+    return BookOpen;
   }
 };
 
 const getLevelColor = (level: string) => {
   switch (level) {
-    case 'beginner': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
-    case 'intermediate': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
-    case 'advanced': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
-    default: return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+  case 'beginner':
+    return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+  case 'intermediate':
+    return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+  case 'advanced':
+    return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+  default:
+    return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
   }
 };
 
@@ -175,10 +193,14 @@ export default function LearningPage() {
   }, []);
 
   const filteredCourses = courses.filter(course => {
-    const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         course.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory =
+      selectedCategory === 'All' || course.category === selectedCategory;
+    const matchesSearch =
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.tags.some(tag =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     return matchesCategory && matchesSearch;
   });
 
@@ -187,26 +209,26 @@ export default function LearningPage() {
       title: 'Courses Completed',
       value: '12',
       icon: CheckCircle,
-      color: 'text-green-600'
+      color: 'text-green-600',
     },
     {
       title: 'Hours Learned',
       value: '48h',
       icon: Clock,
-      color: 'text-blue-600'
+      color: 'text-blue-600',
     },
     {
       title: 'Certificates Earned',
       value: '8',
       icon: Award,
-      color: 'text-yellow-600'
+      color: 'text-yellow-600',
     },
     {
       title: 'Learning Streak',
       value: '15 days',
       icon: TrendingUp,
-      color: 'text-purple-600'
-    }
+      color: 'text-purple-600',
+    },
   ];
 
   const learningPaths = [
@@ -214,20 +236,20 @@ export default function LearningPage() {
       title: 'Leadership Development Track',
       courses: 4,
       progress: 75,
-      description: 'Comprehensive leadership training program'
+      description: 'Comprehensive leadership training program',
     },
     {
       title: 'Technical Skills Bootcamp',
       courses: 6,
       progress: 45,
-      description: 'Essential technical skills for your role'
+      description: 'Essential technical skills for your role',
     },
     {
       title: 'Communication Excellence',
       courses: 3,
       progress: 100,
-      description: 'Master professional communication'
-    }
+      description: 'Master professional communication',
+    },
   ];
 
   return (
@@ -238,9 +260,12 @@ export default function LearningPage() {
         <div className="relative z-10">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Learning & Development</h1>
+              <h1 className="text-3xl font-bold mb-2">
+                Learning & Development
+              </h1>
               <p className="text-emerald-100 text-lg">
-                Expand your skills and advance your career with personalized learning
+                Expand your skills and advance your career with personalized
+                learning
               </p>
             </div>
             <div className="hidden md:block">
@@ -269,7 +294,7 @@ export default function LearningPage() {
                 </p>
               </div>
               <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                <stat.icon className={cn("w-6 h-6", stat.color)} />
+                <stat.icon className={cn('w-6 h-6', stat.color)} />
               </div>
             </div>
           </div>
@@ -298,20 +323,20 @@ export default function LearningPage() {
                 </div>
                 <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors" />
               </div>
-              
+
               <div className="mb-4">
                 <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
                   <span>{path.courses} courses</span>
                   <span>{path.progress}% complete</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${path.progress}%` }}
                   ></div>
                 </div>
               </div>
-              
+
               <button className="w-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
                 Continue Learning
               </button>
@@ -328,12 +353,12 @@ export default function LearningPage() {
             type="text"
             placeholder="Search courses, skills, or topics..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
         <div className="flex space-x-2 overflow-x-auto">
-          {categories.map((category) => (
+          {categories.map(category => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
@@ -352,7 +377,7 @@ export default function LearningPage() {
 
       {/* Courses Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCourses.map((course) => {
+        {filteredCourses.map(course => {
           const TypeIcon = getTypeIcon(course.type);
           return (
             <div
@@ -363,7 +388,12 @@ export default function LearningPage() {
               <div className="relative h-48 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                 <TypeIcon className="w-12 h-12 text-white opacity-80" />
                 <div className="absolute top-3 left-3">
-                  <span className={cn('px-2 py-1 text-xs font-medium rounded-full', getLevelColor(course.level))}>
+                  <span
+                    className={cn(
+                      'px-2 py-1 text-xs font-medium rounded-full',
+                      getLevelColor(course.level)
+                    )}
+                  >
                     {course.level}
                   </span>
                 </div>
@@ -374,7 +404,7 @@ export default function LearningPage() {
                 </div>
                 {course.status === 'in-progress' && course.progress > 0 && (
                   <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
-                    <div 
+                    <div
                       className="h-full bg-white transition-all duration-300"
                       style={{ width: `${course.progress}%` }}
                     ></div>
@@ -429,7 +459,7 @@ export default function LearningPage() {
                       <span>{course.progress}%</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${course.progress}%` }}
                       ></div>

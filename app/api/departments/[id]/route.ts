@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  getDepartmentById, 
-  updateDepartment, 
-  deleteDepartment, 
+import {
+  getDepartmentById,
+  updateDepartment,
+  deleteDepartment,
   departmentExists,
   isDepartmentNameTaken,
-  getEmployeesByDepartment 
+  getEmployeesByDepartment,
 } from '@/lib/data/departments';
 
 // Helper function to check authentication
@@ -14,7 +14,7 @@ function checkAuth(request: NextRequest) {
   if (!authHeader || !authHeader.startsWith('Token ')) {
     return false;
   }
-  
+
   const token = authHeader.replace('Token ', '');
   // For demo purposes, accept any token that starts with 'demo-token-'
   return token.startsWith('demo-token-');
@@ -35,7 +35,7 @@ export async function GET(
 
   try {
     const id = parseInt(params.id);
-    
+
     if (isNaN(id)) {
       return NextResponse.json(
         { message: 'Invalid department ID' },
@@ -44,7 +44,7 @@ export async function GET(
     }
 
     const department = getDepartmentById(id);
-    
+
     if (!department) {
       return NextResponse.json(
         { message: 'Department not found' },
@@ -79,7 +79,7 @@ export async function PUT(
 
   try {
     const id = parseInt(params.id);
-    
+
     if (isNaN(id)) {
       return NextResponse.json(
         { message: 'Invalid department ID' },
@@ -151,7 +151,7 @@ export async function DELETE(
 
   try {
     const id = parseInt(params.id);
-    
+
     if (isNaN(id)) {
       return NextResponse.json(
         { message: 'Invalid department ID' },
@@ -171,14 +171,16 @@ export async function DELETE(
     const departmentEmployees = getEmployeesByDepartment(id);
     if (departmentEmployees.length > 0) {
       return NextResponse.json(
-        { message: `Cannot delete department with ${departmentEmployees.length} employees` },
+        {
+          message: `Cannot delete department with ${departmentEmployees.length} employees`,
+        },
         { status: 400 }
       );
     }
 
     // Delete department
     const success = deleteDepartment(id);
-    
+
     if (!success) {
       return NextResponse.json(
         { message: 'Failed to delete department' },

@@ -42,10 +42,10 @@ const getAuthHeaders = () => {
   if (!authInfo.isValid || !authInfo.token) {
     throw new Error('Authentication required. Please login.');
   }
-  
+
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Token ${authInfo.token}`
+    Authorization: `Token ${authInfo.token}`,
   };
 };
 
@@ -69,32 +69,79 @@ const convertPerformanceToUser = (perfData: PerformanceData): User => {
     time_spend_company: perfData.time_spend_company,
     work_accident: perfData.work_accident,
     promotion_last_5years: perfData.promotion_last_5years,
-    left: perfData.left
+    left: perfData.left,
   };
 };
 
 // Helper functions to generate realistic data
 const getPositionFromDepartment = (department: string): string => {
   const positions: { [key: string]: string[] } = {
-    'IT Department': ['Software Engineer', 'Senior Software Engineer', 'DevOps Engineer', 'Technical Lead'],
-    'HR Department': ['HR Specialist', 'HR Manager', 'Recruiter', 'HR Business Partner'],
-    'Finance Department': ['Financial Analyst', 'Senior Financial Analyst', 'Finance Manager', 'Accountant'],
-    'Marketing Department': ['Marketing Specialist', 'Marketing Manager', 'Digital Marketing Manager', 'Brand Manager'],
-    'Sales Department': ['Sales Representative', 'Senior Sales Representative', 'Sales Manager', 'Account Manager'],
-    'Operations Department': ['Operations Manager', 'Operations Specialist', 'Process Analyst', 'Operations Coordinator'],
-    'Product Department': ['Product Manager', 'Senior Product Manager', 'Product Owner', 'Product Designer'],
-    'Customer Support Department': ['Customer Support Representative', 'Customer Support Manager', 'Technical Support Specialist', 'Customer Success Manager']
+    'IT Department': [
+      'Software Engineer',
+      'Senior Software Engineer',
+      'DevOps Engineer',
+      'Technical Lead',
+    ],
+    'HR Department': [
+      'HR Specialist',
+      'HR Manager',
+      'Recruiter',
+      'HR Business Partner',
+    ],
+    'Finance Department': [
+      'Financial Analyst',
+      'Senior Financial Analyst',
+      'Finance Manager',
+      'Accountant',
+    ],
+    'Marketing Department': [
+      'Marketing Specialist',
+      'Marketing Manager',
+      'Digital Marketing Manager',
+      'Brand Manager',
+    ],
+    'Sales Department': [
+      'Sales Representative',
+      'Senior Sales Representative',
+      'Sales Manager',
+      'Account Manager',
+    ],
+    'Operations Department': [
+      'Operations Manager',
+      'Operations Specialist',
+      'Process Analyst',
+      'Operations Coordinator',
+    ],
+    'Product Department': [
+      'Product Manager',
+      'Senior Product Manager',
+      'Product Owner',
+      'Product Designer',
+    ],
+    'Customer Support Department': [
+      'Customer Support Representative',
+      'Customer Support Manager',
+      'Technical Support Specialist',
+      'Customer Success Manager',
+    ],
   };
-  
-  const deptPositions = positions[department] || ['Employee', 'Senior Employee', 'Manager', 'Specialist'];
+
+  const deptPositions = positions[department] || [
+    'Employee',
+    'Senior Employee',
+    'Manager',
+    'Specialist',
+  ];
   return deptPositions[Math.floor(Math.random() * deptPositions.length)];
 };
 
 const getJoinDateFromTimeSpent = (timeSpent: number): string => {
   const currentDate = new Date();
-  const joinDate = new Date(currentDate.getFullYear() - timeSpent, 
-    Math.floor(Math.random() * 12), 
-    Math.floor(Math.random() * 28) + 1);
+  const joinDate = new Date(
+    currentDate.getFullYear() - timeSpent,
+    Math.floor(Math.random() * 12),
+    Math.floor(Math.random() * 28) + 1
+  );
   return joinDate.toISOString().split('T')[0];
 };
 
@@ -104,7 +151,15 @@ const generatePhoneNumber = (employeeId: number): string => {
 };
 
 const getLocationFromId = (employeeId: number): string => {
-  const locations = ['Jakarta', 'Bandung', 'Surabaya', 'Medan', 'Yogyakarta', 'Semarang', 'Denpasar'];
+  const locations = [
+    'Jakarta',
+    'Bandung',
+    'Surabaya',
+    'Medan',
+    'Yogyakarta',
+    'Semarang',
+    'Denpasar',
+  ];
   return locations[employeeId % locations.length];
 };
 
@@ -136,7 +191,7 @@ export const getDepartmentStats = async (): Promise<Department[]> => {
   try {
     const users = await fetchUsers();
     const departmentMap = new Map<string, User[]>();
-    
+
     // Group users by department
     users.forEach(user => {
       if (!departmentMap.has(user.department)) {
@@ -144,32 +199,38 @@ export const getDepartmentStats = async (): Promise<Department[]> => {
       }
       departmentMap.get(user.department)!.push(user);
     });
-    
+
     // Calculate statistics for each department
     const departments: Department[] = [];
     let deptId = 1;
-    
+
     departmentMap.forEach((deptUsers, deptName) => {
-      const avgSatisfaction = deptUsers.reduce((sum, user) => sum + (user.satisfaction_level || 0), 0) / deptUsers.length;
-      const avgPerformance = deptUsers.reduce((sum, user) => sum + (user.last_evaluation || 0), 0) / deptUsers.length;
-      
+      const avgSatisfaction =
+        deptUsers.reduce(
+          (sum, user) => sum + (user.satisfaction_level || 0),
+          0
+        ) / deptUsers.length;
+      const avgPerformance =
+        deptUsers.reduce((sum, user) => sum + (user.last_evaluation || 0), 0) /
+        deptUsers.length;
+
       let riskLevel: 'low' | 'medium' | 'high' = 'low';
       if (avgSatisfaction < 0.5 || avgPerformance < 0.5) {
         riskLevel = 'high';
       } else if (avgSatisfaction < 0.7 || avgPerformance < 0.7) {
         riskLevel = 'medium';
       }
-      
+
       departments.push({
         id: deptId++,
         name: deptName,
         count: deptUsers.length,
         avgSatisfaction: Math.round(avgSatisfaction * 100) / 100,
         avgPerformance: Math.round(avgPerformance * 100) / 100,
-        riskLevel
+        riskLevel,
       });
     });
-    
+
     return departments;
   } catch (error) {
     console.error('Error fetching department stats:', error);
@@ -183,14 +244,20 @@ export const getOrganizationStats = async () => {
     const users = await fetchUsers();
     const activeUsers = users.filter(user => user.status === 'active');
     const totalUsers = users.length;
-    const highRiskUsers = users.filter(user => 
-      (user.satisfaction_level || 0) < 0.5 || (user.last_evaluation || 0) < 0.5
+    const highRiskUsers = users.filter(
+      user =>
+        (user.satisfaction_level || 0) < 0.5 ||
+        (user.last_evaluation || 0) < 0.5
     ).length;
-    
-    const avgSatisfaction = users.reduce((sum, user) => sum + (user.satisfaction_level || 0), 0) / totalUsers;
-    const avgPerformance = users.reduce((sum, user) => sum + (user.last_evaluation || 0), 0) / totalUsers;
+
+    const avgSatisfaction =
+      users.reduce((sum, user) => sum + (user.satisfaction_level || 0), 0) /
+      totalUsers;
+    const avgPerformance =
+      users.reduce((sum, user) => sum + (user.last_evaluation || 0), 0) /
+      totalUsers;
     const turnoverRate = users.filter(user => user.left).length / totalUsers;
-    
+
     return {
       totalEmployees: totalUsers,
       activeEmployees: activeUsers.length,
@@ -212,13 +279,14 @@ export const searchUsers = async (query: string): Promise<User[]> => {
   try {
     const users = await fetchUsers();
     const searchQuery = query.toLowerCase();
-    
-    return users.filter(user => 
-      user.name.toLowerCase().includes(searchQuery) ||
-      user.email.toLowerCase().includes(searchQuery) ||
-      user.employeeId.toLowerCase().includes(searchQuery) ||
-      user.department.toLowerCase().includes(searchQuery) ||
-      user.position.toLowerCase().includes(searchQuery)
+
+    return users.filter(
+      user =>
+        user.name.toLowerCase().includes(searchQuery) ||
+        user.email.toLowerCase().includes(searchQuery) ||
+        user.employeeId.toLowerCase().includes(searchQuery) ||
+        user.department.toLowerCase().includes(searchQuery) ||
+        user.position.toLowerCase().includes(searchQuery)
     );
   } catch (error) {
     console.error('Error searching users:', error);
@@ -227,11 +295,13 @@ export const searchUsers = async (query: string): Promise<User[]> => {
 };
 
 // Filter users by department
-export const filterUsersByDepartment = async (department: string): Promise<User[]> => {
+export const filterUsersByDepartment = async (
+  department: string
+): Promise<User[]> => {
   try {
     const users = await fetchUsers();
     if (!department) return users;
-    
+
     return users.filter(user => user.department === department);
   } catch (error) {
     console.error('Error filtering users by department:', error);
@@ -246,11 +316,11 @@ export const hardDeleteUser = async (userId: number): Promise<boolean> => {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to delete user: ${response.status}`);
     }
-    
+
     return true;
   } catch (error) {
     console.error('Error deleting user:', error);
@@ -277,14 +347,14 @@ export const addUser = async (userData: Partial<User>): Promise<User> => {
         time_spend_company: 1, // Default value
         work_accident: false,
         promotion_last_5years: false,
-        left: false
-      })
+        left: false,
+      }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to add user: ${response.status}`);
     }
-    
+
     const newPerformanceData = await response.json();
     return convertPerformanceToUser(newPerformanceData);
   } catch (error) {
@@ -294,7 +364,10 @@ export const addUser = async (userData: Partial<User>): Promise<User> => {
 };
 
 // Update user
-export const updateUser = async (userId: number, userData: Partial<User>): Promise<User> => {
+export const updateUser = async (
+  userId: number,
+  userData: Partial<User>
+): Promise<User> => {
   try {
     const response = await fetch(`${API_BASE_URL}/performance/${userId}`, {
       method: 'PUT',
@@ -310,14 +383,14 @@ export const updateUser = async (userId: number, userData: Partial<User>): Promi
         time_spend_company: userData.time_spend_company || 1,
         work_accident: userData.work_accident || false,
         promotion_last_5years: userData.promotion_last_5years || false,
-        left: userData.left || false
-      })
+        left: userData.left || false,
+      }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to update user: ${response.status}`);
     }
-    
+
     const updatedPerformanceData = await response.json();
     return convertPerformanceToUser(updatedPerformanceData);
   } catch (error) {

@@ -27,7 +27,9 @@ const COOKIE_MAX_AGE = 7; // 7 days
 const FALLBACK_STORAGE_KEY = 'retensync_auth_data';
 
 // Cookie options for security
-const getCookieOptions = (isProduction: boolean = process.env.NODE_ENV === 'production') => ({
+const getCookieOptions = (
+  isProduction: boolean = process.env.NODE_ENV === 'production'
+) => ({
   expires: COOKIE_MAX_AGE,
   secure: isProduction, // Only use secure cookies in production (HTTPS)
   sameSite: 'strict' as const,
@@ -51,11 +53,11 @@ export const saveAuthToken = (tokenData: TokenData): boolean => {
 
   try {
     const cookieOptions = getCookieOptions();
-    
+
     // Primary storage: HTTP-only-like cookies (as secure as possible with js-cookie)
     Cookies.set(TOKEN_COOKIE_NAME, tokenData.token, cookieOptions);
     Cookies.set(ROLE_COOKIE_NAME, tokenData.role, cookieOptions);
-    
+
     // Store additional user info
     const userInfo = {
       userId: tokenData.userId,
@@ -76,7 +78,10 @@ export const saveAuthToken = (tokenData: TokenData): boolean => {
       };
       localStorage.setItem(FALLBACK_STORAGE_KEY, JSON.stringify(fallbackData));
     } catch (storageError) {
-      console.warn('localStorage not available, using cookies only:', storageError);
+      console.warn(
+        'localStorage not available, using cookies only:',
+        storageError
+      );
     }
 
     // Also set as backup in sessionStorage for this session
@@ -269,10 +274,12 @@ export const removeAuthToken = (): void => {
  */
 export const updateAuthToken = (newTokenData: TokenData): boolean => {
   const currentAuth = getAuthToken();
-  
+
   // If user is switching roles, log the change
   if (currentAuth.isValid && currentAuth.role !== newTokenData.role) {
-    console.log(`Role changed from ${currentAuth.role} to ${newTokenData.role}`);
+    console.log(
+      `Role changed from ${currentAuth.role} to ${newTokenData.role}`
+    );
   }
 
   // Remove old token data and save new one
@@ -301,7 +308,7 @@ export const getAuthHeaders = (): HeadersInit => {
  */
 export const isTokenExpired = (bufferMinutes: number = 5): boolean => {
   const authInfo = getAuthToken();
-  
+
   if (!authInfo.isValid || !authInfo.expiresAt) {
     return true;
   }
@@ -310,7 +317,7 @@ export const isTokenExpired = (bufferMinutes: number = 5): boolean => {
   const currentTime = Date.now();
   const bufferTime = bufferMinutes * 60 * 1000; // Convert minutes to milliseconds
 
-  return currentTime >= (expirationTime - bufferTime);
+  return currentTime >= expirationTime - bufferTime;
 };
 
 /**
@@ -318,7 +325,7 @@ export const isTokenExpired = (bufferMinutes: number = 5): boolean => {
  */
 export const getTokenExpirationTime = (): number | null => {
   const authInfo = getAuthToken();
-  
+
   if (!authInfo.isValid || !authInfo.expiresAt) {
     return null;
   }

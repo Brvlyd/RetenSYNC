@@ -63,7 +63,8 @@ const handleApiError = async (response: Response): Promise<never> => {
 
   try {
     const errorData = await response.json();
-    errorMessage = errorData.message || errorData.detail || errorData.error || errorMessage;
+    errorMessage =
+      errorData.message || errorData.detail || errorData.error || errorMessage;
     errorDetails = errorData;
   } catch {
     // If response is not JSON, use the status text
@@ -80,7 +81,9 @@ const handleApiError = async (response: Response): Promise<never> => {
 };
 
 // Login function
-export const loginUser = async (credentials: LoginRequest): Promise<LoginResponse> => {
+export const loginUser = async (
+  credentials: LoginRequest
+): Promise<LoginResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/login/`, {
       method: 'POST',
@@ -94,13 +97,14 @@ export const loginUser = async (credentials: LoginRequest): Promise<LoginRespons
 
     if (!response.ok || !data.success) {
       const error: ApiError = {
-        message: data.message || `Request failed with status ${response.status}`,
+        message:
+          data.message || `Request failed with status ${response.status}`,
         status: response.status,
         details: data.errors || data,
       };
       throw error;
     }
-    
+
     // Store the token in localStorage
     if (data.data?.user?.token) {
       localStorage.setItem('authToken', data.data.user.token);
@@ -116,7 +120,9 @@ export const loginUser = async (credentials: LoginRequest): Promise<LoginRespons
 };
 
 // Register function
-export const registerUser = async (userData: RegisterRequest): Promise<LoginResponse> => {
+export const registerUser = async (
+  userData: RegisterRequest
+): Promise<LoginResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/register/`, {
       method: 'POST',
@@ -130,13 +136,14 @@ export const registerUser = async (userData: RegisterRequest): Promise<LoginResp
 
     if (!response.ok || !data.success) {
       const error: ApiError = {
-        message: data.message || `Request failed with status ${response.status}`,
+        message:
+          data.message || `Request failed with status ${response.status}`,
         status: response.status,
         details: data.errors || data,
       };
       throw error;
     }
-    
+
     // Store the token in localStorage
     if (data.data?.user?.token) {
       localStorage.setItem('authToken', data.data.user.token);
@@ -154,7 +161,7 @@ export const registerUser = async (userData: RegisterRequest): Promise<LoginResp
 // Logout function
 export const logoutUser = async (): Promise<void> => {
   const token = localStorage.getItem('authToken');
-  
+
   if (!token) {
     // Already logged out
     return;
@@ -165,7 +172,7 @@ export const logoutUser = async (): Promise<void> => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
+        Authorization: `Token ${token}`,
       },
     });
 
@@ -182,7 +189,7 @@ export const logoutUser = async (): Promise<void> => {
 // Get current user profile
 export const getCurrentUser = async (): Promise<UserData> => {
   const token = localStorage.getItem('authToken');
-  
+
   if (!token) {
     throw new Error('No authentication token found');
   }
@@ -192,7 +199,7 @@ export const getCurrentUser = async (): Promise<UserData> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
+        Authorization: `Token ${token}`,
       },
     });
 

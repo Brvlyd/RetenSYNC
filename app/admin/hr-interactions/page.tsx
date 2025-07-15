@@ -4,7 +4,18 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { feedbackData } from '@/lib/dummy-data';
-import { Users, Award, MessageSquare, Calendar, TrendingUp, Heart, Send, Clock, Star, ThumbsUp } from 'lucide-react';
+import {
+  Users,
+  Award,
+  MessageSquare,
+  Calendar,
+  TrendingUp,
+  Heart,
+  Send,
+  Clock,
+  Star,
+  ThumbsUp,
+} from 'lucide-react';
 
 export default function HRInteractionsPage() {
   const router = useRouter();
@@ -16,7 +27,7 @@ export default function HRInteractionsPage() {
     type: 'peer',
     recipient: '',
     project: '',
-    message: ''
+    message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
@@ -27,50 +38,58 @@ export default function HRInteractionsPage() {
   }, []);
 
   const tabs = [
-    { 
-      id: 'received', 
-      label: 'Received', 
+    {
+      id: 'received',
+      label: 'Received',
       count: feedbackData.filter(f => f.status === 'received').length,
       icon: Heart,
-      color: 'from-emerald-500 to-teal-500'
+      color: 'from-emerald-500 to-teal-500',
     },
-    { 
-      id: 'sent', 
-      label: 'Sent', 
+    {
+      id: 'sent',
+      label: 'Sent',
       count: feedbackData.filter(f => f.status === 'sent').length,
       icon: Send,
-      color: 'from-blue-500 to-cyan-500'
+      color: 'from-blue-500 to-cyan-500',
     },
-    { 
-      id: 'give', 
-      label: 'Give Feedback', 
+    {
+      id: 'give',
+      label: 'Give Feedback',
       count: 0,
       icon: Star,
-      color: 'from-violet-500 to-purple-500'
+      color: 'from-violet-500 to-purple-500',
     },
   ];
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'peer': return <Users className="h-4 w-4" />;
-      case 'manager': return <TrendingUp className="h-4 w-4" />;
-      case 'self': return <Award className="h-4 w-4" />;
-      default: return <MessageSquare className="h-4 w-4" />;
+    case 'peer':
+      return <Users className="h-4 w-4" />;
+    case 'manager':
+      return <TrendingUp className="h-4 w-4" />;
+    case 'self':
+      return <Award className="h-4 w-4" />;
+    default:
+      return <MessageSquare className="h-4 w-4" />;
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'peer': return 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border border-emerald-200';
-      case 'manager': return 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border border-blue-200';
-      case 'self': return 'bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border border-purple-200';
-      default: return 'bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 border border-gray-200';
+    case 'peer':
+      return 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border border-emerald-200';
+    case 'manager':
+      return 'bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border border-blue-200';
+    case 'self':
+      return 'bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border border-purple-200';
+    default:
+      return 'bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 border border-gray-200';
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.recipient || !formData.project || !formData.message) {
       alert('Please fill in all required fields');
       return;
@@ -85,7 +104,7 @@ export default function HRInteractionsPage() {
         type: 'peer',
         recipient: '',
         project: '',
-        message: ''
+        message: '',
       });
       setShowFeedbackForm(false);
       setIsSubmitting(false);
@@ -110,95 +129,116 @@ export default function HRInteractionsPage() {
     {
       id: 'shoutouts',
       title: 'Peer Recognition',
-      description: 'Celebrate achievements and recognize great work across teams',
+      description:
+        'Celebrate achievements and recognize great work across teams',
       icon: Award,
       color: 'from-amber-500 to-orange-600',
-      bgColor: 'from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30',
+      bgColor:
+        'from-amber-50 to-orange-50 dark:from-amber-900/30 dark:to-orange-900/30',
       stats: [
         { label: 'Total Recognitions', value: '156' },
         { label: 'This Month', value: '24' },
-        { label: 'Team Participation', value: '89%' }
+        { label: 'Team Participation', value: '89%' },
       ],
       features: [
         'Company values alignment',
         'Peer-to-peer recognition',
         'Team celebrations',
-        'Achievement tracking'
+        'Achievement tracking',
       ],
-      route: '/admin/peer-recognition'
+      route: '/admin/peer-recognition',
     },
     {
       id: 'meetings',
       title: '1-on-1 Meetings',
-      description: 'Build stronger relationships through meaningful conversations',
+      description:
+        'Build stronger relationships through meaningful conversations',
       icon: Users,
       color: 'from-blue-500 to-cyan-600',
-      bgColor: 'from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30',
+      bgColor:
+        'from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30',
       stats: [
         { label: 'Scheduled Meetings', value: '48' },
         { label: 'Completion Rate', value: '96%' },
-        { label: 'Avg Duration', value: '45min' }
+        { label: 'Avg Duration', value: '45min' },
       ],
       features: [
         'Career development discussions',
         'Performance feedback',
         'Goal setting and tracking',
-        'Personal growth planning'
+        'Personal growth planning',
       ],
-      route: '/admin/1on1'
-    }
+      route: '/admin/1on1',
+    },
   ];
 
   // Add margin to top so header doesn't cut content (reduced margin)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+    <div
+      className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}
+    >
       {/* Modern Header - Responsive with Connection Animation */}
       <motion.div
         initial={{ opacity: 0, rotateX: 10 }}
         animate={{ opacity: 1, rotateX: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
         className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 text-white overflow-hidden relative"
       >
         {/* Connection network animation */}
         <div className="absolute inset-0 overflow-hidden">
-          <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 400 200">
+          <svg
+            className="absolute inset-0 w-full h-full opacity-20"
+            viewBox="0 0 400 200"
+          >
             <defs>
               <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge> 
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/> 
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
-            
+
             {/* Animated nodes */}
             <motion.circle
-              cx="80" cy="50" r="4" fill="white"
+              cx="80"
+              cy="50"
+              r="4"
+              fill="white"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 2, repeat: Infinity }}
               filter="url(#glow)"
             />
             <motion.circle
-              cx="200" cy="80" r="4" fill="white"
+              cx="200"
+              cy="80"
+              r="4"
+              fill="white"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
               filter="url(#glow)"
             />
             <motion.circle
-              cx="320" cy="60" r="4" fill="white"
+              cx="320"
+              cy="60"
+              r="4"
+              fill="white"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 2, repeat: Infinity, delay: 1 }}
               filter="url(#glow)"
             />
             <motion.circle
-              cx="150" cy="120" r="4" fill="white"
+              cx="150"
+              cy="120"
+              r="4"
+              fill="white"
               animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
               filter="url(#glow)"
             />
-            
+
             {/* Animated connections */}
             <motion.path
               d="M80 50 L200 80 L320 60 L150 120 L80 50"
@@ -207,7 +247,7 @@ export default function HRInteractionsPage() {
               fill="none"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             />
             <motion.path
               d="M200 80 L150 120"
@@ -216,20 +256,25 @@ export default function HRInteractionsPage() {
               fill="none"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 0.5,
+              }}
             />
           </svg>
         </div>
-        
+
         <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative z-10"
         >
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -237,7 +282,7 @@ export default function HRInteractionsPage() {
           >
             HR Interactions
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -260,20 +305,26 @@ export default function HRInteractionsPage() {
             onClick={() => router.push(type.route)}
           >
             {/* Gradient overlay on hover */}
-            <div className={`absolute inset-0 bg-gradient-to-r ${type.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
-            
+            <div
+              className={`absolute inset-0 bg-gradient-to-r ${type.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+            ></div>
+
             <div className="relative p-6 lg:p-8">
               {/* Header */}
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center space-x-4">
-                  <div className={`p-4 rounded-2xl bg-gradient-to-r ${type.color} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`p-4 rounded-2xl bg-gradient-to-r ${type.color} shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <type.icon className="h-8 w-8 text-white" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-purple-600 group-hover:to-blue-600 transition-all duration-300">
                       {type.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">{type.description}</p>
+                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                      {type.description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -294,10 +345,15 @@ export default function HRInteractionsPage() {
 
               {/* Features */}
               <div className="space-y-3 mb-6">
-                <h4 className="font-semibold text-gray-900 dark:text-white">Key Features:</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white">
+                  Key Features:
+                </h4>
                 <div className="grid grid-cols-2 gap-2">
                   {type.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                    <div
+                      key={featureIndex}
+                      className="flex items-center text-sm text-gray-700 dark:text-gray-300"
+                    >
                       <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mr-2 flex-shrink-0"></div>
                       {feature}
                     </div>
@@ -334,8 +390,12 @@ export default function HRInteractionsPage() {
               <MessageSquare className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Continuous Feedback</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">360° feedback system for continuous improvement</p>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Continuous Feedback
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                360° feedback system for continuous improvement
+              </p>
             </div>
           </div>
           <button
@@ -353,7 +413,7 @@ export default function HRInteractionsPage() {
         {/* Enhanced Tab Navigation - Responsive */}
         <div className="relative mb-6">
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 bg-gray-50 dark:bg-gray-700 rounded-xl lg:rounded-2xl p-2 border border-gray-100 dark:border-gray-600">
-            {tabs.map((tab) => (
+            {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => {
@@ -366,16 +426,22 @@ export default function HRInteractionsPage() {
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
                 }`}
               >
-                <tab.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${
-                  activeTab === tab.id ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
-                } transition-colors`} />
+                <tab.icon
+                  className={`h-4 w-4 sm:h-5 sm:w-5 ${
+                    activeTab === tab.id
+                      ? 'text-white'
+                      : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                  } transition-colors`}
+                />
                 <span className="truncate">{tab.label}</span>
                 {tab.count > 0 && (
-                  <span className={`px-2 py-0.5 sm:py-1 rounded-full text-xs font-bold ${
-                    activeTab === tab.id 
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 group-hover:bg-gray-300 dark:group-hover:bg-gray-500'
-                  } transition-all duration-300`}>
+                  <span
+                    className={`px-2 py-0.5 sm:py-1 rounded-full text-xs font-bold ${
+                      activeTab === tab.id
+                        ? 'bg-white/20 text-white'
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 group-hover:bg-gray-300 dark:group-hover:bg-gray-500'
+                    } transition-all duration-300`}
+                  >
                     {tab.count}
                   </span>
                 )}
@@ -391,18 +457,22 @@ export default function HRInteractionsPage() {
               <div className="p-2 sm:p-3 bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl lg:rounded-2xl">
                 <Star className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
               </div>
-              <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">Give Feedback</h4>
+              <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
+                Give Feedback
+              </h4>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                     Feedback Type
                   </label>
-                  <select 
+                  <select
                     value={formData.type}
-                    onChange={(e) => setFormData({...formData, type: e.target.value})}
+                    onChange={e =>
+                      setFormData({ ...formData, type: e.target.value })
+                    }
                     className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                   >
                     <option value="peer">Peer Feedback</option>
@@ -414,9 +484,11 @@ export default function HRInteractionsPage() {
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                     Recipient
                   </label>
-                  <select 
+                  <select
                     value={formData.recipient}
-                    onChange={(e) => setFormData({...formData, recipient: e.target.value})}
+                    onChange={e =>
+                      setFormData({ ...formData, recipient: e.target.value })
+                    }
                     className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                   >
                     <option value="">Select recipient...</option>
@@ -426,7 +498,7 @@ export default function HRInteractionsPage() {
                   </select>
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                   Project/Context
@@ -434,12 +506,14 @@ export default function HRInteractionsPage() {
                 <input
                   type="text"
                   value={formData.project}
-                  onChange={(e) => setFormData({...formData, project: e.target.value})}
+                  onChange={e =>
+                    setFormData({ ...formData, project: e.target.value })
+                  }
                   placeholder="e.g., Q4 Product Launch"
                   className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3">
                   Feedback Message
@@ -447,12 +521,14 @@ export default function HRInteractionsPage() {
                 <textarea
                   rows={4}
                   value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  onChange={e =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   placeholder="Share specific, actionable feedback..."
                   className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-white dark:bg-gray-800 resize-none text-gray-900 dark:text-white text-sm sm:text-base"
                 />
               </div>
-              
+
               <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4">
                 <button
                   type="button"
@@ -484,10 +560,12 @@ export default function HRInteractionsPage() {
             {feedbackData
               .filter(feedback => feedback.status === activeTab)
               .map((feedback, index) => (
-                <div 
-                  key={feedback.id} 
+                <div
+                  key={feedback.id}
                   className={`group bg-gray-50 dark:bg-gray-700 rounded-2xl lg:rounded-3xl border border-gray-200 dark:border-gray-600 shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden ${
-                    animateCards ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                    animateCards
+                      ? 'translate-y-0 opacity-100'
+                      : 'translate-y-8 opacity-0'
                   }`}
                   style={{ animationDelay: `${index * 150}ms` }}
                 >
@@ -502,34 +580,47 @@ export default function HRInteractionsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-3">
                             <span className="font-bold text-gray-900 dark:text-white text-base sm:text-lg">
-                              {feedback.status === 'received' ? `From: ${feedback.from}` : `To: ${feedback.to}`}
+                              {feedback.status === 'received'
+                                ? `From: ${feedback.from}`
+                                : `To: ${feedback.to}`}
                             </span>
-                            <span className={`flex items-center space-x-1 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold w-fit ${getTypeColor(feedback.type)}`}>
+                            <span
+                              className={`flex items-center space-x-1 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold w-fit ${getTypeColor(feedback.type)}`}
+                            >
                               {getTypeIcon(feedback.type)}
                               <span className="ml-1">{feedback.type}</span>
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 font-medium">
-                            Project: <span className="text-gray-900 dark:text-white">{feedback.project}</span>
+                            Project:{' '}
+                            <span className="text-gray-900 dark:text-white">
+                              {feedback.project}
+                            </span>
                           </p>
                           <p className="text-gray-800 dark:text-gray-200 leading-relaxed bg-white dark:bg-gray-800 rounded-xl lg:rounded-2xl p-3 sm:p-4 border border-gray-200 dark:border-gray-600 text-sm sm:text-base">
                             {feedback.content}
                           </p>
                         </div>
                       </div>
-                      
+
                       <div className="flex flex-row lg:flex-col items-center lg:items-end space-x-4 lg:space-x-0 lg:space-y-2">
                         <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-full px-3 py-2">
                           <Clock className="h-4 w-4" />
-                          <span className="font-medium">{new Date(feedback.date).toLocaleDateString()}</span>
+                          <span className="font-medium">
+                            {new Date(feedback.date).toLocaleDateString()}
+                          </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group/like">
                             <ThumbsUp className="h-4 w-4 group-hover/like:scale-110 transition-transform" />
                             <span className="font-medium">Helpful</span>
                           </button>
-                          <button 
-                            onClick={() => setReplyingTo(replyingTo === feedback.id ? null : feedback.id)}
+                          <button
+                            onClick={() =>
+                              setReplyingTo(
+                                replyingTo === feedback.id ? null : feedback.id
+                              )
+                            }
                             className="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group/reply"
                           >
                             <MessageSquare className="h-4 w-4 group-hover/reply:scale-110 transition-transform" />
@@ -551,7 +642,7 @@ export default function HRInteractionsPage() {
                           <div className="flex-1">
                             <textarea
                               value={replyText}
-                              onChange={(e) => setReplyText(e.target.value)}
+                              onChange={e => setReplyText(e.target.value)}
                               placeholder="Write your reply..."
                               rows={3}
                               className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white dark:bg-gray-800 resize-none text-gray-900 dark:text-white text-sm"
@@ -591,18 +682,46 @@ export default function HRInteractionsPage() {
           <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl">
             <TrendingUp className="h-6 w-6 text-white" />
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Interaction Impact</h3>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Interaction Impact
+          </h3>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[
-            { label: 'Employee Satisfaction', value: '94%', change: '+5%', icon: Heart, color: 'from-pink-500 to-rose-500' },
-            { label: 'Engagement Score', value: '8.7/10', change: '+0.4', icon: TrendingUp, color: 'from-blue-500 to-cyan-500' },
-            { label: 'Retention Rate', value: '96%', change: '+3%', icon: Users, color: 'from-emerald-500 to-teal-500' },
-            { label: 'Team Collaboration', value: '91%', change: '+7%', icon: MessageSquare, color: 'from-purple-500 to-violet-500' }
+            {
+              label: 'Employee Satisfaction',
+              value: '94%',
+              change: '+5%',
+              icon: Heart,
+              color: 'from-pink-500 to-rose-500',
+            },
+            {
+              label: 'Engagement Score',
+              value: '8.7/10',
+              change: '+0.4',
+              icon: TrendingUp,
+              color: 'from-blue-500 to-cyan-500',
+            },
+            {
+              label: 'Retention Rate',
+              value: '96%',
+              change: '+3%',
+              icon: Users,
+              color: 'from-emerald-500 to-teal-500',
+            },
+            {
+              label: 'Team Collaboration',
+              value: '91%',
+              change: '+7%',
+              icon: MessageSquare,
+              color: 'from-purple-500 to-violet-500',
+            },
           ].map((metric, index) => (
             <div key={metric.label} className="text-center">
-              <div className={`p-3 rounded-xl bg-gradient-to-r ${metric.color} shadow-lg mx-auto w-fit mb-3`}>
+              <div
+                className={`p-3 rounded-xl bg-gradient-to-r ${metric.color} shadow-lg mx-auto w-fit mb-3`}
+              >
                 <metric.icon className="h-6 w-6 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">

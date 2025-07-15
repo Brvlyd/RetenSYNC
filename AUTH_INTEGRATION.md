@@ -5,12 +5,14 @@ This document describes the integration of the new authentication APIs into the 
 ## New APIs Integrated
 
 ### 1. GET User Profile
+
 - **URL**: `https://turnover-api-hd7ze.ondigitalocean.app/api/profile/`
 - **Method**: GET
 - **Headers**: `Authorization: Token <your-token>`
 - **Response**: Returns complete user profile information including personal details, role, department, etc.
 
 ### 2. POST Logout
+
 - **URL**: `https://turnover-api-hd7ze.ondigitalocean.app/api/logout/`
 - **Method**: POST
 - **Headers**: `Authorization: Token <your-token>`
@@ -19,11 +21,13 @@ This document describes the integration of the new authentication APIs into the 
 ## Implementation Details
 
 ### New Files Created
+
 1. **`app/api/authApi.ts`** - Main authentication API service
 2. **`app/api/authHelpers.ts`** - Helper functions for auth operations
 3. **`components/AuthInitializer.tsx`** - Component to initialize auth on app startup
 
 ### Modified Files
+
 1. **`components/layout-admin/header.tsx`** - Added user profile dropdown with refresh and logout
 2. **`components/layout-user/header.tsx`** - Enhanced user menu with profile management
 3. **`components/TokenManager.tsx`** - Added token validation functionality
@@ -31,6 +35,7 @@ This document describes the integration of the new authentication APIs into the 
 5. **`app/api/usersApi.ts`** - Updated to use new auth token system
 
 ### Key Features
+
 - **Token Management**: Secure token storage and validation
 - **User Profile Fetching**: Automatic profile data retrieval and caching
 - **Logout Functionality**: Proper cleanup of user data and tokens
@@ -40,6 +45,7 @@ This document describes the integration of the new authentication APIs into the 
 ## Usage Examples
 
 ### Setting Up Authentication
+
 ```javascript
 import { setAuthToken, fetchUserProfile } from '@/app/api/authApi';
 
@@ -49,6 +55,7 @@ const userProfile = await fetchUserProfile();
 ```
 
 ### Logging Out
+
 ```javascript
 import { logoutUser } from '@/app/api/authApi';
 
@@ -57,6 +64,7 @@ await logoutUser();
 ```
 
 ### Checking Authentication Status
+
 ```javascript
 import { isAuthenticated, getCurrentUser } from '@/app/api/authApi';
 
@@ -70,6 +78,7 @@ const user = getCurrentUser();
 ## User Interface Changes
 
 ### Admin Header
+
 - Enhanced user profile dropdown with:
   - User information display
   - Profile refresh button
@@ -77,11 +86,13 @@ const user = getCurrentUser();
   - User details (department, role, status)
 
 ### User Header
+
 - Similar enhancements to admin header
 - Profile refresh capability
 - Improved user information display
 
 ### Token Manager
+
 - Added token validation
 - Real-time feedback on token status
 - Integration with profile API for validation

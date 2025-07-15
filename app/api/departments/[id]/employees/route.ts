@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getEmployeesByDepartment, departmentExists } from '@/lib/data/departments';
+import {
+  getEmployeesByDepartment,
+  departmentExists,
+} from '@/lib/data/departments';
 
 // Helper function to check authentication
 function checkAuth(request: NextRequest) {
@@ -7,7 +10,7 @@ function checkAuth(request: NextRequest) {
   if (!authHeader || !authHeader.startsWith('Token ')) {
     return false;
   }
-  
+
   const token = authHeader.replace('Token ', '');
   // For demo purposes, accept any token that starts with 'demo-token-'
   return token.startsWith('demo-token-');
@@ -28,7 +31,7 @@ export async function GET(
 
   try {
     const departmentId = parseInt(params.id);
-    
+
     if (isNaN(departmentId)) {
       return NextResponse.json(
         { message: 'Invalid department ID' },

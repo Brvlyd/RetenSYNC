@@ -2,7 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { goalsData } from '@/lib/dummy-data';
-import { Target, Plus, Calendar, Clock, CheckCircle, AlertCircle, TrendingUp, Award, X, Edit, Trash2, Users } from 'lucide-react';
+import {
+  Target,
+  Plus,
+  Calendar,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  TrendingUp,
+  Award,
+  X,
+  Edit,
+  Trash2,
+  Users,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Goal {
@@ -35,7 +48,7 @@ export default function GoalsPage() {
     description: '',
     dueDate: '',
     priority: 'medium' as 'high' | 'medium' | 'low',
-    keyResults: ['']
+    keyResults: [''],
   });
 
   useEffect(() => {
@@ -44,13 +57,14 @@ export default function GoalsPage() {
 
   const filteredGoals = goals.filter(goal => {
     const statusMatch = filterStatus === 'all' || goal.status === filterStatus;
-    const priorityMatch = filterPriority === 'all' || goal.priority === filterPriority;
+    const priorityMatch =
+      filterPriority === 'all' || goal.priority === filterPriority;
     return statusMatch && priorityMatch;
   });
 
   const handleAddGoal = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!newGoal.title || !newGoal.description || !newGoal.dueDate) {
       alert('Please fill in all required fields');
       return;
@@ -67,7 +81,7 @@ export default function GoalsPage() {
       owner: 'You',
       keyResults: newGoal.keyResults
         .filter(kr => kr.trim() !== '')
-        .map(kr => ({ description: kr, completed: false }))
+        .map(kr => ({ description: kr, completed: false })),
     };
 
     setGoals([...goals, goal]);
@@ -76,7 +90,7 @@ export default function GoalsPage() {
       description: '',
       dueDate: '',
       priority: 'medium',
-      keyResults: ['']
+      keyResults: [''],
     });
     setShowAddForm(false);
   };
@@ -86,35 +100,43 @@ export default function GoalsPage() {
   };
 
   const toggleKeyResult = (goalId: number, krIndex: number) => {
-    setGoals(goals.map(goal => {
-      if (goal.id === goalId) {
-        const updatedKeyResults = [...goal.keyResults];
-        updatedKeyResults[krIndex].completed = !updatedKeyResults[krIndex].completed;
-        
-        // Calculate new progress
-        const completedCount = updatedKeyResults.filter(kr => kr.completed).length;
-        const newProgress = Math.round((completedCount / updatedKeyResults.length) * 100);
-        
-        // Update status based on progress
-        let newStatus: 'completed' | 'in-progress' | 'not-started' = 'not-started';
-        if (newProgress === 100) newStatus = 'completed';
-        else if (newProgress > 0) newStatus = 'in-progress';
+    setGoals(
+      goals.map(goal => {
+        if (goal.id === goalId) {
+          const updatedKeyResults = [...goal.keyResults];
+          updatedKeyResults[krIndex].completed =
+            !updatedKeyResults[krIndex].completed;
 
-        return {
-          ...goal,
-          keyResults: updatedKeyResults,
-          progress: newProgress,
-          status: newStatus
-        };
-      }
-      return goal;
-    }));
+          // Calculate new progress
+          const completedCount = updatedKeyResults.filter(
+            kr => kr.completed
+          ).length;
+          const newProgress = Math.round(
+            (completedCount / updatedKeyResults.length) * 100
+          );
+
+          // Update status based on progress
+          let newStatus: 'completed' | 'in-progress' | 'not-started' =
+            'not-started';
+          if (newProgress === 100) newStatus = 'completed';
+          else if (newProgress > 0) newStatus = 'in-progress';
+
+          return {
+            ...goal,
+            keyResults: updatedKeyResults,
+            progress: newProgress,
+            status: newStatus,
+          };
+        }
+        return goal;
+      })
+    );
   };
 
   const addKeyResult = () => {
     setNewGoal({
       ...newGoal,
-      keyResults: [...newGoal.keyResults, '']
+      keyResults: [...newGoal.keyResults, ''],
     });
   };
 
@@ -127,25 +149,33 @@ export default function GoalsPage() {
   const removeKeyResult = (index: number) => {
     setNewGoal({
       ...newGoal,
-      keyResults: newGoal.keyResults.filter((_, i) => i !== index)
+      keyResults: newGoal.keyResults.filter((_, i) => i !== index),
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'text-emerald-600 bg-emerald-100 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-700';
-      case 'in-progress': return 'text-blue-600 bg-blue-100 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700';
-      case 'not-started': return 'text-gray-600 bg-gray-100 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-700';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+    case 'completed':
+      return 'text-emerald-600 bg-emerald-100 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-700';
+    case 'in-progress':
+      return 'text-blue-600 bg-blue-100 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-700';
+    case 'not-started':
+      return 'text-gray-600 bg-gray-100 border-gray-200 dark:bg-gray-900/30 dark:text-gray-400 dark:border-gray-700';
+    default:
+      return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'text-red-600 bg-red-100 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700';
-      case 'medium': return 'text-amber-600 bg-amber-100 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-700';
-      case 'low': return 'text-green-600 bg-green-100 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+    case 'high':
+      return 'text-red-600 bg-red-100 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700';
+    case 'medium':
+      return 'text-amber-600 bg-amber-100 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-700';
+    case 'low':
+      return 'text-green-600 bg-green-100 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700';
+    default:
+      return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
 
@@ -160,7 +190,9 @@ export default function GoalsPage() {
     total: goals.length,
     completed: goals.filter(g => g.status === 'completed').length,
     inProgress: goals.filter(g => g.status === 'in-progress').length,
-    avgProgress: Math.round(goals.reduce((sum, goal) => sum + goal.progress, 0) / goals.length)
+    avgProgress: Math.round(
+      goals.reduce((sum, goal) => sum + goal.progress, 0) / goals.length
+    ),
   };
 
   // Add margin to top so header doesn't cut content (same as 1on1 page)
@@ -171,7 +203,7 @@ export default function GoalsPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
+        transition={{ duration: 0.7, ease: 'easeOut' }}
         className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-cyan-600 via-blue-600 to-violet-700 text-white overflow-hidden relative"
       >
         {/* Target ripple animation */}
@@ -181,51 +213,51 @@ export default function GoalsPage() {
               className="w-16 h-16 rounded-full border-2 border-white/20"
               animate={{
                 scale: [1, 1.5, 2],
-                opacity: [0.3, 0.1, 0]
+                opacity: [0.3, 0.1, 0],
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                ease: "easeOut"
+                ease: 'easeOut',
               }}
             />
             <motion.div
               className="absolute top-0 left-0 w-16 h-16 rounded-full border-2 border-white/30"
               animate={{
                 scale: [1, 1.3, 1.8],
-                opacity: [0.4, 0.2, 0]
+                opacity: [0.4, 0.2, 0],
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                ease: "easeOut",
-                delay: 0.5
+                ease: 'easeOut',
+                delay: 0.5,
               }}
             />
             <motion.div
               className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white/40"
               animate={{
-                scale: [1, 1.2, 1]
+                scale: [1, 1.2, 1],
               }}
               transition={{
                 duration: 1.5,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: 'easeInOut',
               }}
             />
           </div>
-          
+
           {/* Floating targets */}
           <motion.div
             className="absolute top-8 right-16 text-white/25"
             animate={{
               y: [0, -8, 0],
-              rotate: [0, 360, 0]
+              rotate: [0, 360, 0],
             }}
             transition={{
               duration: 8,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: 'easeInOut',
             }}
           >
             <Target className="h-6 w-6" />
@@ -234,29 +266,29 @@ export default function GoalsPage() {
             className="absolute bottom-8 right-8 text-white/20"
             animate={{
               y: [0, -6, 0],
-              rotate: [0, -180, 0]
+              rotate: [0, -180, 0],
             }}
             transition={{
               duration: 6,
               repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1
+              ease: 'easeInOut',
+              delay: 1,
             }}
           >
             <Target className="h-4 w-4" />
           </motion.div>
         </div>
-        
+
         <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0"
         >
           <div>
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -264,7 +296,7 @@ export default function GoalsPage() {
             >
               Goals & OKRs
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -286,10 +318,30 @@ export default function GoalsPage() {
       {/* Stats Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {[
-          { label: 'Total Goals', value: goalStats.total, icon: Target, color: 'from-violet-500 to-purple-500' },
-          { label: 'Completed', value: goalStats.completed, icon: CheckCircle, color: 'from-emerald-500 to-teal-500' },
-          { label: 'In Progress', value: goalStats.inProgress, icon: TrendingUp, color: 'from-blue-500 to-cyan-500' },
-          { label: 'Avg Progress', value: `${goalStats.avgProgress}%`, icon: Award, color: 'from-amber-500 to-orange-500' }
+          {
+            label: 'Total Goals',
+            value: goalStats.total,
+            icon: Target,
+            color: 'from-violet-500 to-purple-500',
+          },
+          {
+            label: 'Completed',
+            value: goalStats.completed,
+            icon: CheckCircle,
+            color: 'from-emerald-500 to-teal-500',
+          },
+          {
+            label: 'In Progress',
+            value: goalStats.inProgress,
+            icon: TrendingUp,
+            color: 'from-blue-500 to-cyan-500',
+          },
+          {
+            label: 'Avg Progress',
+            value: `${goalStats.avgProgress}%`,
+            icon: Award,
+            color: 'from-amber-500 to-orange-500',
+          },
         ].map((stat, index) => (
           <motion.div
             key={stat.label}
@@ -299,14 +351,18 @@ export default function GoalsPage() {
             className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-4 lg:p-6"
           >
             <div className="flex items-center justify-between mb-3">
-              <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}>
+              <div
+                className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}
+              >
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stat.value}
               </div>
             </div>
-            <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">{stat.label}</div>
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {stat.label}
+            </div>
           </motion.div>
         ))}
       </div>
@@ -315,10 +371,12 @@ export default function GoalsPage() {
       <div className="bg-white dark:bg-gray-800 rounded-2xl lg:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg p-4 sm:p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Filter by Status</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              Filter by Status
+            </label>
             <select
               value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
+              onChange={e => setFilterStatus(e.target.value)}
               className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">All Status</option>
@@ -328,10 +386,12 @@ export default function GoalsPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Filter by Priority</label>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              Filter by Priority
+            </label>
             <select
               value={filterPriority}
-              onChange={(e) => setFilterPriority(e.target.value)}
+              onChange={e => setFilterPriority(e.target.value)}
               className="w-full p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="all">All Priorities</option>
@@ -359,23 +419,33 @@ export default function GoalsPage() {
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between space-y-4 lg:space-y-0">
                   <div className="flex-1">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-0">{goal.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-0">
+                        {goal.title}
+                      </h3>
                       <div className="flex items-center space-x-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(goal.status)}`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(goal.status)}`}
+                        >
                           {goal.status.replace('-', ' ').toUpperCase()}
                         </span>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getPriorityColor(goal.priority)}`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${getPriorityColor(goal.priority)}`}
+                        >
                           {goal.priority.toUpperCase()}
                         </span>
                       </div>
                     </div>
-                    
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">{goal.description}</p>
-                    
+
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      {goal.description}
+                    </p>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                       <div className="flex items-center text-gray-600 dark:text-gray-400">
                         <Calendar className="h-4 w-4 mr-2" />
-                        <span className="text-sm">Due: {new Date(goal.dueDate).toLocaleDateString()}</span>
+                        <span className="text-sm">
+                          Due: {new Date(goal.dueDate).toLocaleDateString()}
+                        </span>
                       </div>
                       <div className="flex items-center text-gray-600 dark:text-gray-400">
                         <Users className="h-4 w-4 mr-2" />
@@ -386,8 +456,12 @@ export default function GoalsPage() {
                     {/* Progress Bar */}
                     <div className="mb-6">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Progress</span>
-                        <span className="text-sm font-bold text-gray-900 dark:text-white">{goal.progress}%</span>
+                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Progress
+                        </span>
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                          {goal.progress}%
+                        </span>
                       </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner">
                         <motion.div
@@ -401,21 +475,30 @@ export default function GoalsPage() {
 
                     {/* Key Results */}
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Key Results:</h4>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+                        Key Results:
+                      </h4>
                       <div className="space-y-2">
                         {goal.keyResults.map((kr, krIndex) => (
-                          <div key={krIndex} className="flex items-center space-x-3">
+                          <div
+                            key={krIndex}
+                            className="flex items-center space-x-3"
+                          >
                             <button
                               onClick={() => toggleKeyResult(goal.id, krIndex)}
                               className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                                kr.completed 
-                                  ? 'bg-emerald-500 border-emerald-500' 
+                                kr.completed
+                                  ? 'bg-emerald-500 border-emerald-500'
                                   : 'border-gray-300 dark:border-gray-600 hover:border-emerald-500'
                               }`}
                             >
-                              {kr.completed && <CheckCircle className="h-3 w-3 text-white" />}
+                              {kr.completed && (
+                                <CheckCircle className="h-3 w-3 text-white" />
+                              )}
                             </button>
-                            <span className={`text-sm ${kr.completed ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                            <span
+                              className={`text-sm ${kr.completed ? 'line-through text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}
+                            >
                               {kr.description}
                             </span>
                           </div>
@@ -468,48 +551,67 @@ export default function GoalsPage() {
                 <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddGoal} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Goal Title</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Goal Title
+                </label>
                 <input
                   type="text"
                   value={newGoal.title}
-                  onChange={(e) => setNewGoal({...newGoal, title: e.target.value})}
+                  onChange={e =>
+                    setNewGoal({ ...newGoal, title: e.target.value })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   placeholder="Enter goal title"
                   required
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Description
+                </label>
                 <textarea
                   rows={3}
                   value={newGoal.description}
-                  onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
+                  onChange={e =>
+                    setNewGoal({ ...newGoal, description: e.target.value })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
                   placeholder="Describe your goal"
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Due Date</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Due Date
+                  </label>
                   <input
                     type="date"
                     value={newGoal.dueDate}
-                    onChange={(e) => setNewGoal({...newGoal, dueDate: e.target.value})}
+                    onChange={e =>
+                      setNewGoal({ ...newGoal, dueDate: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Priority</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Priority
+                  </label>
                   <select
                     value={newGoal.priority}
-                    onChange={(e) => setNewGoal({...newGoal, priority: e.target.value as 'high' | 'medium' | 'low'})}
+                    onChange={e =>
+                      setNewGoal({
+                        ...newGoal,
+                        priority: e.target.value as 'high' | 'medium' | 'low',
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
                     <option value="low">Low</option>
@@ -518,16 +620,18 @@ export default function GoalsPage() {
                   </select>
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Key Results</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Key Results
+                </label>
                 <div className="space-y-3">
                   {newGoal.keyResults.map((kr, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <input
                         type="text"
                         value={kr}
-                        onChange={(e) => updateKeyResult(index, e.target.value)}
+                        onChange={e => updateKeyResult(index, e.target.value)}
                         className="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                         placeholder="Enter key result"
                       />
@@ -552,7 +656,7 @@ export default function GoalsPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"

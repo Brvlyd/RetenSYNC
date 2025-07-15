@@ -19,7 +19,7 @@ import {
   ArrowRight,
   FileText,
   Users,
-  Brain
+  Brain,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -55,29 +55,32 @@ export default function SelfAssessmentPage() {
     {
       id: 1,
       title: 'Q4 2024 Performance Review',
-      description: 'Comprehensive quarterly performance self-evaluation covering goals, achievements, and development areas.',
+      description:
+        'Comprehensive quarterly performance self-evaluation covering goals, achievements, and development areas.',
       type: 'quarterly',
       status: 'pending',
       dueDate: '2024-12-31',
       category: 'Performance',
       estimatedTime: '45 minutes',
-      questions: 25
+      questions: 25,
     },
     {
       id: 2,
       title: 'Leadership Skills Assessment',
-      description: 'Evaluate your leadership capabilities, communication skills, and team management abilities.',
+      description:
+        'Evaluate your leadership capabilities, communication skills, and team management abilities.',
       type: 'monthly',
       status: 'in-progress',
       dueDate: '2024-11-30',
       category: 'Leadership',
       estimatedTime: '30 minutes',
-      questions: 20
+      questions: 20,
     },
     {
       id: 3,
       title: 'Technical Competency Review',
-      description: 'Assessment of technical skills, problem-solving abilities, and knowledge in your domain.',
+      description:
+        'Assessment of technical skills, problem-solving abilities, and knowledge in your domain.',
       type: 'quarterly',
       status: 'completed',
       dueDate: '2024-11-15',
@@ -85,12 +88,13 @@ export default function SelfAssessmentPage() {
       score: 87,
       category: 'Technical',
       estimatedTime: '60 minutes',
-      questions: 35
+      questions: 35,
     },
     {
       id: 4,
       title: 'Team Collaboration Assessment',
-      description: 'Evaluate your collaboration skills, teamwork, and contribution to team dynamics.',
+      description:
+        'Evaluate your collaboration skills, teamwork, and contribution to team dynamics.',
       type: 'monthly',
       status: 'completed',
       dueDate: '2024-10-31',
@@ -98,30 +102,32 @@ export default function SelfAssessmentPage() {
       score: 92,
       category: 'Collaboration',
       estimatedTime: '25 minutes',
-      questions: 15
+      questions: 15,
     },
     {
       id: 5,
       title: 'Annual Development Planning',
-      description: 'Comprehensive review of career goals, learning objectives, and professional development plans.',
+      description:
+        'Comprehensive review of career goals, learning objectives, and professional development plans.',
       type: 'annual',
       status: 'overdue',
       dueDate: '2024-10-15',
       category: 'Development',
       estimatedTime: '90 minutes',
-      questions: 50
+      questions: 50,
     },
     {
       id: 6,
       title: 'Project X Retrospective',
-      description: 'Reflect on your contributions, learnings, and experiences from the recent project.',
+      description:
+        'Reflect on your contributions, learnings, and experiences from the recent project.',
       type: 'project',
       status: 'pending',
       dueDate: '2024-12-05',
       category: 'Project',
       estimatedTime: '40 minutes',
-      questions: 22
-    }
+      questions: 22,
+    },
   ];
 
   const assessmentResults: AssessmentResult[] = [
@@ -129,81 +135,122 @@ export default function SelfAssessmentPage() {
       category: 'Technical Skills',
       score: 87,
       maxScore: 100,
-      improvement: 5
+      improvement: 5,
     },
     {
       category: 'Leadership',
       score: 78,
       maxScore: 100,
-      improvement: 12
+      improvement: 12,
     },
     {
       category: 'Collaboration',
       score: 92,
       maxScore: 100,
-      improvement: 3
+      improvement: 3,
     },
     {
       category: 'Communication',
       score: 85,
       maxScore: 100,
-      improvement: 8
+      improvement: 8,
     },
     {
       category: 'Problem Solving',
       score: 90,
       maxScore: 100,
-      improvement: 7
-    }
+      improvement: 7,
+    },
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
-      case 'in-progress': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
-      case 'pending': return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
-      case 'overdue': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
-      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    case 'completed':
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+    case 'in-progress':
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+    case 'overdue':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+    default:
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'quarterly': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300';
-      case 'monthly': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
-      case 'annual': return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300';
-      case 'project': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
-      default: return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
+    case 'quarterly':
+      return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300';
+    case 'monthly':
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+    case 'annual':
+      return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300';
+    case 'project':
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+    default:
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed': return CheckCircle;
-      case 'in-progress': return Play;
-      case 'pending': return Clock;
-      case 'overdue': return AlertCircle;
-      default: return Clock;
+    case 'completed':
+      return CheckCircle;
+    case 'in-progress':
+      return Play;
+    case 'pending':
+      return Clock;
+    case 'overdue':
+      return AlertCircle;
+    default:
+      return Clock;
     }
   };
 
   const filteredAssessments = assessments.filter(assessment => {
-    const matchesSearch = assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         assessment.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      assessment.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === 'all' || assessment.type === filterType;
-    const matchesStatus = filterStatus === 'all' || assessment.status === filterStatus;
-    
+    const matchesStatus =
+      filterStatus === 'all' || assessment.status === filterStatus;
+
     if (activeTab === 'available') {
-      return matchesSearch && matchesType && matchesStatus && ['pending', 'in-progress', 'overdue'].includes(assessment.status);
+      return (
+        matchesSearch &&
+        matchesType &&
+        matchesStatus &&
+        ['pending', 'in-progress', 'overdue'].includes(assessment.status)
+      );
     } else {
-      return matchesSearch && matchesType && matchesStatus && assessment.status === 'completed';
+      return (
+        matchesSearch &&
+        matchesType &&
+        matchesStatus &&
+        assessment.status === 'completed'
+      );
     }
   });
 
   const tabs = [
-    { id: 'available', label: 'Available Assessments', count: assessments.filter(a => ['pending', 'in-progress', 'overdue'].includes(a.status)).length },
-    { id: 'completed', label: 'Completed', count: assessments.filter(a => a.status === 'completed').length },
-    { id: 'results', label: 'Results & Analytics', count: assessmentResults.length }
+    {
+      id: 'available',
+      label: 'Available Assessments',
+      count: assessments.filter(a =>
+        ['pending', 'in-progress', 'overdue'].includes(a.status)
+      ).length,
+    },
+    {
+      id: 'completed',
+      label: 'Completed',
+      count: assessments.filter(a => a.status === 'completed').length,
+    },
+    {
+      id: 'results',
+      label: 'Results & Analytics',
+      count: assessmentResults.length,
+    },
   ];
 
   const stats = [
@@ -211,26 +258,26 @@ export default function SelfAssessmentPage() {
       title: 'Completed This Quarter',
       value: '6',
       icon: CheckCircle,
-      color: 'text-green-600'
+      color: 'text-green-600',
     },
     {
       title: 'In Progress',
       value: '2',
       icon: Play,
-      color: 'text-blue-600'
+      color: 'text-blue-600',
     },
     {
       title: 'Average Score',
       value: '87%',
       icon: Star,
-      color: 'text-yellow-600'
+      color: 'text-yellow-600',
     },
     {
       title: 'Improvement',
       value: '+12%',
       icon: TrendingUp,
-      color: 'text-purple-600'
-    }
+      color: 'text-purple-600',
+    },
   ];
 
   return (
@@ -272,7 +319,7 @@ export default function SelfAssessmentPage() {
                 </p>
               </div>
               <div className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                <stat.icon className={cn("w-6 h-6", stat.color)} />
+                <stat.icon className={cn('w-6 h-6', stat.color)} />
               </div>
             </div>
           </div>
@@ -282,7 +329,7 @@ export default function SelfAssessmentPage() {
       {/* Navigation Tabs */}
       <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-8">
-          {tabs.map((tab) => (
+          {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -313,14 +360,14 @@ export default function SelfAssessmentPage() {
                   type="text"
                   placeholder="Search assessments..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
-              
+
               <select
                 value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
+                onChange={e => setFilterType(e.target.value)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="all">All Types</option>
@@ -332,7 +379,7 @@ export default function SelfAssessmentPage() {
 
               <select
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                onChange={e => setFilterStatus(e.target.value)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               >
                 <option value="all">All Status</option>
@@ -349,7 +396,7 @@ export default function SelfAssessmentPage() {
       {/* Tab Content */}
       {(activeTab === 'available' || activeTab === 'completed') && (
         <div className="space-y-6">
-          {filteredAssessments.map((assessment) => {
+          {filteredAssessments.map(assessment => {
             const StatusIcon = getStatusIcon(assessment.status);
             return (
               <div
@@ -367,20 +414,24 @@ export default function SelfAssessmentPage() {
                           {assessment.title}
                         </h3>
                         <div className="flex items-center space-x-2 mt-1">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(assessment.status)}`}>
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(assessment.status)}`}
+                          >
                             {assessment.status.replace('-', ' ')}
                           </span>
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(assessment.type)}`}>
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(assessment.type)}`}
+                          >
                             {assessment.type}
                           </span>
                         </div>
                       </div>
                     </div>
-                    
+
                     <p className="text-gray-600 dark:text-gray-400 mb-4">
                       {assessment.description}
                     </p>
-                    
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-500 dark:text-gray-400">
                       <div className="flex items-center">
                         <Calendar className="w-4 h-4 mr-2" />
@@ -402,7 +453,7 @@ export default function SelfAssessmentPage() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col items-end space-y-2">
                     {assessment.status === 'completed' && assessment.score && (
                       <div className="text-right">
@@ -410,11 +461,15 @@ export default function SelfAssessmentPage() {
                           {assessment.score}%
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Completed {assessment.completedDate && new Date(assessment.completedDate).toLocaleDateString()}
+                          Completed{' '}
+                          {assessment.completedDate &&
+                            new Date(
+                              assessment.completedDate
+                            ).toLocaleDateString()}
                         </div>
                       </div>
                     )}
-                    
+
                     {assessment.status !== 'completed' && (
                       <button className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                         {assessment.status === 'in-progress' ? (
@@ -430,7 +485,7 @@ export default function SelfAssessmentPage() {
                         )}
                       </button>
                     )}
-                    
+
                     {assessment.status === 'completed' && (
                       <button className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                         <FileText className="w-4 h-4 mr-2" />
@@ -442,7 +497,7 @@ export default function SelfAssessmentPage() {
               </div>
             );
           })}
-          
+
           {filteredAssessments.length === 0 && (
             <div className="text-center py-12">
               <ClipboardList className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -478,24 +533,33 @@ export default function SelfAssessmentPage() {
                       <div className="text-lg font-bold text-gray-900 dark:text-white">
                         {result.score}%
                       </div>
-                      <div className={cn(
-                        "text-xs font-medium",
-                        result.improvement > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-                      )}>
-                        {result.improvement > 0 ? '+' : ''}{result.improvement}% from last
+                      <div
+                        className={cn(
+                          'text-xs font-medium',
+                          result.improvement > 0
+                            ? 'text-green-600 dark:text-green-400'
+                            : 'text-red-600 dark:text-red-400'
+                        )}
+                      >
+                        {result.improvement > 0 ? '+' : ''}
+                        {result.improvement}% from last
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                       <span>Progress</span>
-                      <span>{result.score}/{result.maxScore}</span>
+                      <span>
+                        {result.score}/{result.maxScore}
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${(result.score / result.maxScore) * 100}%` }}
+                        style={{
+                          width: `${(result.score / result.maxScore) * 100}%`,
+                        }}
                       ></div>
                     </div>
                   </div>
@@ -515,20 +579,36 @@ export default function SelfAssessmentPage() {
               </div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Completion Rate</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">85%</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Completion Rate
+                  </span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    85%
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Average Score</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">87%</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Average Score
+                  </span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    87%
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Improvement</span>
-                  <span className="font-semibold text-green-600 dark:text-green-400">+12%</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Improvement
+                  </span>
+                  <span className="font-semibold text-green-600 dark:text-green-400">
+                    +12%
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Time Investment</span>
-                  <span className="font-semibold text-gray-900 dark:text-white">15h/month</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Time Investment
+                  </span>
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    15h/month
+                  </span>
                 </div>
               </div>
             </div>
@@ -542,14 +622,37 @@ export default function SelfAssessmentPage() {
               </div>
               <div className="space-y-3">
                 {[
-                  { area: 'Leadership Skills', priority: 'High', color: 'text-red-600' },
-                  { area: 'Technical Writing', priority: 'Medium', color: 'text-yellow-600' },
-                  { area: 'Public Speaking', priority: 'Medium', color: 'text-yellow-600' },
-                  { area: 'Data Analysis', priority: 'Low', color: 'text-green-600' }
+                  {
+                    area: 'Leadership Skills',
+                    priority: 'High',
+                    color: 'text-red-600',
+                  },
+                  {
+                    area: 'Technical Writing',
+                    priority: 'Medium',
+                    color: 'text-yellow-600',
+                  },
+                  {
+                    area: 'Public Speaking',
+                    priority: 'Medium',
+                    color: 'text-yellow-600',
+                  },
+                  {
+                    area: 'Data Analysis',
+                    priority: 'Low',
+                    color: 'text-green-600',
+                  },
                 ].map((item, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm text-gray-900 dark:text-white">{item.area}</span>
-                    <span className={`text-xs font-medium ${item.color}`}>{item.priority}</span>
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
+                    <span className="text-sm text-gray-900 dark:text-white">
+                      {item.area}
+                    </span>
+                    <span className={`text-xs font-medium ${item.color}`}>
+                      {item.priority}
+                    </span>
                   </div>
                 ))}
               </div>

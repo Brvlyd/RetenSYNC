@@ -13,27 +13,27 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: '',
       }));
     }
   };
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
@@ -53,16 +53,15 @@ export default function LoginPage() {
     e.preventDefault();
     if (!validateForm()) return;
     setErrors({});
-    
+
     try {
       console.log('Attempting login with:', { email: formData.email });
-      
+
       const success = await login(formData.email, formData.password);
-      
+
       if (!success) {
         setErrors({ general: 'Invalid email or password' });
       }
-      
     } catch (err) {
       console.error('Login error:', err);
       setErrors({ general: 'Login failed. Please try again.' });
@@ -76,7 +75,10 @@ export default function LoginPage() {
         {/* Animated accent blobs - new color scheme */}
         <div className="absolute -top-12 sm:-top-24 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-gradient-to-br from-[#d96f27]/30 via-[#fff7e6]/20 to-[#94c47d]/30 rounded-full blur-3xl animate-blob1" />
         <div className="absolute bottom-0 right-0 w-80 h-80 sm:w-[30rem] sm:h-[30rem] bg-gradient-to-tr from-[#94c47d]/30 via-[#fff7e6]/20 to-[#d96f27]/30 rounded-full blur-3xl animate-blob2" />
-        <div className="absolute top-1/2 left-1/2 w-40 h-40 sm:w-60 sm:h-60 bg-gradient-to-br from-[#fff7e6]/40 via-[#d96f27]/20 to-[#94c47d]/30 rounded-full blur-2xl animate-blob3" style={{transform:'translate(-50%,-50%)'}} />
+        <div
+          className="absolute top-1/2 left-1/2 w-40 h-40 sm:w-60 sm:h-60 bg-gradient-to-br from-[#fff7e6]/40 via-[#d96f27]/20 to-[#94c47d]/30 rounded-full blur-2xl animate-blob3"
+          style={{ transform: 'translate(-50%,-50%)' }}
+        />
       </div>
 
       <motion.div
@@ -86,12 +88,16 @@ export default function LoginPage() {
         className="w-full max-w-sm sm:max-w-2xl md:max-w-3xl xl:max-w-4xl relative z-10 flex justify-center items-center"
       >
         {/* Login Card - Clean, subtle gradient accent, lighter dark mode */}
-        <div className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl sm:rounded-[2.5rem] shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-4 sm:p-6 md:p-10 lg:p-14 flex flex-col md:flex-row gap-4 md:gap-0 items-stretch justify-center min-h-[500px] sm:min-h-[600px] max-w-6xl mx-auto w-full z-10 overflow-hidden group transition-transform duration-300 hover:scale-[1.01] sm:hover:scale-[1.025]"
-          style={{boxShadow:'0 8px 48px 0 rgba(217,111,39,0.10), 0 0 0 4px rgba(148,196,125,0.10)'}}
+        <div
+          className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl sm:rounded-[2.5rem] shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-4 sm:p-6 md:p-10 lg:p-14 flex flex-col md:flex-row gap-4 md:gap-0 items-stretch justify-center min-h-[500px] sm:min-h-[600px] max-w-6xl mx-auto w-full z-10 overflow-hidden group transition-transform duration-300 hover:scale-[1.01] sm:hover:scale-[1.025]"
+          style={{
+            boxShadow:
+              '0 8px 48px 0 rgba(217,111,39,0.10), 0 0 0 4px rgba(148,196,125,0.10)',
+          }}
         >
           {/* Subtle animated gradient accent at the top */}
           <div className="pointer-events-none absolute left-0 top-0 w-full h-2 sm:h-3 rounded-t-2xl sm:rounded-t-[2.5rem] bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
-          
+
           {/* Left: Logo and Welcome */}
           <div className="flex flex-col items-start justify-center md:w-1/2 w-full px-2 py-4 md:py-0 border-b md:border-b-0 md:border-r border-blue-100 dark:border-blue-900 relative z-30 md:order-1">
             <motion.div
@@ -102,7 +108,13 @@ export default function LoginPage() {
               style={{ position: 'relative', zIndex: 30, marginLeft: '-20px' }}
             >
               <span className="relative flex items-start justify-start">
-                <span className="absolute w-72 h-20 sm:w-[420px] sm:h-[110px] rounded-xl sm:rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10" style={{filter:'blur(0.5px)', transform: 'translateX(-30px)'}}></span>
+                <span
+                  className="absolute w-72 h-20 sm:w-[420px] sm:h-[110px] rounded-xl sm:rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10"
+                  style={{
+                    filter: 'blur(0.5px)',
+                    transform: 'translateX(-30px)',
+                  }}
+                ></span>
                 <Image
                   src="/assets/RetenSYNC.png"
                   alt="RetenSYNC Logo"
@@ -114,15 +126,29 @@ export default function LoginPage() {
                 />
               </span>
             </motion.div>
-            <p className="text-sm sm:text-base lg:text-lg mt-2 font-semibold text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-3 py-1 rounded-xl shadow-sm animate-fade-in text-left" style={{ marginLeft: '-20px' }}>Welcome! Please sign in</p>
-            
+            <p
+              className="text-sm sm:text-base lg:text-lg mt-2 font-semibold text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-3 py-1 rounded-xl shadow-sm animate-fade-in text-left"
+              style={{ marginLeft: '-20px' }}
+            >
+              Welcome! Please sign in
+            </p>
+
             {/* Demo Credentials (mobile only) */}
-            <div className="block md:hidden mt-4 w-full px-2" style={{ marginLeft: '-20px' }}>
+            <div
+              className="block md:hidden mt-4 w-full px-2"
+              style={{ marginLeft: '-20px' }}
+            >
               <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-start">
-                <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
+                <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">
+                  Demo Credentials
+                </p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs text-left">
-                  <span><strong>Email:</strong> any@email.com</span>
-                  <span><strong>Password:</strong> any password</span>
+                  <span>
+                    <strong>Email:</strong> any@email.com
+                  </span>
+                  <span>
+                    <strong>Password:</strong> any password
+                  </span>
                 </div>
               </div>
             </div>
@@ -138,15 +164,22 @@ export default function LoginPage() {
                 className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl flex items-center space-x-3 w-full max-w-sm mx-auto"
               >
                 <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 flex-shrink-0" />
-                <span className="text-red-700 dark:text-red-300 text-sm">{errors.general}</span>
+                <span className="text-red-700 dark:text-red-300 text-sm">
+                  {errors.general}
+                </span>
               </motion.div>
             )}
-            
+
             {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm mx-auto">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5 w-full max-w-sm mx-auto"
+            >
               {/* Email Field */}
               <div className="bg-[#fdfaf6] dark:bg-[#23281a] rounded-xl p-3 pb-2 shadow-sm">
-                <label className="block text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Email</label>
+                <label className="block text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">
+                  Email
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Mail className="h-4 w-4 text-[#d96f27] dark:text-[#94c47d]" />
@@ -163,13 +196,17 @@ export default function LoginPage() {
                   />
                 </div>
                 {errors.email && (
-                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.email}</p>
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                    {errors.email}
+                  </p>
                 )}
               </div>
-              
+
               {/* Password Field */}
               <div className="bg-[#fdfaf6] dark:bg-[#23281a] rounded-xl p-3 pb-2 shadow-sm">
-                <label className="block text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Password</label>
+                <label className="block text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">
+                  Password
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className="h-4 w-4 text-[#d96f27] dark:text-[#94c47d]" />
@@ -199,10 +236,12 @@ export default function LoginPage() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">{errors.password}</p>
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                    {errors.password}
+                  </p>
                 )}
               </div>
-              
+
               {/* Submit Button */}
               <motion.button
                 type="submit"
@@ -219,28 +258,38 @@ export default function LoginPage() {
                 )}
               </motion.button>
             </form>
-            
+
             {/* Register Link */}
             <div className="mt-5 text-center w-full">
               <p className="text-sm text-[#d96f27] dark:text-[#94c47d] font-medium">
-                Don't have an account?
+                Don&apos;t have an account?
                 <button
                   onClick={() => router.push('/auth/register')}
                   className="ml-1 text-[#94c47d] dark:text-[#d96f27] hover:text-[#b95a1f] dark:hover:text-[#b0e09a] font-bold underline underline-offset-2 transition-colors touch-manipulation"
-                  style={{ minHeight: '44px', paddingTop: '8px', paddingBottom: '8px' }}
+                  style={{
+                    minHeight: '44px',
+                    paddingTop: '8px',
+                    paddingBottom: '8px',
+                  }}
                 >
                   Register here
                 </button>
               </p>
             </div>
-            
+
             {/* Demo Credentials (desktop only) */}
             <div className="hidden md:block mt-6 w-full">
               <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-start">
-                <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">Demo Credentials</p>
+                <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">
+                  Demo Credentials
+                </p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs">
-                  <span><strong>Email:</strong> any@email.com</span>
-                  <span><strong>Password:</strong> any password</span>
+                  <span>
+                    <strong>Email:</strong> any@email.com
+                  </span>
+                  <span>
+                    <strong>Password:</strong> any password
+                  </span>
                 </div>
               </div>
             </div>

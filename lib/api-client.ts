@@ -1,5 +1,11 @@
 // Authenticated API utility using role-based tokens
-import { getAuthHeaders, getTokenForAPI, getUserRole, isTokenExpired, removeAuthToken } from '@/lib/auth-token';
+import {
+  getAuthHeaders,
+  getTokenForAPI,
+  getUserRole,
+  isTokenExpired,
+  removeAuthToken,
+} from '@/lib/auth-token';
 
 // Types for API responses
 export interface ApiResponse<T = any> {
@@ -16,7 +22,9 @@ export interface ApiError {
 }
 
 // Base API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://turnover-api-hd7ze.ondigitalocean.app/api';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  'https://turnover-api-hd7ze.ondigitalocean.app/api';
 
 /**
  * Custom fetch wrapper with automatic token handling
@@ -37,7 +45,7 @@ export const authenticatedFetch = async (
   }
 
   const token = getTokenForAPI();
-  
+
   if (!token) {
     throw new Error('No authentication token found. Please login.');
   }
@@ -49,7 +57,9 @@ export const authenticatedFetch = async (
   };
 
   // Construct full URL
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const url = endpoint.startsWith('http')
+    ? endpoint
+    : `${API_BASE_URL}${endpoint}`;
 
   // Make the request
   const response = await fetch(url, {
@@ -61,11 +71,11 @@ export const authenticatedFetch = async (
   if (response.status === 401) {
     console.warn('Authentication failed, removing invalid token');
     removeAuthToken();
-    
+
     if (typeof window !== 'undefined') {
       window.location.href = '/auth/login';
     }
-    
+
     throw new Error('Authentication failed. Please login again.');
   }
 
@@ -94,9 +104,12 @@ export const apiRequest = async <T = any>(
 
     if (!response.ok) {
       const error: ApiError = {
-        message: data.message || data.detail || `Request failed with status ${response.status}`,
+        message:
+          data.message ||
+          data.detail ||
+          `Request failed with status ${response.status}`,
         status: response.status,
-        code: data.code || 'UNKNOWN_ERROR'
+        code: data.code || 'UNKNOWN_ERROR',
       };
       throw error;
     }
@@ -111,9 +124,14 @@ export const apiRequest = async <T = any>(
 /**
  * GET request with authentication
  */
-export const get = <T = any>(endpoint: string, params?: Record<string, string>): Promise<T> => {
-  const url = new URL(endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`);
-  
+export const get = <T = any>(
+  endpoint: string,
+  params?: Record<string, string>
+): Promise<T> => {
+  const url = new URL(
+    endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`
+  );
+
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.append(key, value);
@@ -190,13 +208,15 @@ export const uploadFile = async <T = any>(
     method: 'POST',
     body: formData,
     headers: {
-      'Authorization': `Token ${token}`,
+      Authorization: `Token ${token}`,
       // Don't set Content-Type for FormData, let browser set it with boundary
     },
   });
 
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Upload failed' }));
+    const errorData = await response
+      .json()
+      .catch(() => ({ message: 'Upload failed' }));
     throw new Error(errorData.message || 'File upload failed');
   }
 
@@ -212,13 +232,15 @@ export const roleBasedRequest = async <T = any>(
   options: RequestInit = {}
 ): Promise<T> => {
   const userRole = getUserRole();
-  
+
   if (!userRole) {
     throw new Error('User role not found. Please login.');
   }
 
   if (userRole !== requiredRole && requiredRole !== 'any') {
-    throw new Error(`Access denied. Required role: ${requiredRole}, your role: ${userRole}`);
+    throw new Error(
+      `Access denied. Required role: ${requiredRole}, your role: ${userRole}`
+    );
   }
 
   return apiRequest<T>(endpoint, options);
@@ -227,7 +249,10 @@ export const roleBasedRequest = async <T = any>(
 /**
  * Admin-only request
  */
-export const adminRequest = <T = any>(endpoint: string, options: RequestInit = {}): Promise<T> => {
+export const adminRequest = <T = any>(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<T> => {
   return roleBasedRequest<T>(endpoint, 'admin', options);
 };
 
@@ -240,7 +265,7 @@ export const getUserProfile = async (): Promise<any> => {
   return get('/users/profile/');
 };
 
-// Example: Update user profile  
+// Example: Update user profile
 export const updateUserProfile = async (profileData: any): Promise<any> => {
   return put('/users/profile/', profileData);
 };
@@ -266,18 +291,18 @@ export const getPerformanceData = async (): Promise<any> => {
 // Example: Role-based data access
 export const getRoleSpecificData = async (): Promise<any> => {
   const userRole = getUserRole();
-  
+
   switch (userRole) {
-    case 'admin':
-      return get('/admin/dashboard-data/');
-    case 'hr':
-      return get('/hr/dashboard-data/');
-    case 'manager':
-      return get('/manager/dashboard-data/');
-    case 'user':
-      return get('/user/dashboard-data/');
-    default:
-      throw new Error('Unknown user role');
+  case 'admin':
+    return get('/admin/dashboard-data/');
+  case 'hr':
+    return get('/hr/dashboard-data/');
+  case 'manager':
+    return get('/manager/dashboard-data/');
+  case 'user':
+    return get('/user/dashboard-data/');
+  default:
+    throw new Error('Unknown user role');
   }
 };
 
@@ -287,7 +312,7 @@ export const getRoleSpecificData = async (): Promise<any> => {
 export const batchRequest = async <T = any>(
   requests: Array<{ endpoint: string; options?: RequestInit }>
 ): Promise<T[]> => {
-  const promises = requests.map(({ endpoint, options = {} }) => 
+  const promises = requests.map(({ endpoint, options = {} }) =>
     apiRequest<T>(endpoint, options)
   );
 
@@ -316,7 +341,9 @@ export const requestWithRetry = async <T = any>(
         throw error;
       }
 
-      console.warn(`Request attempt ${attempt} failed, retrying in ${retryDelay}ms...`);
+      console.warn(
+        `Request attempt ${attempt} failed, retrying in ${retryDelay}ms...`
+      );
       await new Promise(resolve => setTimeout(resolve, retryDelay));
       retryDelay *= 2; // Exponential backoff
     }

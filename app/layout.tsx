@@ -10,14 +10,15 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'RetenSYNC - Modern Employee Experience Platform',
-  description: 'ML-powered platform for predicting and preventing employee turnover with modern design',
+  description:
+    'ML-powered platform for predicting and preventing employee turnover with modern design',
   icons: {
     icon: [
       {
         url: '/favicon.ico',
         sizes: '16x16',
         type: 'image/x-icon',
-      }
+      },
     ],
     shortcut: '/favicon.ico',
     apple: '/favicon.ico',

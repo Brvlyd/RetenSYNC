@@ -26,7 +26,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const updateTheme = () => {
       if (theme === 'system') {
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = window.matchMedia(
+          '(prefers-color-scheme: dark)'
+        ).matches;
         setIsDarkMode(isDark);
         document.documentElement.classList.toggle('dark', isDark);
       } else {
@@ -68,7 +70,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme: handleThemeChange, toggleTheme, isDarkMode }}>
+    <ThemeContext.Provider
+      value={{ theme, setTheme: handleThemeChange, toggleTheme, isDarkMode }}
+    >
       {children}
     </ThemeContext.Provider>
   );

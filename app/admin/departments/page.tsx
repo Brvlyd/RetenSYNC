@@ -3,7 +3,21 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Building, Users, Plus, Edit, Trash2, X, UserPlus, TrendingUp, BarChart3, Target, Award, RefreshCw, AlertTriangle } from 'lucide-react';
+import {
+  Building,
+  Users,
+  Plus,
+  Edit,
+  Trash2,
+  X,
+  UserPlus,
+  TrendingUp,
+  BarChart3,
+  Target,
+  Award,
+  RefreshCw,
+  AlertTriangle,
+} from 'lucide-react';
 import { getDepartmentStats } from '@/app/api/usersApi';
 
 interface Department {
@@ -43,7 +57,7 @@ export default function DepartmentsPage() {
       performanceScore: 8.7,
       engagementScore: 8.2,
       satisfactionScore: 8.5,
-      riskLevel: 'low'
+      riskLevel: 'low',
     },
     {
       id: 2,
@@ -56,7 +70,7 @@ export default function DepartmentsPage() {
       performanceScore: 8.1,
       engagementScore: 7.8,
       satisfactionScore: 8.0,
-      riskLevel: 'low'
+      riskLevel: 'low',
     },
     {
       id: 3,
@@ -69,7 +83,7 @@ export default function DepartmentsPage() {
       performanceScore: 8.4,
       engagementScore: 8.6,
       satisfactionScore: 8.3,
-      riskLevel: 'low'
+      riskLevel: 'low',
     },
     {
       id: 4,
@@ -82,7 +96,7 @@ export default function DepartmentsPage() {
       performanceScore: 7.2,
       engagementScore: 6.8,
       satisfactionScore: 7.0,
-      riskLevel: 'medium'
+      riskLevel: 'medium',
     },
     {
       id: 5,
@@ -95,8 +109,8 @@ export default function DepartmentsPage() {
       performanceScore: 7.8,
       engagementScore: 7.5,
       satisfactionScore: 7.6,
-      riskLevel: 'medium'
-    }
+      riskLevel: 'medium',
+    },
   ]);
 
   const [positions, setPositions] = useState<Position[]>([
@@ -106,7 +120,11 @@ export default function DepartmentsPage() {
       department: 'Engineering',
       level: 'Mid-level',
       description: 'Develop and maintain software applications',
-      requirements: ['Bachelor\'s degree in Computer Science', '2+ years experience', 'JavaScript/TypeScript proficiency']
+      requirements: [
+        'Bachelor\'s degree in Computer Science',
+        '2+ years experience',
+        'JavaScript/TypeScript proficiency',
+      ],
     },
     {
       id: 2,
@@ -114,7 +132,12 @@ export default function DepartmentsPage() {
       department: 'Engineering',
       level: 'Senior',
       description: 'Lead technical projects and mentor junior developers',
-      requirements: ['Bachelor\'s degree in Computer Science', '5+ years experience', 'Leadership skills', 'System design expertise']
+      requirements: [
+        'Bachelor\'s degree in Computer Science',
+        '5+ years experience',
+        'Leadership skills',
+        'System design expertise',
+      ],
     },
     {
       id: 3,
@@ -122,7 +145,12 @@ export default function DepartmentsPage() {
       department: 'Product',
       level: 'Senior',
       description: 'Define product strategy and roadmap',
-      requirements: ['MBA or equivalent', '3+ years product management', 'Data analysis skills', 'Stakeholder management']
+      requirements: [
+        'MBA or equivalent',
+        '3+ years product management',
+        'Data analysis skills',
+        'Stakeholder management',
+      ],
     },
     {
       id: 4,
@@ -130,7 +158,12 @@ export default function DepartmentsPage() {
       department: 'Design',
       level: 'Mid-level',
       description: 'Design user interfaces and experiences',
-      requirements: ['Design degree or portfolio', '2+ years UX experience', 'Figma/Sketch proficiency', 'User research skills']
+      requirements: [
+        'Design degree or portfolio',
+        '2+ years UX experience',
+        'Figma/Sketch proficiency',
+        'User research skills',
+      ],
     },
     {
       id: 5,
@@ -138,8 +171,13 @@ export default function DepartmentsPage() {
       department: 'Marketing',
       level: 'Entry-level',
       description: 'Execute marketing campaigns and strategies',
-      requirements: ['Marketing degree', '1+ years experience', 'Digital marketing knowledge', 'Analytics tools proficiency']
-    }
+      requirements: [
+        'Marketing degree',
+        '1+ years experience',
+        'Digital marketing knowledge',
+        'Analytics tools proficiency',
+      ],
+    },
   ]);
 
   const [activeTab, setActiveTab] = useState('departments');
@@ -153,7 +191,7 @@ export default function DepartmentsPage() {
     description: '',
     head: '',
     budget: '',
-    location: ''
+    location: '',
   });
 
   const [newPosition, setNewPosition] = useState({
@@ -161,7 +199,7 @@ export default function DepartmentsPage() {
     department: '',
     level: '',
     description: '',
-    requirements: ['']
+    requirements: [''],
   });
 
   const handleAddDepartment = (e: React.FormEvent) => {
@@ -173,10 +211,16 @@ export default function DepartmentsPage() {
       performanceScore: 7.5,
       engagementScore: 7.5,
       satisfactionScore: 7.5,
-      riskLevel: 'low'
+      riskLevel: 'low',
     };
     setDepartments([...departments, dept]);
-    setNewDepartment({ name: '', description: '', head: '', budget: '', location: '' });
+    setNewDepartment({
+      name: '',
+      description: '',
+      head: '',
+      budget: '',
+      location: '',
+    });
     setShowAddDeptForm(false);
   };
 
@@ -185,10 +229,16 @@ export default function DepartmentsPage() {
     const pos: Position = {
       id: positions.length + 1,
       ...newPosition,
-      requirements: newPosition.requirements.filter(req => req.trim() !== '')
+      requirements: newPosition.requirements.filter(req => req.trim() !== ''),
     };
     setPositions([...positions, pos]);
-    setNewPosition({ title: '', department: '', level: '', description: '', requirements: [''] });
+    setNewPosition({
+      title: '',
+      department: '',
+      level: '',
+      description: '',
+      requirements: [''],
+    });
     setShowAddPosForm(false);
   };
 
@@ -203,7 +253,7 @@ export default function DepartmentsPage() {
   const addRequirement = () => {
     setNewPosition({
       ...newPosition,
-      requirements: [...newPosition.requirements, '']
+      requirements: [...newPosition.requirements, ''],
     });
   };
 
@@ -216,16 +266,20 @@ export default function DepartmentsPage() {
   const removeRequirement = (index: number) => {
     setNewPosition({
       ...newPosition,
-      requirements: newPosition.requirements.filter((_, i) => i !== index)
+      requirements: newPosition.requirements.filter((_, i) => i !== index),
     });
   };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'text-green-600 bg-green-100 border-green-200';
-      case 'medium': return 'text-amber-600 bg-amber-100 border-amber-200';
-      case 'high': return 'text-red-600 bg-red-100 border-red-200';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+    case 'low':
+      return 'text-green-600 bg-green-100 border-green-200';
+    case 'medium':
+      return 'text-amber-600 bg-amber-100 border-amber-200';
+    case 'high':
+      return 'text-red-600 bg-red-100 border-red-200';
+    default:
+      return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
 
@@ -237,12 +291,14 @@ export default function DepartmentsPage() {
   // Add margin to top so header doesn't cut content (same as 1on1 page)
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+    <div
+      className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}
+    >
       {/* Modern Header - Responsive with Building Animation */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
         className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-slate-700 via-gray-800 to-zinc-900 text-white overflow-hidden relative"
       >
         {/* Building skyline animation */}
@@ -284,7 +340,7 @@ export default function DepartmentsPage() {
             animate={{ height: 64 }}
             transition={{ duration: 1, delay: 1.2 }}
           />
-          
+
           {/* Animated windows */}
           <motion.div
             className="absolute bottom-8 left-10 w-2 h-2 bg-yellow-400/60 rounded-sm"
@@ -302,16 +358,16 @@ export default function DepartmentsPage() {
             transition={{ duration: 1.8, repeat: Infinity, delay: 1 }}
           />
         </div>
-        
+
         <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/5 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative z-10"
         >
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -319,7 +375,7 @@ export default function DepartmentsPage() {
           >
             Departments & Positions
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -333,21 +389,56 @@ export default function DepartmentsPage() {
       {/* Department Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {[
-          { label: 'Total Departments', value: departments.length, icon: Building, color: 'from-blue-500 to-cyan-500' },
-          { label: 'Total Employees', value: departments.reduce((sum, dept) => sum + dept.employeeCount, 0), icon: Users, color: 'from-emerald-500 to-teal-500' },
-          { label: 'Avg Performance', value: (departments.reduce((sum, dept) => sum + dept.performanceScore, 0) / departments.length).toFixed(1), icon: TrendingUp, color: 'from-purple-500 to-violet-500' },
-          { label: 'High Risk Depts', value: departments.filter(d => d.riskLevel === 'high').length, icon: Target, color: 'from-amber-500 to-orange-500' }
+          {
+            label: 'Total Departments',
+            value: departments.length,
+            icon: Building,
+            color: 'from-blue-500 to-cyan-500',
+          },
+          {
+            label: 'Total Employees',
+            value: departments.reduce(
+              (sum, dept) => sum + dept.employeeCount,
+              0
+            ),
+            icon: Users,
+            color: 'from-emerald-500 to-teal-500',
+          },
+          {
+            label: 'Avg Performance',
+            value: (
+              departments.reduce(
+                (sum, dept) => sum + dept.performanceScore,
+                0
+              ) / departments.length
+            ).toFixed(1),
+            icon: TrendingUp,
+            color: 'from-purple-500 to-violet-500',
+          },
+          {
+            label: 'High Risk Depts',
+            value: departments.filter(d => d.riskLevel === 'high').length,
+            icon: Target,
+            color: 'from-amber-500 to-orange-500',
+          },
         ].map((stat, index) => (
-          <div key={stat.label} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-4 lg:p-6">
+          <div
+            key={stat.label}
+            className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-4 lg:p-6"
+          >
             <div className="flex items-center justify-between mb-3">
-              <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}>
+              <div
+                className={`p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg`}
+              >
                 <stat.icon className="h-6 w-6 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
                 {stat.value}
               </div>
             </div>
-            <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">{stat.label}</div>
+            <div className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {stat.label}
+            </div>
           </div>
         ))}
       </div>
@@ -393,7 +484,10 @@ export default function DepartmentsPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {departments.map((dept, index) => (
-              <div key={dept.id} className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 p-6 lg:p-8">
+              <div
+                key={dept.id}
+                className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 p-6 lg:p-8"
+              >
                 <div className="flex items-start justify-between mb-6">
                   <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl">
                     <Building className="h-6 w-6 text-white" />
@@ -413,46 +507,82 @@ export default function DepartmentsPage() {
                     </button>
                   </div>
                 </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{dept.name}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">{dept.description}</p>
-                
+
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  {dept.name}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                  {dept.description}
+                </p>
+
                 {/* Performance Metrics */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">{dept.performanceScore}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Performance</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">
+                      {dept.performanceScore}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      Performance
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">{dept.engagementScore}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Engagement</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">
+                      {dept.engagementScore}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      Engagement
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">{dept.satisfactionScore}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Satisfaction</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white">
+                      {dept.satisfactionScore}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      Satisfaction
+                    </div>
                   </div>
                 </div>
 
                 <div className="space-y-3 text-sm mb-6">
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Head:</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{dept.head}</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Head:
+                    </span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {dept.head}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Employees:</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{dept.employeeCount}</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Employees:
+                    </span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {dept.employeeCount}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Budget:</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{dept.budget}</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Budget:
+                    </span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {dept.budget}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Location:</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{dept.location}</span>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Location:
+                    </span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {dept.location}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500 dark:text-gray-400">Risk Level:</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRiskColor(dept.riskLevel)}`}>
+                    <span className="text-gray-500 dark:text-gray-400">
+                      Risk Level:
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-semibold border ${getRiskColor(dept.riskLevel)}`}
+                    >
                       {dept.riskLevel.toUpperCase()}
                     </span>
                   </div>
@@ -487,14 +617,19 @@ export default function DepartmentsPage() {
 
           <div className="space-y-4">
             {positions.map((pos, index) => (
-              <div key={pos.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-6">
+              <div
+                key={pos.id}
+                className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-lg p-6"
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-start space-x-4">
                     <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl">
                       <UserPlus className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{pos.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        {pos.title}
+                      </h3>
                       <div className="flex items-center space-x-4 text-sm">
                         <span className="px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 rounded-full font-medium">
                           {pos.department}
@@ -520,14 +655,21 @@ export default function DepartmentsPage() {
                     </button>
                   </div>
                 </div>
-                
-                <p className="text-gray-600 dark:text-gray-400 mb-4">{pos.description}</p>
-                
+
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  {pos.description}
+                </p>
+
                 <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Requirements:</h4>
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                    Requirements:
+                  </h4>
                   <ul className="space-y-1">
                     {pos.requirements.map((req, reqIndex) => (
-                      <li key={reqIndex} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
+                      <li
+                        key={reqIndex}
+                        className="flex items-start text-sm text-gray-600 dark:text-gray-400"
+                      >
                         <span className="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                         {req}
                       </li>
@@ -545,7 +687,9 @@ export default function DepartmentsPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Add New Department</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Add New Department
+              </h3>
               <button
                 onClick={() => setShowAddDeptForm(false)}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
@@ -553,64 +697,96 @@ export default function DepartmentsPage() {
                 <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddDepartment} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department Name</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Department Name
+                </label>
                 <input
                   type="text"
                   value={newDepartment.name}
-                  onChange={(e) => setNewDepartment({...newDepartment, name: e.target.value})}
+                  onChange={e =>
+                    setNewDepartment({ ...newDepartment, name: e.target.value })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Description
+                </label>
                 <textarea
                   value={newDepartment.description}
-                  onChange={(e) => setNewDepartment({...newDepartment, description: e.target.value})}
+                  onChange={e =>
+                    setNewDepartment({
+                      ...newDepartment,
+                      description: e.target.value,
+                    })
+                  }
                   rows={3}
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department Head</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Department Head
+                  </label>
                   <input
                     type="text"
                     value={newDepartment.head}
-                    onChange={(e) => setNewDepartment({...newDepartment, head: e.target.value})}
+                    onChange={e =>
+                      setNewDepartment({
+                        ...newDepartment,
+                        head: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Budget</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Budget
+                  </label>
                   <input
                     type="text"
                     value={newDepartment.budget}
-                    onChange={(e) => setNewDepartment({...newDepartment, budget: e.target.value})}
+                    onChange={e =>
+                      setNewDepartment({
+                        ...newDepartment,
+                        budget: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Location
+                </label>
                 <input
                   type="text"
                   value={newDepartment.location}
-                  onChange={(e) => setNewDepartment({...newDepartment, location: e.target.value})}
+                  onChange={e =>
+                    setNewDepartment({
+                      ...newDepartment,
+                      location: e.target.value,
+                    })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"
@@ -637,7 +813,9 @@ export default function DepartmentsPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Add New Position</h3>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Add New Position
+              </h3>
               <button
                 onClick={() => setShowAddPosForm(false)}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
@@ -645,39 +823,56 @@ export default function DepartmentsPage() {
                 <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddPosition} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position Title</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Position Title
+                </label>
                 <input
                   type="text"
                   value={newPosition.title}
-                  onChange={(e) => setNewPosition({...newPosition, title: e.target.value})}
+                  onChange={e =>
+                    setNewPosition({ ...newPosition, title: e.target.value })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Department
+                  </label>
                   <select
                     value={newPosition.department}
-                    onChange={(e) => setNewPosition({...newPosition, department: e.target.value})}
+                    onChange={e =>
+                      setNewPosition({
+                        ...newPosition,
+                        department: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   >
                     <option value="">Select Department</option>
                     {departments.map(dept => (
-                      <option key={dept.id} value={dept.name}>{dept.name}</option>
+                      <option key={dept.id} value={dept.name}>
+                        {dept.name}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Level</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Level
+                  </label>
                   <select
                     value={newPosition.level}
-                    onChange={(e) => setNewPosition({...newPosition, level: e.target.value})}
+                    onChange={e =>
+                      setNewPosition({ ...newPosition, level: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   >
@@ -690,27 +885,36 @@ export default function DepartmentsPage() {
                   </select>
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Description
+                </label>
                 <textarea
                   value={newPosition.description}
-                  onChange={(e) => setNewPosition({...newPosition, description: e.target.value})}
+                  onChange={e =>
+                    setNewPosition({
+                      ...newPosition,
+                      description: e.target.value,
+                    })
+                  }
                   rows={3}
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white resize-none"
                   required
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Requirements</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Requirements
+                </label>
                 <div className="space-y-3">
                   {newPosition.requirements.map((req, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <input
                         type="text"
                         value={req}
-                        onChange={(e) => updateRequirement(index, e.target.value)}
+                        onChange={e => updateRequirement(index, e.target.value)}
                         className="flex-1 p-3 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                         placeholder="Enter requirement"
                       />
@@ -735,7 +939,7 @@ export default function DepartmentsPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"

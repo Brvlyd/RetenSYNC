@@ -25,12 +25,14 @@ app/api/
 ## 🛠 **API Endpoints Implemented**
 
 ### **1. GET /api/departments**
+
 - **Purpose:** List all departments with pagination
 - **Auth:** Required (Token header)
 - **Query Params:** `page`, `page_size`
 - **Response:** `{ count, next, previous, results }`
 
 ### **2. POST /api/departments**
+
 - **Purpose:** Create new department
 - **Auth:** Required (Token header)
 - **Body:** `{ name, description }`
@@ -38,11 +40,13 @@ app/api/
 - **Response:** Created department object
 
 ### **3. GET /api/departments/[id]**
+
 - **Purpose:** Get specific department by ID
 - **Auth:** Required (Token header)
 - **Response:** Department object or 404
 
 ### **4. PUT /api/departments/[id]**
+
 - **Purpose:** Update department
 - **Auth:** Required (Token header)
 - **Body:** `{ name, description }`
@@ -50,12 +54,14 @@ app/api/
 - **Response:** Updated department object
 
 ### **5. DELETE /api/departments/[id]**
+
 - **Purpose:** Delete department
 - **Auth:** Required (Token header)
 - **Validation:** No employees in department
 - **Response:** 204 No Content
 
 ### **6. GET /api/departments/[id]/employees**
+
 - **Purpose:** Get employees in specific department
 - **Auth:** Required (Token header)
 - **Response:** Array of employee objects
@@ -63,22 +69,26 @@ app/api/
 ## 🔧 **Key Features**
 
 ### **Authentication**
+
 - Token-based authentication using `Authorization: Token {token}` header
 - Accepts demo tokens starting with `demo-token-`
 - Consistent auth check across all endpoints
 
 ### **Data Management**
+
 - Centralized data store in `lib/data/departments.ts`
 - In-memory storage (resets on server restart)
 - Helper functions for CRUD operations
 - Automatic employee count updates
 
 ### **Error Handling**
+
 - Comprehensive validation and error messages
 - HTTP status codes (400, 401, 404, 500)
 - Consistent error response format
 
 ### **Business Logic**
+
 - Department name uniqueness validation
 - Prevent deletion of departments with employees
 - Automatic timestamp updates
@@ -87,13 +97,15 @@ app/api/
 ## 🎮 **Demo Data**
 
 ### **Departments (5 total):**
+
 1. **Engineering** - 15 employees
-2. **Human Resources** - 5 employees  
+2. **Human Resources** - 5 employees
 3. **Marketing** - 8 employees
 4. **Sales** - 12 employees
 5. **Finance** - 4 employees
 
 ### **Employees (10 total):**
+
 - Distributed across all departments
 - Realistic names, positions, and contact info
 - Mix of admin and user roles
@@ -101,6 +113,7 @@ app/api/
 ## 🔄 **Migration Changes**
 
 ### **Before (External API):**
+
 ```typescript
 const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api';
 // Complex demo token detection logic
@@ -108,6 +121,7 @@ const API_BASE_URL = 'https://turnover-api-hd7ze.ondigitalocean.app/api';
 ```
 
 ### **After (Local API):**
+
 ```typescript
 const API_BASE_URL = '/api'; // Local routes
 // Simplified API calls
@@ -117,38 +131,42 @@ const API_BASE_URL = '/api'; // Local routes
 ## 🚀 **Testing the Implementation**
 
 ### **1. Start Development Server:**
+
 ```bash
 npm run dev
 ```
 
 ### **2. Login as Admin:**
+
 - Email: `admin@company.com` (or any email with "admin")
 - Password: Any password
 - This generates a demo token
 
 ### **3. Access Departments:**
+
 - Navigate to `/admin/departments`
 - All CRUD operations now use local API routes
 
 ### **4. Test API Endpoints Directly:**
+
 ```javascript
 // Get departments
 fetch('/api/departments', {
-  headers: { 'Authorization': 'Token demo-token-admin-123' }
-})
+  headers: { Authorization: 'Token demo-token-admin-123' },
+});
 
 // Create department
 fetch('/api/departments', {
   method: 'POST',
-  headers: { 
-    'Authorization': 'Token demo-token-admin-123',
-    'Content-Type': 'application/json'
+  headers: {
+    Authorization: 'Token demo-token-admin-123',
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     name: 'New Department',
-    description: 'Department description'
-  })
-})
+    description: 'Department description',
+  }),
+});
 ```
 
 ## ✅ **Benefits of Local Implementation**
@@ -172,6 +190,7 @@ fetch('/api/departments', {
 ## 🎯 **Ready for Production**
 
 The local API implementation provides a solid foundation that can be easily extended with:
+
 - Real database connections (PostgreSQL, MongoDB, etc.)
 - Proper authentication (NextAuth.js, Auth0, etc.)
 - Input validation libraries (Zod, Joi, etc.)

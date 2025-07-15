@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { User, Award, TrendingUp, Clock, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,7 +21,11 @@ interface WelcomeCardProps {
   className?: string;
 }
 
-export default function WelcomeCard({ user, stats, className }: WelcomeCardProps) {
+export default function WelcomeCard({
+  user,
+  stats,
+  className,
+}: WelcomeCardProps) {
   const currentHour = new Date().getHours();
   const getGreeting = () => {
     if (currentHour < 12) return 'Good morning';
@@ -36,10 +41,10 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       className={cn(
-        "relative overflow-hidden rounded-3xl p-8 text-white",
-        isAdmin 
-          ? "bg-gradient-to-br from-[#5e0e8b] via-purple-600 to-[#5e0e8b]"
-          : "bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600",
+        'relative overflow-hidden rounded-3xl p-8 text-white',
+        isAdmin
+          ? 'bg-gradient-to-br from-[#5e0e8b] via-purple-600 to-[#5e0e8b]'
+          : 'bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600',
         className
       )}
     >
@@ -56,9 +61,11 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
             <div className="relative">
               <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 {user.avatar ? (
-                  <img 
-                    src={user.avatar} 
+                  <Image
+                    src={user.avatar}
                     alt={user.name}
+                    width={56}
+                    height={56}
                     className="w-14 h-14 rounded-xl object-cover"
                   />
                 ) : (
@@ -69,9 +76,9 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
                 <div className="w-2 h-2 bg-green-600 rounded-full animate-pulse" />
               </div>
             </div>
-            
+
             <div>
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
@@ -79,15 +86,17 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
               >
                 {getGreeting()}, {user.name}!
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
                 className="text-white/80 text-lg"
               >
-                {isAdmin ? 'Welcome to your admin dashboard' : 'Ready to make today amazing?'}
+                {isAdmin
+                  ? 'Welcome to your admin dashboard'
+                  : 'Ready to make today amazing?'}
               </motion.p>
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 }}
@@ -106,20 +115,23 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
           </div>
 
           {/* Time */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6 }}
             className="text-right"
           >
             <div className="text-2xl font-bold">
-              {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              {new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </div>
             <div className="text-white/80 text-sm">
-              {new Date().toLocaleDateString([], { 
+              {new Date().toLocaleDateString([], {
                 weekday: 'long',
                 month: 'short',
-                day: 'numeric'
+                day: 'numeric',
               })}
             </div>
           </motion.div>
@@ -127,7 +139,7 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
 
         {/* Quick Stats */}
         {stats && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
@@ -135,16 +147,18 @@ export default function WelcomeCard({ user, stats, className }: WelcomeCardProps
           >
             <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl">
               <Award className="w-6 h-6 mx-auto mb-2" />
-              <div className="text-2xl font-bold">{stats.performanceScore}%</div>
+              <div className="text-2xl font-bold">
+                {stats.performanceScore}%
+              </div>
               <div className="text-sm text-white/80">Performance</div>
             </div>
-            
+
             <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl">
               <TrendingUp className="w-6 h-6 mx-auto mb-2" />
               <div className="text-2xl font-bold">{stats.tasksCompleted}</div>
               <div className="text-sm text-white/80">Completed</div>
             </div>
-            
+
             <div className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl">
               <Calendar className="w-6 h-6 mx-auto mb-2" />
               <div className="text-2xl font-bold">{stats.upcomingMeetings}</div>

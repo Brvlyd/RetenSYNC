@@ -12,16 +12,20 @@ export default function QuickLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleQuickLogin = async (email: string, password: string, role: string) => {
+  const handleQuickLogin = async (
+    email: string,
+    password: string,
+    role: string
+  ) => {
     setIsLoading(true);
     setMessage('');
-    
+
     try {
       console.log(`🚀 Quick login as ${role}:`, email);
-      
+
       // Use the auth context login function
       const success = await login(email, password);
-      
+
       if (success) {
         setMessage(`✅ Login successful! Redirecting to ${role} dashboard...`);
         // The login function will handle the redirect automatically based on user role
@@ -42,7 +46,7 @@ export default function QuickLoginPage() {
       password: 'admin123',
       description: 'Full access to all features including analytics',
       color: 'bg-blue-600 hover:bg-blue-700',
-      icon: <User className="h-5 w-5" />
+      icon: <User className="h-5 w-5" />,
     },
     {
       role: 'User',
@@ -50,8 +54,8 @@ export default function QuickLoginPage() {
       password: 'user123',
       description: 'Standard user access to personal features',
       color: 'bg-purple-600 hover:bg-purple-700',
-      icon: <User className="h-5 w-5" />
-    }
+      icon: <User className="h-5 w-5" />,
+    },
   ];
 
   return (
@@ -90,11 +94,11 @@ export default function QuickLoginPage() {
                   </div>
                   <Lock className="h-4 w-4 text-gray-400" />
                 </div>
-                
+
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                   {option.description}
                 </p>
-                
+
                 <div className="space-y-2 mb-4">
                   <div className="text-xs text-gray-500 dark:text-gray-400">
                     <strong>Email:</strong> {option.email}
@@ -103,13 +107,17 @@ export default function QuickLoginPage() {
                     <strong>Password:</strong> {option.password}
                   </div>
                 </div>
-                
+
                 <button
-                  onClick={() => handleQuickLogin(option.email, option.password, option.role)}
+                  onClick={() =>
+                    handleQuickLogin(option.email, option.password, option.role)
+                  }
                   disabled={isLoading}
                   className={`w-full px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2 ${option.color}`}
                 >
-                  <span>{isLoading ? 'Logging in...' : `Login as ${option.role}`}</span>
+                  <span>
+                    {isLoading ? 'Logging in...' : `Login as ${option.role}`}
+                  </span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </motion.div>

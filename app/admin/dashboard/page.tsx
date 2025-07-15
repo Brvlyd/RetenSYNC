@@ -3,10 +3,27 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  Users, TrendingUp, Award, BarChart3, UserPlus, Settings,
-  MessageSquare, Calendar, Clock, Star, Activity, Zap,
-  BookOpen, Heart, Target, Coffee, ClipboardList, RefreshCw, AlertTriangle, Brain
+import {
+  Users,
+  TrendingUp,
+  Award,
+  BarChart3,
+  UserPlus,
+  Settings,
+  MessageSquare,
+  Calendar,
+  Clock,
+  Star,
+  Activity,
+  Zap,
+  BookOpen,
+  Heart,
+  Target,
+  Coffee,
+  ClipboardList,
+  RefreshCw,
+  AlertTriangle,
+  Brain,
 } from 'lucide-react';
 import WelcomeCard from '@/components/ui/welcome-card';
 import QuickActionCard from '@/components/ui/quick-action-card';
@@ -18,14 +35,14 @@ const container = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const item = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+  show: { opacity: 1, y: 0 },
 };
 
 export default function AdminDashboardPage() {
@@ -36,7 +53,7 @@ export default function AdminDashboardPage() {
     avgSatisfaction: 0,
     avgPerformance: 0,
     turnoverReduction: 0,
-    activeProjects: 0
+    activeProjects: 0,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,10 +84,14 @@ export default function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+      <div
+        className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}
+      >
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Loading dashboard...
+          </p>
         </div>
       </div>
     );
@@ -78,7 +99,9 @@ export default function AdminDashboardPage() {
 
   if (error) {
     return (
-      <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+      <div
+        className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}
+      >
         <div className="text-center py-12">
           <div className="text-red-500 mb-4">
             <AlertTriangle className="h-16 w-16 mx-auto mb-2" />
@@ -99,7 +122,7 @@ export default function AdminDashboardPage() {
 
   return (
     <>
-      <motion.div 
+      <motion.div
         variants={container}
         initial="hidden"
         animate="show"
@@ -107,76 +130,76 @@ export default function AdminDashboardPage() {
       >
         {/* Modern Header - Responsive with Floating Elements Animation */}
         <motion.div variants={item}>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
             className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 text-white overflow-hidden relative"
           >
             {/* Floating geometric shapes */}
             <div className="absolute inset-0 overflow-hidden">
-              <motion.div 
+              <motion.div
                 className="absolute top-4 left-8 w-12 h-12 bg-white/10 rounded-lg rotate-45"
-                animate={{ 
+                animate={{
                   y: [0, -10, 0],
-                  rotate: [45, 135, 45]
+                  rotate: [45, 135, 45],
                 }}
-                transition={{ 
-                  duration: 4, 
+                transition={{
+                  duration: 4,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: 'easeInOut',
                 }}
               />
-              <motion.div 
+              <motion.div
                 className="absolute top-16 right-12 w-8 h-8 bg-white/15 rounded-full"
-                animate={{ 
+                animate={{
                   y: [0, -15, 0],
-                  scale: [1, 1.2, 1]
+                  scale: [1, 1.2, 1],
                 }}
-                transition={{ 
-                  duration: 3, 
+                transition={{
+                  duration: 3,
                   repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 0.5
+                  ease: 'easeInOut',
+                  delay: 0.5,
                 }}
               />
-              <motion.div 
+              <motion.div
                 className="absolute bottom-8 left-16 w-6 h-6 bg-white/20 rounded-full"
-                animate={{ 
+                animate={{
                   y: [0, -8, 0],
-                  x: [0, 5, 0]
+                  x: [0, 5, 0],
                 }}
-                transition={{ 
-                  duration: 5, 
+                transition={{
+                  duration: 5,
                   repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1
+                  ease: 'easeInOut',
+                  delay: 1,
                 }}
               />
-              <motion.div 
+              <motion.div
                 className="absolute bottom-4 right-8 w-10 h-10 bg-white/10 rounded-lg"
-                animate={{ 
+                animate={{
                   rotate: [0, 180, 360],
-                  scale: [1, 0.8, 1]
+                  scale: [1, 0.8, 1],
                 }}
-                transition={{ 
-                  duration: 6, 
+                transition={{
+                  duration: 6,
                   repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1.5
+                  ease: 'easeInOut',
+                  delay: 1.5,
                 }}
               />
             </div>
-            
+
             <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
               className="relative z-10"
             >
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -184,7 +207,7 @@ export default function AdminDashboardPage() {
               >
                 Admin Dashboard
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, x: -15 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
@@ -217,7 +240,7 @@ export default function AdminDashboardPage() {
               icon={UserPlus}
               gradient="from-blue-500 to-cyan-500"
               bgGradient="from-blue-50/80 to-cyan-50/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm"
-              onClick={() => window.location.href = '/admin/users'}
+              onClick={() => (window.location.href = '/admin/users')}
             />
             <QuickActionCard
               title="Departments & Positions"
@@ -225,7 +248,7 @@ export default function AdminDashboardPage() {
               icon={Users}
               gradient="from-purple-500 to-violet-500"
               bgGradient="from-purple-50/80 to-violet-50/80 dark:from-purple-900/40 dark:to-violet-900/40 backdrop-blur-sm"
-              onClick={() => window.location.href = '/admin/departments'}
+              onClick={() => (window.location.href = '/admin/departments')}
             />
             <QuickActionCard
               title="Analytics & Reports"
@@ -233,7 +256,7 @@ export default function AdminDashboardPage() {
               icon={BarChart3}
               gradient="from-emerald-500 to-teal-500"
               bgGradient="from-emerald-50/80 to-teal-50/80 dark:from-emerald-900/40 dark:to-teal-900/40 backdrop-blur-sm"
-              onClick={() => window.location.href = '/admin/analytics'}
+              onClick={() => (window.location.href = '/admin/analytics')}
             />
             <QuickActionCard
               title="Performance Reviews"
@@ -241,7 +264,9 @@ export default function AdminDashboardPage() {
               icon={ClipboardList}
               gradient="from-indigo-500 to-purple-500"
               bgGradient="from-indigo-50/80 to-purple-50/80 dark:from-indigo-900/40 dark:to-purple-900/40 backdrop-blur-sm"
-              onClick={() => window.location.href = '/admin/performance-review'}
+              onClick={() =>
+                (window.location.href = '/admin/performance-review')
+              }
             />
             <QuickActionCard
               title="ML Performance"
@@ -249,7 +274,7 @@ export default function AdminDashboardPage() {
               icon={Brain}
               gradient="from-violet-600 to-fuchsia-700"
               bgGradient="from-violet-50/80 to-fuchsia-50/80 dark:from-violet-900/40 dark:to-fuchsia-900/40 backdrop-blur-sm"
-              onClick={() => window.location.href = '/admin/ml-performance'}
+              onClick={() => (window.location.href = '/admin/ml-performance')}
             />
             <QuickActionCard
               title="HR Interactions"
@@ -257,7 +282,7 @@ export default function AdminDashboardPage() {
               icon={Heart}
               gradient="from-pink-500 to-rose-500"
               bgGradient="from-pink-50/80 to-rose-50/80 dark:from-pink-900/40 dark:to-rose-900/40 backdrop-blur-sm"
-              onClick={() => window.location.href = '/admin/hr-interactions'}
+              onClick={() => (window.location.href = '/admin/hr-interactions')}
             />
           </div>
         </motion.div>
@@ -281,7 +306,9 @@ export default function AdminDashboardPage() {
               value={organizationStats.totalEmployees}
               change="↑ 12 new hires this month"
               changeType="positive"
-              icon={<Users className="w-6 h-6 text-blue-500 dark:text-blue-400" />}
+              icon={
+                <Users className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+              }
               className="bg-gradient-to-br from-blue-50/90 to-cyan-50/90 dark:from-blue-900/80 dark:to-cyan-900/80 border-blue-200/50 dark:border-blue-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
             />
             <StatCard
@@ -289,7 +316,9 @@ export default function AdminDashboardPage() {
               value={`${organizationStats.turnoverReduction}%`}
               change="↓ 12% from last quarter"
               changeType="positive"
-              icon={<TrendingUp className="w-6 h-6 text-emerald-500 dark:text-emerald-400" />}
+              icon={
+                <TrendingUp className="w-6 h-6 text-emerald-500 dark:text-emerald-400" />
+              }
               className="bg-gradient-to-br from-emerald-50/90 to-teal-50/90 dark:from-emerald-900/80 dark:to-teal-900/80 border-emerald-200/50 dark:border-emerald-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
             />
             <StatCard
@@ -297,7 +326,9 @@ export default function AdminDashboardPage() {
               value={`${organizationStats.avgSatisfaction}/5`}
               change="↑ 0.3 from last month"
               changeType="positive"
-              icon={<Star className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />}
+              icon={
+                <Star className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
+              }
               className="bg-gradient-to-br from-yellow-50/90 to-orange-50/90 dark:from-yellow-900/80 dark:to-orange-900/80 border-yellow-200/50 dark:border-yellow-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
             />
             <StatCard
@@ -305,7 +336,9 @@ export default function AdminDashboardPage() {
               value={organizationStats.activeProjects}
               change="3 completed this week"
               changeType="positive"
-              icon={<Activity className="w-6 h-6 text-purple-500 dark:text-purple-400" />}
+              icon={
+                <Activity className="w-6 h-6 text-purple-500 dark:text-purple-400" />
+              }
               className="bg-gradient-to-br from-purple-50/90 to-violet-50/90 dark:from-purple-900/80 dark:to-violet-900/80 border-purple-200/50 dark:border-purple-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
             />
           </div>
@@ -332,21 +365,34 @@ export default function AdminDashboardPage() {
             {/* Modern Employee Growth Chart */}
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 p-4 sm:p-6 lg:p-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Employee Growth</h3>
-                <span className="text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full">+12% YoY</span>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                  Employee Growth
+                </h3>
+                <span className="text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full">
+                  +12% YoY
+                </span>
               </div>
               <div className="h-48 sm:h-64 lg:h-48">
-                <EmployeeGrowthChart totalEmployees={organizationStats.totalEmployees} />
+                <EmployeeGrowthChart
+                  totalEmployees={organizationStats.totalEmployees}
+                />
               </div>
             </div>
             {/* Modern Satisfaction Chart */}
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-gray-200/50 dark:border-gray-700/50 shadow-xl hover:shadow-2xl transition-all duration-300 p-4 sm:p-6 lg:p-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-2">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Satisfaction Overview</h3>
-                <span className="text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">4.2/5 Avg</span>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                  Satisfaction Overview
+                </h3>
+                <span className="text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">
+                  4.2/5 Avg
+                </span>
               </div>
               <div className="h-48 sm:h-64 lg:h-48">
-                <SatisfactionPieChart avgSatisfaction={organizationStats.avgSatisfaction} totalEmployees={organizationStats.totalEmployees} />
+                <SatisfactionPieChart
+                  avgSatisfaction={organizationStats.avgSatisfaction}
+                  totalEmployees={organizationStats.totalEmployees}
+                />
               </div>
             </div>
           </div>
@@ -357,39 +403,73 @@ export default function AdminDashboardPage() {
 }
 
 // Chart.js components for real charts
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 function EmployeeGrowthChart({ totalEmployees }: { totalEmployees: number }) {
   const [chartData, setChartData] = useState<any>(null);
-  
+
   useEffect(() => {
     const generateEmployeeGrowthData = () => {
-      const months = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'];
+      const months = [
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+      ];
       const currentEmployees = totalEmployees;
-      
+
       // Start from 5 employees in June and grow to current total
       const startingEmployees = 5;
       const totalGrowth = Math.max(0, currentEmployees - startingEmployees);
       const monthsCount = months.length;
-      
+
       const data = months.map((month, index) => {
         if (index === 0) return startingEmployees; // June starts at 5
-        
+
         // Calculate progressive growth with some realistic variation
         const baseGrowth = (totalGrowth / (monthsCount - 1)) * index;
         const variation = Math.random() * 2 - 1; // Small random variation
-        const employeeCount = Math.round(startingEmployees + baseGrowth + variation);
-        
+        const employeeCount = Math.round(
+          startingEmployees + baseGrowth + variation
+        );
+
         // Ensure we don't exceed current total and maintain growth trend
         return Math.min(employeeCount, currentEmployees);
       });
-      
+
       // Ensure last month matches current total
       data[data.length - 1] = currentEmployees;
-      
+
       setChartData({
         labels: months,
         datasets: [
@@ -406,10 +486,10 @@ function EmployeeGrowthChart({ totalEmployees }: { totalEmployees: number }) {
         ],
       });
     };
-    
+
     generateEmployeeGrowthData();
   }, [totalEmployees]);
-  
+
   const options = {
     responsive: true,
     plugins: {
@@ -421,43 +501,65 @@ function EmployeeGrowthChart({ totalEmployees }: { totalEmployees: number }) {
       x: { ticks: { color: '#64748b' } },
     },
   };
-  
-  if (!chartData) return <div className="flex items-center justify-center h-full text-gray-500">Loading...</div>;
-  
-  return <Line data={chartData} options={options} height={window.innerWidth < 640 ? 120 : 192} />;
+
+  if (!chartData)
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        Loading...
+      </div>
+    );
+
+  return (
+    <Line
+      data={chartData}
+      options={options}
+      height={window.innerWidth < 640 ? 120 : 192}
+    />
+  );
 }
 
-function SatisfactionPieChart({ avgSatisfaction, totalEmployees }: { avgSatisfaction: number, totalEmployees: number }) {
+function SatisfactionPieChart({
+  avgSatisfaction,
+  totalEmployees,
+}: {
+  avgSatisfaction: number;
+  totalEmployees: number;
+}) {
   const [chartData, setChartData] = useState<any>(null);
-  
+
   useEffect(() => {
     const generateSatisfactionData = () => {
       // Use actual total employees from organization stats
       const currentEmployees = totalEmployees || 280; // Fallback to 280 if not available
-      
+
       // Calculate satisfaction distribution based on realistic percentages
       const satisfactionDistribution = {
         'Very Satisfied': Math.round(currentEmployees * 0.53), // 53%
-        'Satisfied': Math.round(currentEmployees * 0.34),      // 34%
-        'Neutral': Math.round(currentEmployees * 0.08),        // 8%
-        'Unsatisfied': Math.round(currentEmployees * 0.05)     // 5%
+        Satisfied: Math.round(currentEmployees * 0.34), // 34%
+        Neutral: Math.round(currentEmployees * 0.08), // 8%
+        Unsatisfied: Math.round(currentEmployees * 0.05), // 5%
       };
-      
+
       // Ensure total adds up correctly
-      const calculatedTotal = Object.values(satisfactionDistribution).reduce((sum, val) => sum + val, 0);
+      const calculatedTotal = Object.values(satisfactionDistribution).reduce(
+        (sum, val) => sum + val,
+        0
+      );
       const difference = currentEmployees - calculatedTotal;
-      
+
       // Adjust the largest category (Very Satisfied) to match exact total
       if (difference !== 0) {
         satisfactionDistribution['Very Satisfied'] += difference;
       }
-      
-      const percentages = Object.entries(satisfactionDistribution).map(([label, value]) => ({
-        label,
-        value,
-        percentage: Math.round((value / currentEmployees) * 100)
-      }));
-      
+
+      const percentages = Object.entries(satisfactionDistribution).map(
+        ([label, value]) => ({
+          label,
+          value,
+          percentage: Math.round((value / currentEmployees) * 100),
+        })
+      );
+
       setChartData({
         labels: percentages.map(item => `${item.label} (${item.percentage}%)`),
         datasets: [
@@ -475,10 +577,10 @@ function SatisfactionPieChart({ avgSatisfaction, totalEmployees }: { avgSatisfac
         ],
       });
     };
-    
+
     generateSatisfactionData();
   }, [avgSatisfaction, totalEmployees]);
-  
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -486,8 +588,8 @@ function SatisfactionPieChart({ avgSatisfaction, totalEmployees }: { avgSatisfac
       legend: {
         position: 'right' as const,
         align: 'center' as const,
-        labels: { 
-          color: '#64748b', 
+        labels: {
+          color: '#64748b',
           font: { size: 12 },
           padding: 20,
           usePointStyle: true,
@@ -497,28 +599,35 @@ function SatisfactionPieChart({ avgSatisfaction, totalEmployees }: { avgSatisfac
       title: { display: false },
       tooltip: {
         callbacks: {
-          label: function(context: any) {
+          label: function (context: any) {
             const label = context.label || '';
             const value = context.parsed;
-            const total = context.dataset.data.reduce((sum: number, val: number) => sum + val, 0);
+            const total = context.dataset.data.reduce(
+              (sum: number, val: number) => sum + val,
+              0
+            );
             const percentage = Math.round((value / total) * 100);
             return `${label.split(' (')[0]}: ${value} employees (${percentage}%)`;
-          }
-        }
-      }
+          },
+        },
+      },
     },
     layout: {
       padding: {
         top: 20,
         bottom: 20,
         left: 20,
-        right: 20
-      }
-    }
+        right: 20,
+      },
+    },
   };
-  
-  if (!chartData) return <div className="flex items-center justify-center h-full text-gray-500">Loading...</div>;
-  
+
+  if (!chartData)
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        Loading...
+      </div>
+    );
+
   return <Pie data={chartData} options={options} />;
 }
-

@@ -15,7 +15,7 @@ import {
   ChevronDown,
   User,
   LogOut,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,46 +27,68 @@ interface HeaderProps {
 const getPageTitle = (pathname: string) => {
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1];
-  
+
   if (!lastSegment || lastSegment === 'user') return 'Dashboard';
-  
+
   switch (lastSegment) {
-    case 'dashboard': return 'Dashboard';
-    case 'self-assessment': return 'Self Assessment';
-    case 'Interactions': return 'Team Interactions';
-    case 'learning': return 'Learning & Development';
-    case 'performance-review': return 'Performance Review';
-    case 'profile': return 'My Profile';
-    case '1on1': return '1-on-1 Meetings';
-    case 'feedback': return 'Feedback';
-    case 'shoutouts': return 'Team Shoutouts';
-    default: 
-      return lastSegment
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+  case 'dashboard':
+    return 'Dashboard';
+  case 'self-assessment':
+    return 'Self Assessment';
+  case 'Interactions':
+    return 'Team Interactions';
+  case 'learning':
+    return 'Learning & Development';
+  case 'performance-review':
+    return 'Performance Review';
+  case 'profile':
+    return 'My Profile';
+  case '1on1':
+    return '1-on-1 Meetings';
+  case 'feedback':
+    return 'Feedback';
+  case 'shoutouts':
+    return 'Team Shoutouts';
+  default:
+    return lastSegment
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 };
 
 const getPageDescription = (pathname: string) => {
   const segments = pathname.split('/').filter(Boolean);
   const lastSegment = segments[segments.length - 1];
-  
+
   switch (lastSegment) {
-    case 'dashboard': return 'Welcome back! Here\'s your performance overview';
-    case 'self-assessment': return 'Complete surveys and track your development';
-    case 'Interactions': return 'Connect, collaborate, and communicate with your team';
-    case 'learning': return 'Explore learning resources and skill development';
-    case 'performance-review': return 'Review your goals and track progress';
-    case 'profile': return 'Manage your personal information and preferences';
-    case '1on1': return 'Schedule and manage one-on-one meetings';
-    case 'feedback': return 'Share and receive constructive feedback';
-    case 'shoutouts': return 'Recognize and celebrate team achievements';
-    default: return 'Navigate your personalized workspace';
+  case 'dashboard':
+    return 'Welcome back! Here&apos;s your performance overview';
+  case 'self-assessment':
+    return 'Complete surveys and track your development';
+  case 'Interactions':
+    return 'Connect, collaborate, and communicate with your team';
+  case 'learning':
+    return 'Explore learning resources and skill development';
+  case 'performance-review':
+    return 'Review your goals and track progress';
+  case 'profile':
+    return 'Manage your personal information and preferences';
+  case '1on1':
+    return 'Schedule and manage one-on-one meetings';
+  case 'feedback':
+    return 'Share and receive constructive feedback';
+  case 'shoutouts':
+    return 'Recognize and celebrate team achievements';
+  default:
+    return 'Navigate your personalized workspace';
   }
 };
 
-export default function HeaderNew({ onToggleSidebar, isSidebarCollapsed }: HeaderProps) {
+export default function HeaderNew({
+  onToggleSidebar,
+  isSidebarCollapsed,
+}: HeaderProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const pathname = usePathname();
@@ -113,7 +135,8 @@ export default function HeaderNew({ onToggleSidebar, isSidebarCollapsed }: Heade
         {/* Right Section */}
         <div className="flex items-center space-x-4">
           {/* Quick Actions */}
-          <div className="flex items-center space-x-2">{/* Search functionality removed to prevent header/sidebar collision */}
+          <div className="flex items-center space-x-2">
+            {/* Search functionality removed to prevent header/sidebar collision */}
             {/* Messages */}
             <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
               <MessageSquare className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -161,16 +184,19 @@ export default function HeaderNew({ onToggleSidebar, isSidebarCollapsed }: Heade
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {`${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'User'}
+                    {`${user?.first_name || ''} ${user?.last_name || ''}`.trim() ||
+                      'User'}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     {user?.role || 'Employee'}
                   </p>
                 </div>
-                <ChevronDown className={cn(
-                  "w-4 h-4 text-gray-400 transition-transform duration-200",
-                  isProfileOpen && "rotate-180"
-                )} />
+                <ChevronDown
+                  className={cn(
+                    'w-4 h-4 text-gray-400 transition-transform duration-200',
+                    isProfileOpen && 'rotate-180'
+                  )}
+                />
               </button>
 
               {/* Profile Dropdown Menu */}
@@ -178,13 +204,14 @@ export default function HeaderNew({ onToggleSidebar, isSidebarCollapsed }: Heade
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {`${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'User'}
+                      {`${user?.first_name || ''} ${user?.last_name || ''}`.trim() ||
+                        'User'}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {user?.email || 'user@company.com'}
                     </p>
                   </div>
-                  
+
                   <div className="py-2">
                     <button className="w-full flex items-center space-x-3 px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                       <User className="w-4 h-4" />
@@ -199,7 +226,7 @@ export default function HeaderNew({ onToggleSidebar, isSidebarCollapsed }: Heade
                       <span>Help & Support</span>
                     </button>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
                     <button
                       onClick={handleLogout}

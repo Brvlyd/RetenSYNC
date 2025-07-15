@@ -3,23 +3,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
-import { 
-  getAuthToken, 
-  getUserRole, 
-  hasRole, 
-  isAdmin, 
+import {
+  getAuthToken,
+  getUserRole,
+  hasRole,
+  isAdmin,
   getTokenExpirationTime,
-  isTokenExpired 
+  isTokenExpired,
 } from '@/lib/auth-token';
-import { 
-  get, 
-  post, 
-  put, 
-  del, 
-  adminRequest, 
+import {
+  get,
+  post,
+  put,
+  del,
+  adminRequest,
   roleBasedRequest,
   getUserProfile,
-  updateUserProfile 
+  updateUserProfile,
 } from '@/lib/api-client';
 
 /**
@@ -39,7 +39,9 @@ export const AdminOnlyComponent: React.FC = () => {
   return (
     <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
       <h3 className="text-lg font-semibold text-green-800">Admin Panel</h3>
-      <p className="text-green-700">Welcome, {user?.first_name}! You have admin access.</p>
+      <p className="text-green-700">
+        Welcome, {user?.first_name}! You have admin access.
+      </p>
     </div>
   );
 };
@@ -52,75 +54,75 @@ export const RoleBasedDashboard: React.FC = () => {
 
   const renderDashboardContent = () => {
     switch (userRole) {
-      case 'admin':
-        return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-blue-100 rounded-lg">
-                <h3 className="font-semibold">User Management</h3>
-                <p>Manage all users and permissions</p>
-              </div>
-              <div className="p-4 bg-green-100 rounded-lg">
-                <h3 className="font-semibold">Analytics</h3>
-                <p>View system-wide analytics</p>
-              </div>
-              <div className="p-4 bg-purple-100 rounded-lg">
-                <h3 className="font-semibold">Settings</h3>
-                <p>Configure system settings</p>
-              </div>
+    case 'admin':
+      return (
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">Admin Dashboard</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-blue-100 rounded-lg">
+              <h3 className="font-semibold">User Management</h3>
+              <p>Manage all users and permissions</p>
+            </div>
+            <div className="p-4 bg-green-100 rounded-lg">
+              <h3 className="font-semibold">Analytics</h3>
+              <p>View system-wide analytics</p>
+            </div>
+            <div className="p-4 bg-purple-100 rounded-lg">
+              <h3 className="font-semibold">Settings</h3>
+              <p>Configure system settings</p>
             </div>
           </div>
-        );
-      case 'hr':
-        return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">HR Dashboard</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-orange-100 rounded-lg">
-                <h3 className="font-semibold">Employee Management</h3>
-                <p>Manage employee records</p>
-              </div>
-              <div className="p-4 bg-yellow-100 rounded-lg">
-                <h3 className="font-semibold">Recruitment</h3>
-                <p>Handle recruitment processes</p>
-              </div>
+        </div>
+      );
+    case 'hr':
+      return (
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">HR Dashboard</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-orange-100 rounded-lg">
+              <h3 className="font-semibold">Employee Management</h3>
+              <p>Manage employee records</p>
+            </div>
+            <div className="p-4 bg-yellow-100 rounded-lg">
+              <h3 className="font-semibold">Recruitment</h3>
+              <p>Handle recruitment processes</p>
             </div>
           </div>
-        );
-      case 'manager':
-        return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Manager Dashboard</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-teal-100 rounded-lg">
-                <h3 className="font-semibold">Team Performance</h3>
-                <p>View team metrics and KPIs</p>
-              </div>
-              <div className="p-4 bg-indigo-100 rounded-lg">
-                <h3 className="font-semibold">Goals Management</h3>
-                <p>Set and track team goals</p>
-              </div>
+        </div>
+      );
+    case 'manager':
+      return (
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">Manager Dashboard</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-teal-100 rounded-lg">
+              <h3 className="font-semibold">Team Performance</h3>
+              <p>View team metrics and KPIs</p>
+            </div>
+            <div className="p-4 bg-indigo-100 rounded-lg">
+              <h3 className="font-semibold">Goals Management</h3>
+              <p>Set and track team goals</p>
             </div>
           </div>
-        );
-      case 'user':
-      default:
-        return (
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold">User Dashboard</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-100 rounded-lg">
-                <h3 className="font-semibold">My Performance</h3>
-                <p>View your performance metrics</p>
-              </div>
-              <div className="p-4 bg-blue-100 rounded-lg">
-                <h3 className="font-semibold">My Goals</h3>
-                <p>Track your personal goals</p>
-              </div>
+        </div>
+      );
+    case 'user':
+    default:
+      return (
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold">User Dashboard</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-gray-100 rounded-lg">
+              <h3 className="font-semibold">My Performance</h3>
+              <p>View your performance metrics</p>
+            </div>
+            <div className="p-4 bg-blue-100 rounded-lg">
+              <h3 className="font-semibold">My Goals</h3>
+              <p>Track your personal goals</p>
             </div>
           </div>
-        );
+        </div>
+      );
     }
   };
 
@@ -128,8 +130,8 @@ export const RoleBasedDashboard: React.FC = () => {
     <div className="p-6">
       <div className="mb-4 p-4 bg-white border rounded-lg shadow-sm">
         <p className="text-sm text-gray-600">
-          Logged in as: <span className="font-semibold">{user?.email}</span> 
-          ({<span className="capitalize">{userRole}</span>})
+          Logged in as: <span className="font-semibold">{user?.email}</span>(
+          {<span className="capitalize">{userRole}</span>})
         </p>
       </div>
       {renderDashboardContent()}
@@ -167,7 +169,7 @@ export const ApiExamplesComponent: React.FC = () => {
     try {
       const updatedProfile = await updateUserProfile({
         first_name: 'Updated',
-        last_name: 'Name'
+        last_name: 'Name',
       });
       setData(updatedProfile);
     } catch (err: any) {
@@ -203,19 +205,19 @@ export const ApiExamplesComponent: React.FC = () => {
     try {
       let endpoint = '';
       switch (userRole) {
-        case 'admin':
-          endpoint = '/admin/dashboard-data/';
-          break;
-        case 'hr':
-          endpoint = '/hr/dashboard-data/';
-          break;
-        case 'manager':
-          endpoint = '/manager/dashboard-data/';
-          break;
-        default:
-          endpoint = '/user/dashboard-data/';
+      case 'admin':
+        endpoint = '/admin/dashboard-data/';
+        break;
+      case 'hr':
+        endpoint = '/hr/dashboard-data/';
+        break;
+      case 'manager':
+        endpoint = '/manager/dashboard-data/';
+        break;
+      default:
+        endpoint = '/user/dashboard-data/';
       }
-      
+
       const roleData = await get(endpoint);
       setData(roleData);
     } catch (err: any) {
@@ -232,11 +234,11 @@ export const ApiExamplesComponent: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      
+
       // Using the uploadFile utility
       const { uploadFile } = await import('@/lib/api-client');
       const result = await uploadFile('/upload/avatar/', file, {
-        description: 'Profile avatar'
+        description: 'Profile avatar',
       });
       setData(result);
     } catch (err: any) {
@@ -249,7 +251,7 @@ export const ApiExamplesComponent: React.FC = () => {
   return (
     <div className="p-6 space-y-4">
       <h3 className="text-xl font-semibold">API Request Examples</h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <button
           onClick={handleGetUserProfile}
@@ -258,7 +260,7 @@ export const ApiExamplesComponent: React.FC = () => {
         >
           Get User Profile
         </button>
-        
+
         <button
           onClick={handleUpdateProfile}
           disabled={loading}
@@ -266,7 +268,7 @@ export const ApiExamplesComponent: React.FC = () => {
         >
           Update Profile
         </button>
-        
+
         <button
           onClick={handleAdminAction}
           disabled={loading || !isAdmin()}
@@ -274,7 +276,7 @@ export const ApiExamplesComponent: React.FC = () => {
         >
           Admin Only Action
         </button>
-        
+
         <button
           onClick={handleRoleBasedRequest}
           disabled={loading}
@@ -286,10 +288,14 @@ export const ApiExamplesComponent: React.FC = () => {
 
       {/* File upload example */}
       <div className="mt-4">
-        <label className="block text-sm font-medium mb-2">Upload File Example:</label>
+        <label className="block text-sm font-medium mb-2">
+          Upload File Example:
+        </label>
         <input
           type="file"
-          onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+          onChange={e =>
+            e.target.files?.[0] && handleFileUpload(e.target.files[0])
+          }
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
         />
       </div>
@@ -335,7 +341,7 @@ export const TokenInfoComponent: React.FC = () => {
       setTokenInfo({
         ...authInfo,
         expirationTime,
-        expired
+        expired,
       });
     };
 
@@ -353,9 +359,13 @@ export const TokenInfoComponent: React.FC = () => {
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
           <span className="font-medium">Status:</span>
-          <span className={`px-2 py-1 rounded text-xs ${
-            tokenInfo.isValid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}>
+          <span
+            className={`px-2 py-1 rounded text-xs ${
+              tokenInfo.isValid
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
             {tokenInfo.isValid ? 'Valid' : 'Invalid'}
           </span>
         </div>
@@ -373,20 +383,23 @@ export const TokenInfoComponent: React.FC = () => {
         </div>
         <div className="flex justify-between">
           <span className="font-medium">Expires In:</span>
-          <span className={`${
-            tokenInfo.expirationTime !== null && tokenInfo.expirationTime < 60 
-              ? 'text-red-600 font-semibold' 
-              : 'text-gray-700'
-          }`}>
-            {tokenInfo.expirationTime !== null 
-              ? `${tokenInfo.expirationTime} minutes` 
-              : 'Unknown'
-            }
+          <span
+            className={`${
+              tokenInfo.expirationTime !== null && tokenInfo.expirationTime < 60
+                ? 'text-red-600 font-semibold'
+                : 'text-gray-700'
+            }`}
+          >
+            {tokenInfo.expirationTime !== null
+              ? `${tokenInfo.expirationTime} minutes`
+              : 'Unknown'}
           </span>
         </div>
         <div className="flex justify-between">
           <span className="font-medium">Expired:</span>
-          <span className={tokenInfo.expired ? 'text-red-600' : 'text-green-600'}>
+          <span
+            className={tokenInfo.expired ? 'text-red-600' : 'text-green-600'}
+          >
             {tokenInfo.expired ? 'Yes' : 'No'}
           </span>
         </div>
@@ -422,7 +435,7 @@ export const useRoleBasedFeatures = () => {
     canManageUsers,
     canViewAnalytics,
     canEditProfile,
-    availableFeatures: getAvailableFeatures()
+    availableFeatures: getAvailableFeatures(),
   };
 };
 
@@ -435,14 +448,16 @@ export const FeatureBasedNavigation: React.FC = () => {
     canAccessAdminPanel,
     canManageUsers,
     canViewAnalytics,
-    availableFeatures
+    availableFeatures,
   } = useRoleBasedFeatures();
 
   return (
     <div className="p-4">
-      <h3 className="text-lg font-semibold mb-3">Available Features for {userRole}</h3>
+      <h3 className="text-lg font-semibold mb-3">
+        Available Features for {userRole}
+      </h3>
       <div className="space-y-2">
-        {availableFeatures.map((feature) => (
+        {availableFeatures.map(feature => (
           <div
             key={feature}
             className="p-2 bg-white border border-gray-200 rounded flex items-center justify-between"
@@ -452,7 +467,7 @@ export const FeatureBasedNavigation: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       <div className="mt-4 text-sm text-gray-600">
         <p>Role-based permissions:</p>
         <ul className="list-disc list-inside mt-1 space-y-1">
@@ -474,8 +489,12 @@ export const AuthExamplesApp: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">Please log in to view examples</h2>
-        <p className="text-gray-600">You need to be authenticated to see the role-based features.</p>
+        <h2 className="text-2xl font-bold mb-4">
+          Please log in to view examples
+        </h2>
+        <p className="text-gray-600">
+          You need to be authenticated to see the role-based features.
+        </p>
       </div>
     );
   }
@@ -485,7 +504,9 @@ export const AuthExamplesApp: React.FC = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Auth System Examples</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Auth System Examples
+            </h1>
             <button
               onClick={logout}
               className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
@@ -517,7 +538,9 @@ export const AuthExamplesApp: React.FC = () => {
 
           <div className="space-y-8">
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold mb-4">Role-based Dashboard</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                Role-based Dashboard
+              </h2>
               <RoleBasedDashboard />
             </div>
 

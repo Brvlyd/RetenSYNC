@@ -8,15 +8,18 @@ export async function POST(req: NextRequest) {
     first_name: body.first_name,
     last_name: body.last_name,
     password: body.password,
-    password_confirm: body.password_confirm
+    password_confirm: body.password_confirm,
   };
 
   try {
-    const apiRes = await fetch('https://turnover-api-hd7ze.ondigitalocean.app/api/auth/register/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const apiRes = await fetch(
+      'https://turnover-api-hd7ze.ondigitalocean.app/api/auth/register/',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
 
     const data = await apiRes.json();
 
@@ -26,6 +29,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to reach external registration API' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to reach external registration API' },
+      { status: 500 }
+    );
   }
 }

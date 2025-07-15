@@ -65,7 +65,7 @@ import { useAuth } from '@/contexts/auth-context';
 
 function LoginComponent() {
   const { login, isLoading } = useAuth();
-  
+
   const handleLogin = async (email: string, password: string) => {
     const success = await login(email, password);
     if (success) {
@@ -84,17 +84,17 @@ import { hasRole, isAdmin } from '@/lib/auth-token';
 
 function ProtectedComponent() {
   const { userRole, isAdminUser } = useAuth();
-  
+
   // Method 1: Using context
   if (!isAdminUser) {
     return <div>Access Denied</div>;
   }
-  
+
   // Method 2: Using utility functions
   if (!hasRole('admin')) {
     return <div>Admin access required</div>;
   }
-  
+
   return <div>Admin content</div>;
 }
 ```
@@ -110,26 +110,24 @@ const updatedProfile = await put('/users/profile/', profileData);
 
 // Admin-only requests
 const adminData = await adminRequest('/admin/users/', {
-  method: 'GET'
+  method: 'GET',
 });
 
 // Role-based requests
-const dashboardData = await roleBasedRequest(
-  '/dashboard/', 
-  'manager', 
-  { method: 'GET' }
-);
+const dashboardData = await roleBasedRequest('/dashboard/', 'manager', {
+  method: 'GET',
+});
 ```
 
 ### 4. Token Management
 
 ```typescript
-import { 
-  saveAuthToken, 
-  getAuthToken, 
+import {
+  saveAuthToken,
+  getAuthToken,
   removeAuthToken,
   isTokenExpired,
-  getTokenExpirationTime 
+  getTokenExpirationTime,
 } from '@/lib/auth-token';
 
 // Save token after login
@@ -138,7 +136,7 @@ const tokenData = {
   role: 'admin',
   expiresAt: '2024-12-31T23:59:59Z',
   userId: 'user-123',
-  email: 'user@example.com'
+  email: 'user@example.com',
 };
 saveAuthToken(tokenData);
 
@@ -160,7 +158,7 @@ if (isTokenExpired()) {
 ```typescript
 const useRoleBasedFeatures = () => {
   const { userRole } = useAuth();
-  
+
   return {
     canAccessAdminPanel: hasRole('admin'),
     canManageUsers: hasRole('admin') || hasRole('hr'),
@@ -171,7 +169,7 @@ const useRoleBasedFeatures = () => {
 
 function Navigation() {
   const { canAccessAdminPanel, canManageUsers } = useRoleBasedFeatures();
-  
+
   return (
     <nav>
       {canManageUsers && <Link href="/admin/users">User Management</Link>}
@@ -324,7 +322,7 @@ The system includes demo mode for development:
 email: admin@example.com
 password: any
 
-// HR access  
+// HR access
 email: hr@example.com
 password: any
 
@@ -342,6 +340,7 @@ password: any
 ### Common Issues
 
 1. **Token not persisting**
+
    ```typescript
    // Check if cookies are enabled
    if (!navigator.cookieEnabled) {
@@ -350,6 +349,7 @@ password: any
    ```
 
 2. **Role permissions not working**
+
    ```typescript
    // Ensure token contains role information
    const authInfo = getAuthToken();
@@ -357,6 +357,7 @@ password: any
    ```
 
 3. **API requests failing**
+
    ```typescript
    // Check token validity
    if (isTokenExpired()) {
@@ -383,7 +384,7 @@ const debugToken = () => {
     userId: authInfo.userId,
     expiresAt: authInfo.expiresAt,
     timeLeft: getTokenExpirationTime(),
-    isExpired: isTokenExpired()
+    isExpired: isTokenExpired(),
   });
 };
 

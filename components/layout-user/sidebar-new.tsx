@@ -20,7 +20,7 @@ import {
   Users,
   Settings,
   Bell,
-  Calendar
+  Calendar,
 } from 'lucide-react';
 
 const navigation = [
@@ -28,38 +28,38 @@ const navigation = [
     name: 'Dashboard',
     href: '/user/dashboard',
     icon: LayoutDashboard,
-    description: 'Your personal overview'
+    description: 'Your personal overview',
   },
   {
     name: 'Self Assessment',
     href: '/user/self-assessment',
     icon: ClipboardCheck,
-    description: 'Complete surveys and assessments'
+    description: 'Complete surveys and assessments',
   },
   {
     name: 'Interactions',
     href: '/user/Interactions',
     icon: MessageSquare,
-    description: 'Connect and collaborate'
+    description: 'Connect and collaborate',
   },
   {
     name: 'Learning',
     href: '/user/learning',
     icon: BookOpen,
-    description: 'Grow your skills'
+    description: 'Grow your skills',
   },
   {
     name: 'Performance Review',
     href: '/user/performance-review',
     icon: TrendingUp,
-    description: 'Track your progress'
+    description: 'Track your progress',
   },
   {
     name: 'Profile',
     href: '/user/profile',
     icon: User,
-    description: 'Manage your account'
-  }
+    description: 'Manage your account',
+  },
 ];
 
 const quickActions = [
@@ -67,20 +67,20 @@ const quickActions = [
     name: '1-on-1 Meetings',
     href: '/user/1on1',
     icon: Calendar,
-    description: 'Schedule meetings'
+    description: 'Schedule meetings',
   },
   {
     name: 'Feedback',
     href: '/user/feedback',
     icon: Star,
-    description: 'Give and receive feedback'
+    description: 'Give and receive feedback',
   },
   {
     name: 'Shoutouts',
     href: '/user/shoutouts',
     icon: Award,
-    description: 'Recognize teammates'
-  }
+    description: 'Recognize teammates',
+  },
 ];
 
 export default function SidebarNew() {
@@ -131,7 +131,8 @@ export default function SidebarNew() {
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-              {`${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'User'}
+              {`${user?.first_name || ''} ${user?.last_name || ''}`.trim() ||
+                'User'}
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
               {user?.email || 'user@company.com'}
@@ -144,7 +145,7 @@ export default function SidebarNew() {
       <nav className="flex-1 px-4 space-y-2">
         {/* Main Navigation */}
         <div className="space-y-1">
-          {navigation.map((item) => {
+          {navigation.map(item => {
             const active = isActive(item.href);
             return (
               <button
@@ -157,20 +158,28 @@ export default function SidebarNew() {
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50'
                 )}
               >
-                <item.icon className={cn(
-                  'w-5 h-5 flex-shrink-0 transition-colors duration-200',
-                  active ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
-                )} />
+                <item.icon
+                  className={cn(
+                    'w-5 h-5 flex-shrink-0 transition-colors duration-200',
+                    active
+                      ? 'text-white'
+                      : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                  )}
+                />
                 <div className="min-w-0">
                   <p className="font-medium truncate">{item.name}</p>
-                  <p className={cn(
-                    'text-xs truncate',
-                    active ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
-                  )}>
+                  <p
+                    className={cn(
+                      'text-xs truncate',
+                      active
+                        ? 'text-blue-100'
+                        : 'text-gray-500 dark:text-gray-400'
+                    )}
+                  >
                     {item.description}
                   </p>
                 </div>
-                
+
                 {/* Active indicator */}
                 {active && (
                   <div className="absolute right-2 w-2 h-2 bg-white rounded-full" />
@@ -188,7 +197,7 @@ export default function SidebarNew() {
             </h3>
           </div>
           <div className="space-y-1">
-            {quickActions.map((item) => {
+            {quickActions.map(item => {
               const active = isActive(item.href);
               return (
                 <button
@@ -219,13 +228,9 @@ export default function SidebarNew() {
           className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 group"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
-          <span className="text-sm font-medium">
-            Sign Out
-          </span>
+          <span className="text-sm font-medium">Sign Out</span>
         </button>
       </div>
     </div>
   );
 }
-
-

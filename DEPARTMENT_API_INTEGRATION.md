@@ -51,16 +51,16 @@ import { useDepartments } from '@/hooks/useDepartments';
 
 function MyComponent() {
   const {
-    departments,           // Array of departments
-    loading,              // Loading state
-    error,                // Error message
-    pagination,           // Pagination info
-    fetchDepartments,     // Fetch specific page
-    refreshDepartments,   // Refresh current page
-    createNewDepartment,  // Create department
+    departments, // Array of departments
+    loading, // Loading state
+    error, // Error message
+    pagination, // Pagination info
+    fetchDepartments, // Fetch specific page
+    refreshDepartments, // Refresh current page
+    createNewDepartment, // Create department
     updateExistingDepartment, // Update department
     deleteExistingDepartment, // Delete department
-    clearError,           // Clear error state
+    clearError, // Clear error state
   } = useDepartments();
 
   // Auto-loads departments on mount
@@ -75,14 +75,14 @@ import { useDepartment } from '@/hooks/useDepartments';
 
 function DepartmentDetails({ departmentId }) {
   const {
-    department,           // Department details
-    employees,           // Department employees
-    loading,             // Loading department
-    employeesLoading,    // Loading employees
-    error,              // Error message
-    fetchDepartment,     // Refresh department
+    department, // Department details
+    employees, // Department employees
+    loading, // Loading department
+    employeesLoading, // Loading employees
+    error, // Error message
+    fetchDepartment, // Refresh department
     fetchDepartmentEmployees, // Refresh employees
-    clearError,         // Clear errors
+    clearError, // Clear errors
   } = useDepartment(departmentId);
 
   // Auto-loads when departmentId changes
@@ -170,7 +170,7 @@ function DepartmentDetail({ departmentId }) {
     <div>
       <h2>{department?.name}</h2>
       <p>{department?.description}</p>
-      
+
       <h3>Employees</h3>
       {employeesLoading ? (
         <div>Loading employees...</div>
@@ -202,13 +202,12 @@ async function handleDirectAPI() {
     // Create department
     const newDept = await createDepartment({
       name: 'Marketing',
-      description: 'Marketing and communications team'
+      description: 'Marketing and communications team',
     });
     console.log('Created:', newDept);
-
   } catch (error) {
     console.error('API Error:', error.message);
-    
+
     // Handle specific errors
     if (error.status === 401) {
       console.log('Authentication required');
@@ -237,6 +236,7 @@ function AdminDepartmentsPage() {
 ```
 
 This component includes:
+
 - Department listing with search
 - Create/Edit/Delete modals
 - Employee viewing
@@ -321,7 +321,7 @@ import { useDepartments } from '@/hooks/useDepartments';
 export default function DepartmentsPage() {
   // Replace static data with:
   const { departments, loading, error } = useDepartments();
-  
+
   // Keep your existing UI, just use real data
   // Add error handling and loading states
 }

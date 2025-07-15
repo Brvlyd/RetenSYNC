@@ -2,8 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Plus, Search, Filter, Edit, Trash2, UserPlus, Mail, Phone, MapPin, Calendar, X, RefreshCw, AlertTriangle } from 'lucide-react';
-import { User, fetchUsers, getDepartmentStats, searchUsers, filterUsersByDepartment, hardDeleteUser, addUser, updateUser } from '@/app/api/usersApi';
+import {
+  Users,
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  UserPlus,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  X,
+  RefreshCw,
+  AlertTriangle,
+} from 'lucide-react';
+import {
+  User,
+  fetchUsers,
+  getDepartmentStats,
+  searchUsers,
+  filterUsersByDepartment,
+  hardDeleteUser,
+  addUser,
+  updateUser,
+} from '@/app/api/usersApi';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -25,14 +49,27 @@ export default function UsersPage() {
     position: '',
     department: '',
     phone: '',
-    location: ''
+    location: '',
   });
 
   const positions = [
-    'Software Engineer', 'Senior Software Engineer', 'Team Lead', 'Product Manager',
-    'UX Designer', 'Marketing Specialist', 'Sales Representative', 'HR Specialist',
-    'DevOps Engineer', 'Technical Lead', 'HR Manager', 'Recruiter', 'Financial Analyst',
-    'Marketing Manager', 'Account Manager', 'Operations Manager', 'Product Designer'
+    'Software Engineer',
+    'Senior Software Engineer',
+    'Team Lead',
+    'Product Manager',
+    'UX Designer',
+    'Marketing Specialist',
+    'Sales Representative',
+    'HR Specialist',
+    'DevOps Engineer',
+    'Technical Lead',
+    'HR Manager',
+    'Recruiter',
+    'Financial Analyst',
+    'Marketing Manager',
+    'Account Manager',
+    'Operations Manager',
+    'Product Designer',
   ];
 
   // Load users and departments on component mount
@@ -62,7 +99,12 @@ export default function UsersPage() {
     } catch (err) {
       console.error('Error loading departments:', err);
       // Fallback to basic departments
-      setDepartments(['IT Department', 'HR Department', 'Finance Department', 'Marketing Department']);
+      setDepartments([
+        'IT Department',
+        'HR Department',
+        'Finance Department',
+        'Marketing Department',
+      ]);
     }
   };
 
@@ -79,7 +121,7 @@ export default function UsersPage() {
       loadUsers();
       return;
     }
-    
+
     try {
       const searchResults = await searchUsers(query);
       setUsers(searchResults);
@@ -90,7 +132,7 @@ export default function UsersPage() {
 
   const handleDepartmentFilter = async (department: string) => {
     setFilterDepartment(department);
-    
+
     try {
       const filteredUsers = await filterUsersByDepartment(department);
       setUsers(filteredUsers);
@@ -100,11 +142,13 @@ export default function UsersPage() {
   };
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch = searchTerm === '' || 
+    const matchesSearch =
+      searchTerm === '' ||
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.employeeId.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDepartment = filterDepartment === '' || user.department === filterDepartment;
+    const matchesDepartment =
+      filterDepartment === '' || user.department === filterDepartment;
     return matchesSearch && matchesDepartment;
   });
 
@@ -121,7 +165,7 @@ export default function UsersPage() {
         position: '',
         department: '',
         phone: '',
-        location: ''
+        location: '',
       });
     } catch (error) {
       console.error('Error adding user:', error);
@@ -136,7 +180,7 @@ export default function UsersPage() {
   const handleUpdateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingUser) return;
-    
+
     try {
       await updateUser(editingUser.id, editingUser);
       await loadUsers(); // Refresh the user list
@@ -153,7 +197,7 @@ export default function UsersPage() {
 
   const confirmDeleteUser = async () => {
     if (!userToDelete) return;
-    
+
     setIsDeleting(true);
     try {
       await hardDeleteUser(userToDelete.id);
@@ -206,12 +250,14 @@ export default function UsersPage() {
   // No top margin for this page
   const pageTopMargin = 'mt-16 sm:mt-20 lg:mt-24';
   return (
-    <div className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}>
+    <div
+      className={`space-y-6 lg:space-y-8 animate-fade-in p-3 sm:p-4 md:p-6 ${pageTopMargin}`}
+    >
       {/* Modern Header - Responsive with Slide Animation */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
         className="modern-card p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 text-white overflow-hidden relative"
       >
         {/* Sliding panels animation */}
@@ -219,30 +265,40 @@ export default function UsersPage() {
           <motion.div
             className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"
             animate={{ x: [-100, 400] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
           />
           <motion.div
             className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent"
             animate={{ x: [400, -100] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear", delay: 1 }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: 'linear',
+              delay: 1,
+            }}
           />
           <motion.div
             className="absolute top-1/2 left-0 w-1 h-full bg-gradient-to-b from-transparent via-white/20 to-transparent"
             animate={{ y: [-100, 200] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "linear", delay: 0.5 }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: 'linear',
+              delay: 0.5,
+            }}
           />
         </div>
-        
+
         <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full -translate-y-16 sm:-translate-y-24 lg:-translate-y-32 translate-x-16 sm:translate-x-24 lg:translate-x-32"></div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0"
         >
           <div>
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -250,7 +306,7 @@ export default function UsersPage() {
             >
               User Management
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -278,7 +334,7 @@ export default function UsersPage() {
               type="text"
               placeholder="Search users..."
               value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={e => handleSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
             />
           </div>
@@ -286,12 +342,14 @@ export default function UsersPage() {
             <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             <select
               value={filterDepartment}
-              onChange={(e) => handleDepartmentFilter(e.target.value)}
+              onChange={e => handleDepartmentFilter(e.target.value)}
               className="w-full pl-10 pr-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option value="">All Departments</option>
               {departments.map(dept => (
-                <option key={dept} value={dept}>{dept}</option>
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
               ))}
             </select>
           </div>
@@ -301,7 +359,9 @@ export default function UsersPage() {
               disabled={refreshing}
               className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-xl font-medium transition-colors duration-200"
             >
-              <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 ${refreshing ? 'animate-spin' : ''}`}
+              />
               <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
@@ -314,26 +374,46 @@ export default function UsersPage() {
           <table className="min-w-full">
             <thead className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
               <tr>
-                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Employee</th>
-                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Contact</th>
-                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">Department</th>
-                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Employee
+                </th>
+                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">
+                  Contact
+                </th>
+                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell">
+                  Department
+                </th>
+                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-4 sm:px-6 py-3 sm:py-4 text-left text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
               {filteredUsers.map((user, index) => (
-                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                <tr
+                  key={user.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                >
                   <td className="px-4 sm:px-6 py-4 sm:py-6 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                         <span className="text-xs sm:text-sm font-bold text-white">
-                          {user.name.split(' ').map(n => n[0]).join('')}
+                          {user.name
+                            .split(' ')
+                            .map(n => n[0])
+                            .join('')}
                         </span>
                       </div>
                       <div className="ml-3 sm:ml-4">
-                        <div className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white">{user.name}</div>
-                        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{user.employeeId}</div>
+                        <div className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white">
+                          {user.name}
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                          {user.employeeId}
+                        </div>
                         <div className="md:hidden text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {user.position} • {user.department}
                         </div>
@@ -362,16 +442,22 @@ export default function UsersPage() {
                   </td>
                   <td className="px-4 sm:px-6 py-4 sm:py-6 whitespace-nowrap hidden sm:table-cell">
                     <div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">{user.position}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">{user.department}</div>
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        {user.position}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        {user.department}
+                      </div>
                     </div>
                   </td>
                   <td className="px-4 sm:px-6 py-4 sm:py-6 whitespace-nowrap">
-                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
-                      user.status === 'active' 
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' 
-                        : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
-                    }`}>
+                    <span
+                      className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
+                        user.status === 'active'
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+                      }`}
+                    >
                       {user.status}
                     </span>
                   </td>
@@ -414,94 +500,126 @@ export default function UsersPage() {
                 <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
-            
+
             <form onSubmit={handleAddUser} className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Employee ID</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Employee ID
+                  </label>
                   <input
                     type="text"
                     value={newUser.employeeId}
-                    onChange={(e) => setNewUser({...newUser, employeeId: e.target.value})}
+                    onChange={e =>
+                      setNewUser({ ...newUser, employeeId: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     value={newUser.name}
-                    onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                    onChange={e =>
+                      setNewUser({ ...newUser, name: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={newUser.email}
-                  onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                  onChange={e =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Position
+                  </label>
                   <select
                     value={newUser.position}
-                    onChange={(e) => setNewUser({...newUser, position: e.target.value})}
+                    onChange={e =>
+                      setNewUser({ ...newUser, position: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   >
                     <option value="">Select Position</option>
                     {positions.map(pos => (
-                      <option key={pos} value={pos}>{pos}</option>
+                      <option key={pos} value={pos}>
+                        {pos}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Department
+                  </label>
                   <select
                     value={newUser.department}
-                    onChange={(e) => setNewUser({...newUser, department: e.target.value})}
+                    onChange={e =>
+                      setNewUser({ ...newUser, department: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   >
                     <option value="">Select Department</option>
                     {departments.map(dept => (
-                      <option key={dept} value={dept}>{dept}</option>
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Phone
+                  </label>
                   <input
                     type="tel"
                     value={newUser.phone}
-                    onChange={(e) => setNewUser({...newUser, phone: e.target.value})}
+                    onChange={e =>
+                      setNewUser({ ...newUser, phone: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Location
+                  </label>
                   <input
                     type="text"
                     value={newUser.location}
-                    onChange={(e) => setNewUser({...newUser, location: e.target.value})}
+                    onChange={e =>
+                      setNewUser({ ...newUser, location: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"
@@ -539,92 +657,136 @@ export default function UsersPage() {
                 <X className="h-5 w-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
-            
+
             <form onSubmit={handleUpdateUser} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Employee ID</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Employee ID
+                  </label>
                   <input
                     type="text"
                     value={editingUser.employeeId}
-                    onChange={(e) => setEditingUser({...editingUser, employeeId: e.target.value})}
+                    onChange={e =>
+                      setEditingUser({
+                        ...editingUser,
+                        employeeId: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     value={editingUser.name}
-                    onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
+                    onChange={e =>
+                      setEditingUser({ ...editingUser, name: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  Email
+                </label>
                 <input
                   type="email"
                   value={editingUser.email}
-                  onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
+                  onChange={e =>
+                    setEditingUser({ ...editingUser, email: e.target.value })
+                  }
                   className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Position</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Position
+                  </label>
                   <select
                     value={editingUser.position}
-                    onChange={(e) => setEditingUser({...editingUser, position: e.target.value})}
+                    onChange={e =>
+                      setEditingUser({
+                        ...editingUser,
+                        position: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   >
                     {positions.map(pos => (
-                      <option key={pos} value={pos}>{pos}</option>
+                      <option key={pos} value={pos}>
+                        {pos}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Department</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Department
+                  </label>
                   <select
                     value={editingUser.department}
-                    onChange={(e) => setEditingUser({...editingUser, department: e.target.value})}
+                    onChange={e =>
+                      setEditingUser({
+                        ...editingUser,
+                        department: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   >
                     {departments.map(dept => (
-                      <option key={dept} value={dept}>{dept}</option>
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Phone</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Phone
+                  </label>
                   <input
                     type="tel"
                     value={editingUser.phone || ''}
-                    onChange={(e) => setEditingUser({...editingUser, phone: e.target.value})}
+                    onChange={e =>
+                      setEditingUser({ ...editingUser, phone: e.target.value })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                  <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Location
+                  </label>
                   <input
                     type="text"
                     value={editingUser.location || ''}
-                    onChange={(e) => setEditingUser({...editingUser, location: e.target.value})}
+                    onChange={e =>
+                      setEditingUser({
+                        ...editingUser,
+                        location: e.target.value,
+                      })
+                    }
                     className="w-full p-4 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   type="button"
@@ -655,20 +817,24 @@ export default function UsersPage() {
                 <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
               </div>
             </div>
-            
+
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                 Delete User
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Are you sure you want to permanently delete this user? This action cannot be undone.
+                Are you sure you want to permanently delete this user? This
+                action cannot be undone.
               </p>
-              
+
               <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4">
                 <div className="flex items-center justify-center space-x-3">
                   <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                     <span className="text-sm font-bold text-white">
-                      {userToDelete.name.split(' ').map((n: string) => n[0]).join('')}
+                      {userToDelete.name
+                        .split(' ')
+                        .map((n: string) => n[0])
+                        .join('')}
                     </span>
                   </div>
                   <div className="text-left">
@@ -681,12 +847,13 @@ export default function UsersPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
-                ⚠️ This will permanently remove the user and all associated data from the system.
+                ⚠️ This will permanently remove the user and all associated data
+                from the system.
               </div>
             </div>
-            
+
             <div className="flex justify-end space-x-3">
               <button
                 onClick={cancelDeleteUser}

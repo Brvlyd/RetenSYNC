@@ -9,18 +9,18 @@ export const SECURITY_CONFIG = {
   TOKEN_REFRESH_BUFFER: 5, // minutes before expiration to refresh
   MAX_LOGIN_ATTEMPTS: 5,
   LOGIN_COOLDOWN: 15, // minutes
-  
+
   // Session settings
   SESSION_TIMEOUT: 24 * 60, // 24 hours in minutes
   IDLE_TIMEOUT: 60, // minutes of inactivity
-  
+
   // Security headers
   SECURITY_HEADERS: {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
     'X-XSS-Protection': '1; mode=block',
-    'Referrer-Policy': 'strict-origin-when-cross-origin'
-  }
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+  },
 } as const;
 
 /**
@@ -30,7 +30,7 @@ export const ROLE_HIERARCHY = {
   admin: ['admin', 'hr', 'manager', 'user'],
   hr: ['hr', 'user'],
   manager: ['manager', 'user'],
-  user: ['user']
+  user: ['user'],
 } as const;
 
 export const PERMISSIONS = {
@@ -38,23 +38,23 @@ export const PERMISSIONS = {
   'user:read': ['admin', 'hr'],
   'user:write': ['admin', 'hr'],
   'user:delete': ['admin'],
-  
+
   // System management
   'system:read': ['admin'],
   'system:write': ['admin'],
-  
+
   // Analytics
   'analytics:read': ['admin', 'manager'],
   'analytics:write': ['admin'],
-  
+
   // HR functions
   'hr:read': ['admin', 'hr'],
   'hr:write': ['admin', 'hr'],
-  
+
   // Manager functions
   'manager:read': ['admin', 'hr', 'manager'],
   'manager:write': ['admin', 'manager'],
-  
+
   // Profile management
   'profile:read': ['admin', 'hr', 'manager', 'user'],
   'profile:write': ['admin', 'hr', 'manager', 'user'],
@@ -63,10 +63,12 @@ export const PERMISSIONS = {
 /**
  * Enhanced role checking with hierarchy support
  */
-export const hasPermission = (permission: keyof typeof PERMISSIONS): boolean => {
+export const hasPermission = (
+  permission: keyof typeof PERMISSIONS
+): boolean => {
   const userRole = getUserRole();
   if (!userRole) return false;
-  
+
   const allowedRoles = PERMISSIONS[permission];
   return allowedRoles?.includes(userRole as any) || false;
 };
@@ -77,7 +79,7 @@ export const hasPermission = (permission: keyof typeof PERMISSIONS): boolean => 
 export const canAccessRole = (targetRole: string): boolean => {
   const userRole = getUserRole();
   if (!userRole) return false;
-  
+
   const allowedRoles = ROLE_HIERARCHY[userRole as keyof typeof ROLE_HIERARCHY];
   return allowedRoles?.includes(targetRole as any) || false;
 };
@@ -86,7 +88,10 @@ export const canAccessRole = (targetRole: string): boolean => {
  * Enhanced login attempt tracking
  */
 class LoginAttemptTracker {
-  private attempts: Map<string, { count: number; lastAttempt: number; blockedUntil?: number }> = new Map();
+  private attempts: Map<
+    string,
+    { count: number; lastAttempt: number; blockedUntil?: number }
+  > = new Map();
 
   isBlocked(identifier: string): boolean {
     const record = this.attempts.get(identifier);
@@ -111,12 +116,16 @@ class LoginAttemptTracker {
       return;
     }
 
-    const record = this.attempts.get(identifier) || { count: 0, lastAttempt: 0 };
+    const record = this.attempts.get(identifier) || {
+      count: 0,
+      lastAttempt: 0,
+    };
     record.count += 1;
     record.lastAttempt = Date.now();
 
     if (record.count >= SECURITY_CONFIG.MAX_LOGIN_ATTEMPTS) {
-      record.blockedUntil = Date.now() + (SECURITY_CONFIG.LOGIN_COOLDOWN * 60 * 1000);
+      record.blockedUntil =
+        Date.now() + SECURITY_CONFIG.LOGIN_COOLDOWN * 60 * 1000;
     }
 
     this.attempts.set(identifier, record);
@@ -184,12 +193,13 @@ class SessionManager {
   private handleTimeout(type: 'idle' | 'session'): void {
     console.warn(`Session timeout (${type}), logging out user`);
     removeAuthToken();
-    
+
     if (typeof window !== 'undefined') {
-      const message = type === 'idle' 
-        ? 'Your session has expired due to inactivity. Please log in again.'
-        : 'Your session has expired. Please log in again.';
-      
+      const message =
+        type === 'idle'
+          ? 'Your session has expired due to inactivity. Please log in again.'
+          : 'Your session has expired. Please log in again.';
+
       alert(message);
       window.location.href = '/auth/login';
     }
@@ -216,16 +226,23 @@ let sessionManager: SessionManager | null = null;
 export const initializeSessionManager = (): SessionManager => {
   if (typeof window !== 'undefined' && !sessionManager) {
     sessionManager = new SessionManager();
-    
+
     // Track user activity
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    const events = [
+      'mousedown',
+      'mousemove',
+      'keypress',
+      'scroll',
+      'touchstart',
+      'click',
+    ];
     const resetActivity = () => sessionManager?.resetActivity();
-    
+
     events.forEach(event => {
       document.addEventListener(event, resetActivity, true);
     });
   }
-  
+
   return sessionManager as SessionManager;
 };
 
@@ -233,7 +250,12 @@ export const initializeSessionManager = (): SessionManager => {
  * Security audit logging
  */
 interface SecurityEvent {
-  type: 'login' | 'logout' | 'permission_denied' | 'token_expired' | 'suspicious_activity';
+  type:
+    | 'login'
+    | 'logout'
+    | 'permission_denied'
+    | 'token_expired'
+    | 'suspicious_activity';
   timestamp: number;
   userAgent?: string;
   ip?: string;
@@ -250,7 +272,8 @@ class SecurityAuditor {
     const securityEvent: SecurityEvent = {
       ...event,
       timestamp: Date.now(),
-      userAgent: typeof window !== 'undefined' ? navigator.userAgent : undefined,
+      userAgent:
+        typeof window !== 'undefined' ? navigator.userAgent : undefined,
     };
 
     this.events.push(securityEvent);
@@ -277,14 +300,14 @@ class SecurityAuditor {
       fetch('/api/security/log', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(event)
+        body: JSON.stringify(event),
       }).catch(error => console.warn('Failed to log security event:', error));
     }
   }
 
   getRecentEvents(type?: SecurityEvent['type']): SecurityEvent[] {
-    const recent = this.events.filter(event => 
-      Date.now() - event.timestamp < 24 * 60 * 60 * 1000 // Last 24 hours
+    const recent = this.events.filter(
+      event => Date.now() - event.timestamp < 24 * 60 * 60 * 1000 // Last 24 hours
     );
 
     if (type) {
@@ -354,7 +377,7 @@ export const validateTokenSecurity = (): {
   return {
     isValid: issues.length === 0,
     issues,
-    recommendations
+    recommendations,
   };
 };
 
@@ -368,10 +391,12 @@ export const secureApiRequest = async <T = any>(
   // Validate token security before making request
   const securityCheck = validateTokenSecurity();
   if (!securityCheck.isValid) {
-    const error = new Error(`Security validation failed: ${securityCheck.issues.join(', ')}`);
+    const error = new Error(
+      `Security validation failed: ${securityCheck.issues.join(', ')}`
+    );
     securityAuditor.logEvent({
       type: 'suspicious_activity',
-      details: { securityIssues: securityCheck.issues, url }
+      details: { securityIssues: securityCheck.issues, url },
     });
     throw error;
   }
@@ -379,7 +404,7 @@ export const secureApiRequest = async <T = any>(
   // Add security headers
   const secureHeaders = {
     ...SECURITY_CONFIG.SECURITY_HEADERS,
-    ...options.headers
+    ...options.headers,
   };
 
   // Track API request
@@ -388,18 +413,18 @@ export const secureApiRequest = async <T = any>(
   try {
     const response = await fetch(url, {
       ...options,
-      headers: secureHeaders
+      headers: secureHeaders,
     });
 
     if (!response.ok) {
       securityAuditor.logEvent({
         type: 'suspicious_activity',
-        details: { 
+        details: {
           action: 'api_request_failed',
           url,
           status: response.status,
-          statusText: response.statusText
-        }
+          statusText: response.statusText,
+        },
       });
     }
 
@@ -407,11 +432,11 @@ export const secureApiRequest = async <T = any>(
   } catch (error) {
     securityAuditor.logEvent({
       type: 'suspicious_activity',
-      details: { 
+      details: {
         action: 'api_request_error',
         url,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
     });
     throw error;
   }
@@ -432,7 +457,7 @@ export const useSecurityContext = () => {
     securityValidation,
     sessionManager: initializeSessionManager(),
     securityAuditor,
-    loginAttemptTracker
+    loginAttemptTracker,
   };
 };
 
@@ -447,7 +472,7 @@ export const createSecureComponent = (
   return {
     checkAccess: () => {
       const authInfo = getAuthToken();
-      
+
       if (!authInfo.isValid) {
         return { hasAccess: false, reason: 'not_authenticated' };
       }
@@ -455,21 +480,25 @@ export const createSecureComponent = (
       if (requiredPermission && !hasPermission(requiredPermission)) {
         securityAuditor.logEvent({
           type: 'permission_denied',
-          details: { requiredPermission }
+          details: { requiredPermission },
         });
-        return { hasAccess: false, reason: 'insufficient_permission', requiredPermission };
+        return {
+          hasAccess: false,
+          reason: 'insufficient_permission',
+          requiredPermission,
+        };
       }
 
       if (requiredRole && !canAccessRole(requiredRole)) {
         securityAuditor.logEvent({
           type: 'permission_denied',
-          details: { requiredRole }
+          details: { requiredRole },
         });
         return { hasAccess: false, reason: 'insufficient_role', requiredRole };
       }
 
       return { hasAccess: true };
-    }
+    },
   };
 };
 
@@ -488,6 +517,6 @@ export const getSecurityStatus = () => {
     sessionTime: Math.floor(sessionMgr.getSessionTime() / 1000 / 60), // minutes
     recentEvents,
     securityIssues: validation.issues,
-    recommendations: validation.recommendations
+    recommendations: validation.recommendations,
   };
 };

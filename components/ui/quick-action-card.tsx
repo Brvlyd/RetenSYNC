@@ -25,7 +25,7 @@ export default function QuickActionCard({
   onClick,
   badge,
   isNew,
-  className
+  className,
 }: QuickActionCardProps) {
   return (
     <motion.button
@@ -33,7 +33,7 @@ export default function QuickActionCard({
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        "group relative p-6 text-left w-full rounded-2xl border border-white/20 dark:border-slate-700/20 transition-all duration-300 hover:shadow-xl overflow-hidden",
+        'group relative p-6 text-left w-full rounded-2xl border border-white/20 dark:border-slate-700/20 transition-all duration-300 hover:shadow-xl overflow-hidden',
         `bg-gradient-to-br ${bgGradient}`,
         className
       )}
@@ -42,7 +42,7 @@ export default function QuickActionCard({
       <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
         <div className="w-full h-full bg-gradient-to-br from-white to-transparent rounded-full transform translate-x-8 -translate-y-8" />
       </div>
-      
+
       {/* Badge */}
       {(badge || isNew) && (
         <div className="absolute top-4 right-4">
@@ -64,13 +64,13 @@ export default function QuickActionCard({
         <motion.div
           whileHover={{ scale: 1.1, rotate: 5 }}
           className={cn(
-            "p-3 rounded-xl text-white shadow-lg group-hover:shadow-xl transition-all duration-300",
+            'p-3 rounded-xl text-white shadow-lg group-hover:shadow-xl transition-all duration-300',
             `bg-gradient-to-r ${gradient}`
           )}
         >
           <Icon className="w-6 h-6" />
         </motion.div>
-        
+
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-lg text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             {title}

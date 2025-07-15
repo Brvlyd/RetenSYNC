@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  hasPermission, 
-  canAccessRole, 
-  PERMISSIONS, 
-  securityAuditor, 
+import {
+  hasPermission,
+  canAccessRole,
+  PERMISSIONS,
+  securityAuditor,
   useSecurityContext,
   getSecurityStatus,
-  createSecureComponent
+  createSecureComponent,
 } from '@/lib/security-utils';
 
 /**
@@ -44,35 +44,37 @@ interface AccessDeniedComponentProps {
   };
 }
 
-const AccessDeniedComponent: React.FC<AccessDeniedComponentProps> = ({ accessResult }) => {
+const AccessDeniedComponent: React.FC<AccessDeniedComponentProps> = ({
+  accessResult,
+}) => {
   const getErrorMessage = () => {
     switch (accessResult.reason) {
-      case 'not_authenticated':
-        return {
-          title: 'Authentication Required',
-          message: 'Please log in to access this page.',
-          showLogin: true
-        };
-      case 'insufficient_permission':
-        return {
-          title: 'Access Denied',
-          message: 'You don\'t have permission to access this resource.',
-          detail: `Required permission: ${accessResult.requiredPermission}`,
-          showLogin: false
-        };
-      case 'insufficient_role':
-        return {
-          title: 'Access Denied',
-          message: 'You don\'t have the required role to access this resource.',
-          detail: `Required role: ${accessResult.requiredRole}`,
-          showLogin: false
-        };
-      default:
-        return {
-          title: 'Access Denied',
-          message: 'You don\'t have access to this resource.',
-          showLogin: false
-        };
+    case 'not_authenticated':
+      return {
+        title: 'Authentication Required',
+        message: 'Please log in to access this page.',
+        showLogin: true,
+      };
+    case 'insufficient_permission':
+      return {
+        title: 'Access Denied',
+        message: 'You don\'t have permission to access this resource.',
+        detail: `Required permission: ${accessResult.requiredPermission}`,
+        showLogin: false,
+      };
+    case 'insufficient_role':
+      return {
+        title: 'Access Denied',
+        message: 'You don\'t have the required role to access this resource.',
+        detail: `Required role: ${accessResult.requiredRole}`,
+        showLogin: false,
+      };
+    default:
+      return {
+        title: 'Access Denied',
+        message: 'You don\'t have access to this resource.',
+        showLogin: false,
+      };
     }
   };
 
@@ -82,11 +84,23 @@ const AccessDeniedComponent: React.FC<AccessDeniedComponentProps> = ({ accessRes
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="text-center max-w-md mx-auto p-6">
         <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+          <svg
+            className="w-8 h-8 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"
+            />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">{errorInfo.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          {errorInfo.title}
+        </h2>
         <p className="text-gray-600 mb-4">{errorInfo.message}</p>
         {errorInfo.detail && (
           <p className="text-sm text-gray-500 mb-6 bg-gray-100 px-3 py-2 rounded">
@@ -117,7 +131,9 @@ const AccessDeniedComponent: React.FC<AccessDeniedComponentProps> = ({ accessRes
  * Security Status Component
  */
 export const SecurityStatusComponent: React.FC = () => {
-  const [securityStatus, setSecurityStatus] = useState(() => getSecurityStatus());
+  const [securityStatus, setSecurityStatus] = useState(() =>
+    getSecurityStatus()
+  );
 
   useEffect(() => {
     const updateSecurityStatus = () => {
@@ -128,29 +144,41 @@ export const SecurityStatusComponent: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const getStatusColor = (isValid: boolean) => isValid ? 'text-green-600' : 'text-red-600';
-  const getStatusBg = (isValid: boolean) => isValid ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
+  const getStatusColor = (isValid: boolean) =>
+    isValid ? 'text-green-600' : 'text-red-600';
+  const getStatusBg = (isValid: boolean) =>
+    isValid ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Status</h3>
-      
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        Security Status
+      </h3>
+
       <div className="space-y-3">
         {/* Token Status */}
-        <div className={`p-3 rounded-lg border ${getStatusBg(securityStatus.tokenValid)}`}>
+        <div
+          className={`p-3 rounded-lg border ${getStatusBg(securityStatus.tokenValid)}`}
+        >
           <div className="flex items-center justify-between">
             <span className="font-medium">Token Status</span>
-            <span className={`text-sm font-semibold ${getStatusColor(securityStatus.tokenValid)}`}>
+            <span
+              className={`text-sm font-semibold ${getStatusColor(securityStatus.tokenValid)}`}
+            >
               {securityStatus.tokenValid ? 'Valid' : 'Invalid'}
             </span>
           </div>
         </div>
 
         {/* Session Status */}
-        <div className={`p-3 rounded-lg border ${getStatusBg(securityStatus.sessionActive)}`}>
+        <div
+          className={`p-3 rounded-lg border ${getStatusBg(securityStatus.sessionActive)}`}
+        >
           <div className="flex items-center justify-between">
             <span className="font-medium">Session Status</span>
-            <span className={`text-sm font-semibold ${getStatusColor(securityStatus.sessionActive)}`}>
+            <span
+              className={`text-sm font-semibold ${getStatusColor(securityStatus.sessionActive)}`}
+            >
               {securityStatus.sessionActive ? 'Active' : 'Inactive'}
             </span>
           </div>
@@ -164,16 +192,21 @@ export const SecurityStatusComponent: React.FC = () => {
           </div>
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="text-sm text-gray-600">Idle Time</div>
-            <div className={`font-semibold ${securityStatus.idleTime > 30 ? 'text-orange-600' : 'text-gray-900'}`}>
+            <div
+              className={`font-semibold ${securityStatus.idleTime > 30 ? 'text-orange-600' : 'text-gray-900'}`}
+            >
               {securityStatus.idleTime}m
             </div>
           </div>
         </div>
 
         {/* Security Issues */}
-        {securityStatus.securityIssues && securityStatus.securityIssues.length > 0 && (
+        {securityStatus.securityIssues &&
+          securityStatus.securityIssues.length > 0 && (
           <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <div className="text-sm font-medium text-yellow-800 mb-2">Security Issues:</div>
+            <div className="text-sm font-medium text-yellow-800 mb-2">
+                Security Issues:
+            </div>
             <ul className="text-sm text-yellow-700 space-y-1">
               {securityStatus.securityIssues.map((issue, index) => (
                 <li key={index} className="flex items-center gap-2">
@@ -193,8 +226,13 @@ export const SecurityStatusComponent: React.FC = () => {
             </div>
             <div className="space-y-1">
               {securityStatus.recentEvents.slice(0, 3).map((event, index) => (
-                <div key={index} className="text-xs text-blue-700 flex justify-between">
-                  <span className="capitalize">{event.type.replace('_', ' ')}</span>
+                <div
+                  key={index}
+                  className="text-xs text-blue-700 flex justify-between"
+                >
+                  <span className="capitalize">
+                    {event.type.replace('_', ' ')}
+                  </span>
                   <span>{new Date(event.timestamp).toLocaleTimeString()}</span>
                 </div>
               ))}
@@ -215,10 +253,10 @@ interface PermissionGuardProps {
   children: React.ReactNode;
 }
 
-export const PermissionGuard: React.FC<PermissionGuardProps> = ({ 
-  permission, 
-  fallback, 
-  children 
+export const PermissionGuard: React.FC<PermissionGuardProps> = ({
+  permission,
+  fallback,
+  children,
 }) => {
   const hasAccess = hasPermission(permission);
 
@@ -238,10 +276,10 @@ interface RoleGuardProps {
   children: React.ReactNode;
 }
 
-export const RoleGuard: React.FC<RoleGuardProps> = ({ 
-  role, 
-  fallback, 
-  children 
+export const RoleGuard: React.FC<RoleGuardProps> = ({
+  role,
+  fallback,
+  children,
 }) => {
   const hasAccess = canAccessRole(role);
 
@@ -263,17 +301,17 @@ interface SecurityGuardProps {
   children: React.ReactNode;
 }
 
-export const SecurityGuard: React.FC<SecurityGuardProps> = ({ 
-  permission, 
-  role, 
+export const SecurityGuard: React.FC<SecurityGuardProps> = ({
+  permission,
+  role,
   requireAll = false,
-  fallback, 
-  children 
+  fallback,
+  children,
 }) => {
   const hasPermissionAccess = permission ? hasPermission(permission) : true;
   const hasRoleAccess = role ? canAccessRole(role) : true;
 
-  const hasAccess = requireAll 
+  const hasAccess = requireAll
     ? hasPermissionAccess && hasRoleAccess
     : hasPermissionAccess || hasRoleAccess;
 
@@ -292,8 +330,16 @@ export const SecureAdminPanel = withSecureAccess(
     <div className="admin-panel">
       <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
         <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" clipRule="evenodd" />
+          <svg
+            className="w-5 h-5 text-red-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              clipRule="evenodd"
+            />
           </svg>
           <span className="text-red-800 font-medium">Admin Access Granted</span>
         </div>
@@ -310,7 +356,11 @@ export const SecureHRPanel = withSecureAccess(
     <div className="hr-panel">
       <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+          <svg
+            className="w-5 h-5 text-blue-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
             <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
           </svg>
           <span className="text-blue-800 font-medium">HR Access Granted</span>
@@ -327,10 +377,20 @@ export const SecureManagerPanel = withSecureAccess(
     <div className="manager-panel">
       <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
         <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
+          <svg
+            className="w-5 h-5 text-green-600"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fillRule="evenodd"
+              d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+              clipRule="evenodd"
+            />
           </svg>
-          <span className="text-green-800 font-medium">Manager Access Granted</span>
+          <span className="text-green-800 font-medium">
+            Manager Access Granted
+          </span>
         </div>
       </div>
       {children}
@@ -344,7 +404,9 @@ export const SecureManagerPanel = withSecureAccess(
  */
 export const useComponentSecurity = () => {
   const { isAuthenticated, userRole } = useSecurityContext();
-  const [securityStatus, setSecurityStatus] = useState(() => getSecurityStatus());
+  const [securityStatus, setSecurityStatus] = useState(() =>
+    getSecurityStatus()
+  );
 
   useEffect(() => {
     const updateStatus = () => setSecurityStatus(getSecurityStatus());
@@ -356,13 +418,16 @@ export const useComponentSecurity = () => {
     isAuthenticated,
     userRole,
     securityStatus,
-    hasPermission: (permission: keyof typeof PERMISSIONS) => hasPermission(permission),
+    hasPermission: (permission: keyof typeof PERMISSIONS) =>
+      hasPermission(permission),
     canAccessRole: (role: string) => canAccessRole(role),
     PermissionGuard,
     RoleGuard,
     SecurityGuard,
     SecurityStatusComponent: () => <SecurityStatusComponent />,
-    createSecureComponent: (permission?: keyof typeof PERMISSIONS, role?: string) => 
-      createSecureComponent(permission, role)
+    createSecureComponent: (
+      permission?: keyof typeof PERMISSIONS,
+      role?: string
+    ) => createSecureComponent(permission, role),
   };
 };

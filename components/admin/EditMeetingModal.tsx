@@ -1,7 +1,20 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Calendar, Clock, User, X, Save, AlertCircle, CheckCircle, Users, Building, Target, FileText, Hash } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  User,
+  X,
+  Save,
+  AlertCircle,
+  CheckCircle,
+  Users,
+  Building,
+  Target,
+  FileText,
+  Hash,
+} from 'lucide-react';
 
 interface Meeting {
   id: number;
@@ -24,7 +37,12 @@ interface EditMeetingModalProps {
   onSave: (updatedMeeting: Meeting) => void;
 }
 
-export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: EditMeetingModalProps) {
+export default function EditMeetingModal({
+  isOpen,
+  onClose,
+  meeting,
+  onSave,
+}: EditMeetingModalProps) {
   const [formData, setFormData] = useState({
     employee: '',
     manager: '',
@@ -34,7 +52,7 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
     agenda: '',
     notes: '',
     status: 'upcoming' as 'upcoming' | 'ongoing' | 'completed' | 'in-progress',
-    priority: 'medium' as 'high' | 'medium' | 'low'
+    priority: 'medium' as 'high' | 'medium' | 'low',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -53,7 +71,7 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
         agenda: meeting.agenda?.join(', ') || '',
         notes: meeting.notes,
         status: meeting.status,
-        priority: meeting.priority
+        priority: meeting.priority,
       });
       setHasChanges(false);
     }
@@ -71,11 +89,13 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
         agenda: meeting.agenda?.join(', ') || '',
         notes: meeting.notes,
         status: meeting.status,
-        priority: meeting.priority
+        priority: meeting.priority,
       };
-      
-      const hasChanged = Object.keys(formData).some(key => 
-        formData[key as keyof typeof formData] !== originalData[key as keyof typeof originalData]
+
+      const hasChanged = Object.keys(formData).some(
+        key =>
+          formData[key as keyof typeof formData] !==
+          originalData[key as keyof typeof originalData]
       );
       setHasChanges(hasChanged);
     }
@@ -83,8 +103,13 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.employee || !formData.manager || !formData.date || !formData.time) {
+
+    if (
+      !formData.employee ||
+      !formData.manager ||
+      !formData.date ||
+      !formData.time
+    ) {
       alert('Please fill in all required fields');
       return;
     }
@@ -102,12 +127,15 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
           department: formData.department,
           date: formData.date,
           time: formData.time,
-          agenda: formData.agenda.split(',').map(item => item.trim()).filter(Boolean),
+          agenda: formData.agenda
+            .split(',')
+            .map(item => item.trim())
+            .filter(Boolean),
           notes: formData.notes,
           status: formData.status,
-          priority: formData.priority
+          priority: formData.priority,
         };
-        
+
         onSave(updatedMeeting);
         onClose();
       }
@@ -117,7 +145,11 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
 
   const handleClose = () => {
     if (hasChanges) {
-      if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
+      if (
+        window.confirm(
+          'You have unsaved changes. Are you sure you want to close?'
+        )
+      ) {
         onClose();
       }
     } else {
@@ -145,7 +177,14 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 p-4"
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto' }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflowY: 'auto',
+      }}
     >
       <div
         ref={modalRef}
@@ -182,24 +221,32 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
         </div>
 
         {/* Meeting Status Banner */}
-        <div className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border-l-4 ${
-          meeting.status === 'ongoing' 
-            ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-500 text-orange-800 dark:text-orange-200'
-            : meeting.status === 'upcoming'
-            ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-800 dark:text-blue-200'
-            : 'bg-green-50 dark:bg-green-900/20 border-green-500 text-green-800 dark:text-green-200'
-        }`}>
+        <div
+          className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl border-l-4 ${
+            meeting.status === 'ongoing'
+              ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-500 text-orange-800 dark:text-orange-200'
+              : meeting.status === 'upcoming'
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-800 dark:text-blue-200'
+                : 'bg-green-50 dark:bg-green-900/20 border-green-500 text-green-800 dark:text-green-200'
+          }`}
+        >
           <div className="flex items-center space-x-2">
-            <div className={`w-3 h-3 rounded-full ${
-              meeting.status === 'ongoing' ? 'bg-orange-500' :
-              meeting.status === 'upcoming' ? 'bg-blue-500' : 'bg-green-500'
-            }`}></div>
+            <div
+              className={`w-3 h-3 rounded-full ${
+                meeting.status === 'ongoing'
+                  ? 'bg-orange-500'
+                  : meeting.status === 'upcoming'
+                    ? 'bg-blue-500'
+                    : 'bg-green-500'
+              }`}
+            ></div>
             <span className="font-semibold text-sm">
-              Meeting ID: #{meeting.id} • Status: {meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)}
+              Meeting ID: #{meeting.id} • Status:{' '}
+              {meeting.status.charAt(0).toUpperCase() + meeting.status.slice(1)}
             </span>
           </div>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Employee & Manager */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -208,16 +255,22 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
                 <User className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
                 Employee *
               </label>
-              <select 
+              <select
                 value={formData.employee}
-                onChange={(e) => setFormData({...formData, employee: e.target.value})}
+                onChange={e =>
+                  setFormData({ ...formData, employee: e.target.value })
+                }
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                 required
               >
                 <option value="">Select employee...</option>
-                <option value="Putri Aulia Simanjuntak">Putri Aulia Simanjuntak</option>
+                <option value="Putri Aulia Simanjuntak">
+                  Putri Aulia Simanjuntak
+                </option>
                 <option value="Bravely Dirgayuska">Bravely Dirgayuska</option>
-                <option value="Dzikri Razzan Athallah">Dzikri Razzan Athallah</option>
+                <option value="Dzikri Razzan Athallah">
+                  Dzikri Razzan Athallah
+                </option>
                 <option value="Annisa Zulfiani">Annisa Zulfiani</option>
                 <option value="Tasya Salsabila">Tasya Salsabila</option>
               </select>
@@ -227,9 +280,11 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
                 <Users className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
                 Manager *
               </label>
-              <select 
+              <select
                 value={formData.manager}
-                onChange={(e) => setFormData({...formData, manager: e.target.value})}
+                onChange={e =>
+                  setFormData({ ...formData, manager: e.target.value })
+                }
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                 required
               >
@@ -249,9 +304,11 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
                 <Building className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
                 Department
               </label>
-              <select 
+              <select
                 value={formData.department}
-                onChange={(e) => setFormData({...formData, department: e.target.value})}
+                onChange={e =>
+                  setFormData({ ...formData, department: e.target.value })
+                }
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
               >
                 <option value="">Select department...</option>
@@ -267,9 +324,14 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
                 <AlertCircle className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
                 Priority
               </label>
-              <select 
+              <select
                 value={formData.priority}
-                onChange={(e) => setFormData({...formData, priority: e.target.value as 'high' | 'medium' | 'low'})}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    priority: e.target.value as 'high' | 'medium' | 'low',
+                  })
+                }
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
               >
                 <option value="low">Low Priority</option>
@@ -289,7 +351,9 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
               <input
                 type="date"
                 value={formData.date}
-                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                onChange={e =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                 required
               />
@@ -302,7 +366,9 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
               <input
                 type="time"
                 value={formData.time}
-                onChange={(e) => setFormData({...formData, time: e.target.value})}
+                onChange={e =>
+                  setFormData({ ...formData, time: e.target.value })
+                }
                 className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
                 required
               />
@@ -315,9 +381,18 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
               <CheckCircle className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
               Meeting Status
             </label>
-            <select 
+            <select
               value={formData.status}
-              onChange={(e) => setFormData({...formData, status: e.target.value as 'upcoming' | 'ongoing' | 'completed' | 'in-progress'})}
+              onChange={e =>
+                setFormData({
+                  ...formData,
+                  status: e.target.value as
+                    | 'upcoming'
+                    | 'ongoing'
+                    | 'completed'
+                    | 'in-progress',
+                })
+              }
               className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
             >
               <option value="upcoming">Upcoming</option>
@@ -336,13 +411,17 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
             <input
               type="text"
               value={formData.agenda}
-              onChange={(e) => setFormData({...formData, agenda: e.target.value})}
+              onChange={e =>
+                setFormData({ ...formData, agenda: e.target.value })
+              }
               placeholder="e.g., Performance review, Career goals, Skill development"
               className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white text-sm sm:text-base"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Separate multiple agenda items with commas</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Separate multiple agenda items with commas
+            </p>
           </div>
-          
+
           {/* Notes */}
           <div>
             <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 sm:mb-3 flex items-center">
@@ -352,12 +431,14 @@ export default function EditMeetingModal({ isOpen, onClose, meeting, onSave }: E
             <textarea
               rows={4}
               value={formData.notes}
-              onChange={(e) => setFormData({...formData, notes: e.target.value})}
+              onChange={e =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
               placeholder="Share meeting notes, key discussion points, and action items..."
               className="w-full p-3 sm:p-4 border border-gray-200 dark:border-gray-600 rounded-xl lg:rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 resize-none text-gray-900 dark:text-white text-sm sm:text-base"
             />
           </div>
-          
+
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 pt-4 border-t border-gray-200 dark:border-gray-600">
             <button
