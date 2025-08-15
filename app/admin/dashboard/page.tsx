@@ -46,6 +46,7 @@ const item = {
 };
 
 export default function AdminDashboardPage() {
+  const router = useRouter();
   const [organizationStats, setOrganizationStats] = useState({
     totalEmployees: 0,
     activeEmployees: 0,
@@ -240,7 +241,7 @@ export default function AdminDashboardPage() {
               icon={UserPlus}
               gradient="from-blue-500 to-cyan-500"
               bgGradient="from-blue-50/80 to-cyan-50/80 dark:from-blue-900/40 dark:to-cyan-900/40 backdrop-blur-sm"
-              onClick={() => (window.location.href = '/admin/users')}
+              onClick={() => router.push('/admin/users')}
             />
             <QuickActionCard
               title="Departments & Positions"
@@ -248,7 +249,7 @@ export default function AdminDashboardPage() {
               icon={Users}
               gradient="from-purple-500 to-violet-500"
               bgGradient="from-purple-50/80 to-violet-50/80 dark:from-purple-900/40 dark:to-violet-900/40 backdrop-blur-sm"
-              onClick={() => (window.location.href = '/admin/departments')}
+              onClick={() => router.push('/admin/departments')}
             />
             <QuickActionCard
               title="Analytics & Reports"
@@ -256,7 +257,7 @@ export default function AdminDashboardPage() {
               icon={BarChart3}
               gradient="from-emerald-500 to-teal-500"
               bgGradient="from-emerald-50/80 to-teal-50/80 dark:from-emerald-900/40 dark:to-teal-900/40 backdrop-blur-sm"
-              onClick={() => (window.location.href = '/admin/analytics')}
+              onClick={() => router.push('/admin/analytics')}
             />
             <QuickActionCard
               title="Performance Reviews"
@@ -264,9 +265,7 @@ export default function AdminDashboardPage() {
               icon={ClipboardList}
               gradient="from-indigo-500 to-purple-500"
               bgGradient="from-indigo-50/80 to-purple-50/80 dark:from-indigo-900/40 dark:to-purple-900/40 backdrop-blur-sm"
-              onClick={() =>
-                (window.location.href = '/admin/performance-review')
-              }
+              onClick={() => router.push('/admin/performance-review')}
             />
             <QuickActionCard
               title="ML Performance"
@@ -274,7 +273,7 @@ export default function AdminDashboardPage() {
               icon={Brain}
               gradient="from-violet-600 to-fuchsia-700"
               bgGradient="from-violet-50/80 to-fuchsia-50/80 dark:from-violet-900/40 dark:to-fuchsia-900/40 backdrop-blur-sm"
-              onClick={() => (window.location.href = '/admin/ml-performance')}
+              onClick={() => router.push('/admin/ml-performance')}
             />
             <QuickActionCard
               title="HR Interactions"
@@ -282,7 +281,7 @@ export default function AdminDashboardPage() {
               icon={Heart}
               gradient="from-pink-500 to-rose-500"
               bgGradient="from-pink-50/80 to-rose-50/80 dark:from-pink-900/40 dark:to-rose-900/40 backdrop-blur-sm"
-              onClick={() => (window.location.href = '/admin/hr-interactions')}
+              onClick={() => router.push('/admin/hr-interactions')}
             />
           </div>
         </motion.div>
@@ -307,9 +306,9 @@ export default function AdminDashboardPage() {
               change="↑ 12 new hires this month"
               changeType="positive"
               icon={
-                <Users className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+                <Users className="w-7 h-7 text-white" />
               }
-              className="bg-gradient-to-br from-blue-50/90 to-cyan-50/90 dark:from-blue-900/80 dark:to-cyan-900/80 border-blue-200/50 dark:border-blue-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 dark:from-blue-600 dark:via-blue-700 dark:to-indigo-700 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 backdrop-blur-sm"
             />
             <StatCard
               title="Turnover Reduction"
@@ -317,9 +316,9 @@ export default function AdminDashboardPage() {
               change="↓ 12% from last quarter"
               changeType="positive"
               icon={
-                <TrendingUp className="w-6 h-6 text-emerald-500 dark:text-emerald-400" />
+                <TrendingUp className="w-7 h-7 text-white" />
               }
-              className="bg-gradient-to-br from-emerald-50/90 to-teal-50/90 dark:from-emerald-900/80 dark:to-teal-900/80 border-emerald-200/50 dark:border-emerald-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 dark:from-emerald-600 dark:via-emerald-700 dark:to-teal-700 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:from-emerald-600 hover:to-teal-700 dark:hover:from-emerald-700 dark:hover:to-teal-800 backdrop-blur-sm"
             />
             <StatCard
               title="Avg Satisfaction"
@@ -327,9 +326,9 @@ export default function AdminDashboardPage() {
               change="↑ 0.3 from last month"
               changeType="positive"
               icon={
-                <Star className="w-6 h-6 text-yellow-500 dark:text-yellow-400" />
+                <Star className="w-7 h-7 text-white" />
               }
-              className="bg-gradient-to-br from-yellow-50/90 to-orange-50/90 dark:from-yellow-900/80 dark:to-orange-900/80 border-yellow-200/50 dark:border-yellow-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 dark:from-amber-600 dark:via-orange-600 dark:to-red-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:from-amber-600 hover:to-red-600 dark:hover:from-amber-700 dark:hover:to-red-700 backdrop-blur-sm"
             />
             <StatCard
               title="Active Projects"
@@ -337,9 +336,9 @@ export default function AdminDashboardPage() {
               change="3 completed this week"
               changeType="positive"
               icon={
-                <Activity className="w-6 h-6 text-purple-500 dark:text-purple-400" />
+                <Activity className="w-7 h-7 text-white" />
               }
-              className="bg-gradient-to-br from-purple-50/90 to-violet-50/90 dark:from-purple-900/80 dark:to-violet-900/80 border-purple-200/50 dark:border-purple-700/50 text-gray-900 dark:text-white backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-600 dark:from-violet-600 dark:via-purple-700 dark:to-fuchsia-700 text-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:from-violet-600 hover:to-fuchsia-700 dark:hover:from-violet-700 dark:hover:to-fuchsia-800 backdrop-blur-sm"
             />
           </div>
         </motion.div>

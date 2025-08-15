@@ -17,6 +17,9 @@ export default function StatCard({
   icon,
   className,
 }: StatCardProps) {
+  // Check if className contains text-white to determine if we should use white text
+  const isWhiteText = className?.includes('text-white');
+  
   return (
     <div
       className={cn(
@@ -26,15 +29,23 @@ export default function StatCard({
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+          <p className={cn(
+            'text-sm font-medium',
+            isWhiteText ? 'text-white/80' : 'text-gray-600 dark:text-gray-300'
+          )}>{title}</p>
+          <p className={cn(
+            'text-3xl font-bold mt-2',
+            isWhiteText ? 'text-white' : 'text-gray-900 dark:text-white'
+          )}>{value}</p>
           {change && (
             <p
               className={cn(
                 'text-sm mt-2 flex items-center',
-                changeType === 'positive' && 'text-green-600',
-                changeType === 'negative' && 'text-red-600',
-                changeType === 'neutral' && 'text-gray-600'
+                isWhiteText ? 'text-white/90' : (
+                  changeType === 'positive' && 'text-green-600 dark:text-green-300' ||
+                  changeType === 'negative' && 'text-red-600 dark:text-red-300' ||
+                  changeType === 'neutral' && 'text-gray-600 dark:text-gray-300'
+                )
               )}
             >
               {change}
@@ -43,9 +54,7 @@ export default function StatCard({
         </div>
         {icon && (
           <div className="flex-shrink-0 ml-4">
-            <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-              {icon}
-            </div>
+            {icon}
           </div>
         )}
       </div>

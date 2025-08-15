@@ -144,10 +144,10 @@ export default function LoginPage() {
                 </p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs text-left">
                   <span>
-                    <strong>Email:</strong> any@email.com
+                    <strong>Email:</strong> Admin@company.com
                   </span>
                   <span>
-                    <strong>Password:</strong> any password
+                    <strong>Password:</strong> AdminPass123!
                   </span>
                 </div>
               </div>
@@ -285,10 +285,10 @@ export default function LoginPage() {
                 </p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs">
                   <span>
-                    <strong>Email:</strong> any@email.com
+                    <strong>Email:</strong> Admin@company.com
                   </span>
                   <span>
-                    <strong>Password:</strong> any password
+                    <strong>Password:</strong> AdminPass123!
                   </span>
                 </div>
               </div>
