@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
-      <body className={`${inter.className} h-full overflow-hidden`}>
+      <body className={`${inter.className} min-h-full`}>
         <ErrorBoundary>
           <ThemeProvider>
             <AuthProvider>

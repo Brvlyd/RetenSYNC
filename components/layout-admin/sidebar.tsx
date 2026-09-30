@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { motion, Variants, Transition } from 'framer-motion';
 import { useTheme } from '@/contexts/theme-context';
+import { useAuth } from '@/contexts/auth-context';
 import {
   BarChart3,
   MessageSquare,
@@ -61,13 +62,19 @@ const getIconColor = (gradientColor: string) => {
 
 export default function Sidebar({
   onCollapseChange,
+  isMobileOpen = false,
+  onMobileClose,
 }: {
   onCollapseChange?: (collapsed: boolean) => void;
+  /** Mobile drawer state - owned by the layout so the header can toggle it. */
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isDarkMode } = useTheme();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { logout } = useAuth();
+  const isMobileMenuOpen = isMobileOpen;
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   // No user state needed for admin-only sidebar
@@ -138,16 +145,14 @@ export default function Sidebar({
   const navigation = [...baseNavigation, ...hrInteractions];
 
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     onCollapseChange?.(!isSidebarExpanded);
   }, [isSidebarExpanded, onCollapseChange]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    router.push('/auth/login');
+  const handleLogout = async () => {
+    // Clear the real session (cookies + storage) through the auth context.
+    // Removing only localStorage['user'] left the token in place, so the guard
+    // immediately sent the user back into the app.
+    await logout();
   };
 
   const handleBurgerClick = () => {
@@ -188,34 +193,25 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Enhanced Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="group p-3 rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg hover:shadow-xl border border-white/20 dark:border-gray-700/20 transition-all duration-300 hover:scale-105"
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-6 w-6 text-gray-700 dark:text-gray-300 group-hover:rotate-90 transition-transform duration-300" />
-          ) : (
-            <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300 group-hover:scale-110 transition-transform duration-300" />
-          )}
-        </button>
-      </div>
+      {/* The menu button lives in the header - a second floating one used to
+          sit on top of it on mobile. */}
 
       {/* Modern Sidebar with Glassmorphism - Fixed Position */}
       <motion.div
         ref={sidebarRef}
+        data-sidebar="admin"
         className={cn(
-          'fixed left-0 top-0 h-screen overflow-hidden z-30 shadow-2xl lg:translate-x-0 flex  flex-col',
+          'fixed left-0 top-0 h-screen max-w-[85vw] lg:max-w-none overflow-hidden z-[60] lg:z-30 shadow-2xl lg:translate-x-0 flex flex-col',
           'bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-gray-200/60 dark:border-gray-700/60 transition-colors duration-300',
           isMobileMenuOpen
             ? 'translate-x-0'
             : '-translate-x-full lg:translate-x-0'
         )}
         initial="collapsed"
-        animate={isSidebarExpanded ? 'expanded' : 'collapsed'}
+        animate={isSidebarExpanded || isMobileMenuOpen ? 'expanded' : 'collapsed'}
         variants={sidebarVariants}
-        // Expand sidebar on hover for desktop
+        // Expand sidebar on hover for desktop (no hover exists on touch, which
+        // is why the mobile drawer forces the expanded state above).
         onMouseEnter={() => setIsSidebarExpanded(true)}
         onMouseLeave={() => setIsSidebarExpanded(false)}
       >
@@ -240,13 +236,24 @@ export default function Sidebar({
               </motion.div>
             </div>
             {/* Burger Menu Button - Only visible on desktop when sidebar is expanded */}
-            <motion.button
-              variants={textVariants}
-              onClick={handleBurgerClick}
-              className="hidden lg:block p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+            <div className="hidden lg:block">
+              <motion.button
+                variants={textVariants}
+                onClick={handleBurgerClick}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <Menu className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+              </motion.button>
+            </div>
+
+            {/* Close button - mobile drawer only */}
+            <button
+              onClick={onMobileClose}
+              aria-label="Close menu"
+              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
             >
-              <Menu className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-            </motion.button>
+              <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            </button>
           </div>
         </div>
 
@@ -353,8 +360,8 @@ export default function Sidebar({
       {/* Enhanced Mobile overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+          onClick={onMobileClose}
         />
       )}
     </>

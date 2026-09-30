@@ -36,9 +36,7 @@ export default function LoginPage() {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Username or email is required';
     }
 
     if (!formData.password) {
@@ -69,7 +67,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f7f7fa] via-[#fff7e6] to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] flex items-center justify-center p-3 sm:p-4 pt-8 sm:pt-12 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-[#f7f7fa] via-[#fff7e6] to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] flex items-center justify-center px-3 py-8 sm:px-4 sm:py-12 relative overflow-x-hidden">
       {/* Vibrant animated blurred shapes */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Animated accent blobs - new color scheme */}
@@ -89,7 +87,7 @@ export default function LoginPage() {
       >
         {/* Login Card - Clean, subtle gradient accent, lighter dark mode */}
         <div
-          className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl sm:rounded-[2.5rem] shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-4 sm:p-6 md:p-10 lg:p-14 flex flex-col md:flex-row gap-4 md:gap-0 items-stretch justify-center min-h-[500px] sm:min-h-[600px] max-w-6xl mx-auto w-full z-10 overflow-hidden group transition-transform duration-300 hover:scale-[1.01] sm:hover:scale-[1.025]"
+          className="relative bg-white dark:bg-[#23232a] bg-gradient-to-br from-[#fff7e6] via-white to-[#f0f4e8] dark:from-[#23232a] dark:via-[#23281a] dark:to-[#23281a] rounded-2xl sm:rounded-[2.5rem] shadow-2xl border border-[#f7cfa6] dark:border-[#23281a] p-5 sm:p-6 md:p-10 lg:p-14 flex flex-col md:flex-row gap-6 md:gap-0 items-stretch justify-center md:min-h-[560px] max-w-6xl mx-auto w-full z-10 overflow-hidden group transition-transform duration-300 md:hover:scale-[1.01] lg:hover:scale-[1.025]"
           style={{
             boxShadow:
               '0 8px 48px 0 rgba(217,111,39,0.10), 0 0 0 4px rgba(148,196,125,0.10)',
@@ -99,55 +97,46 @@ export default function LoginPage() {
           <div className="pointer-events-none absolute left-0 top-0 w-full h-2 sm:h-3 rounded-t-2xl sm:rounded-t-[2.5rem] bg-gradient-to-r from-[#d96f27] via-[#fff7e6] to-[#94c47d] dark:from-[#d96f27] dark:via-[#23281a] dark:to-[#94c47d] opacity-60 animate-gradient-x" />
 
           {/* Left: Logo and Welcome */}
-          <div className="flex flex-col items-start justify-center md:w-1/2 w-full px-2 py-4 md:py-0 border-b md:border-b-0 md:border-r border-blue-100 dark:border-blue-900 relative z-30 md:order-1">
+          <div className="flex flex-col items-start justify-center md:w-1/2 w-full min-w-0 px-1 sm:px-2 pb-6 md:pb-0 md:py-0 border-b md:border-b-0 md:border-r border-blue-100 dark:border-blue-900 relative z-30 md:order-1">
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="inline-flex items-start justify-start mb-2 drop-shadow-2xl"
-              style={{ position: 'relative', zIndex: 30, marginLeft: '-20px' }}
+              className="relative z-30 inline-flex w-full items-start justify-start mb-2 drop-shadow-2xl"
             >
-              <span className="relative flex items-start justify-start">
+              <span className="relative flex w-full items-center justify-start">
                 <span
-                  className="absolute w-72 h-20 sm:w-[420px] sm:h-[110px] rounded-xl sm:rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10"
-                  style={{
-                    filter: 'blur(0.5px)',
-                    transform: 'translateX(-30px)',
-                  }}
+                  className="absolute inset-y-0 -left-2 w-[min(100%,26rem)] rounded-xl sm:rounded-[2.5rem] bg-[#fff7e6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] shadow-lg z-10"
+                  style={{ filter: 'blur(0.5px)' }}
                 ></span>
                 <Image
                   src="/assets/RetenSYNC.png"
                   alt="RetenSYNC Logo"
                   width={180}
                   height={180}
-                  className="object-contain w-64 h-16 sm:w-96 sm:h-28 relative z-20"
-                  style={{ transform: 'translateX(0px)' }}
+                  className="object-contain object-left w-full max-w-[15rem] sm:max-w-[24rem] h-16 sm:h-28 relative z-20"
                   priority
                 />
               </span>
             </motion.div>
             <p
-              className="text-sm sm:text-base lg:text-lg mt-2 font-semibold text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-3 py-1 rounded-xl shadow-sm animate-fade-in text-left"
-              style={{ marginLeft: '-20px' }}
+              className="text-sm sm:text-base lg:text-lg mt-3 font-semibold text-[#d96f27] dark:text-[#94c47d] bg-[#fff7e6]/70 dark:bg-[#23281a]/70 px-3 py-1 rounded-xl shadow-sm animate-fade-in text-left"
             >
               Welcome! Please sign in
             </p>
 
             {/* Demo Credentials (mobile only) */}
-            <div
-              className="block md:hidden mt-4 w-full px-2"
-              style={{ marginLeft: '-20px' }}
-            >
+            <div className="block md:hidden mt-4 w-full">
               <div className="p-3 bg-[#fdfaf6] dark:bg-[#23281a] border-2 border-[#f7cfa6] dark:border-[#23281a] rounded-xl shadow-sm flex flex-col items-start">
                 <p className="text-sm font-semibold text-[#d96f27] dark:text-[#94c47d] mb-1">
                   Demo Credentials
                 </p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs text-left">
                   <span>
-                    <strong>Email:</strong> Admin@company.com
+                    <strong>Admin:</strong> admin / password
                   </span>
                   <span>
-                    <strong>Password:</strong> AdminPass123!
+                    <strong>User:</strong> bravely / password
                   </span>
                 </div>
               </div>
@@ -155,7 +144,7 @@ export default function LoginPage() {
           </div>
 
           {/* Right: Form and Info */}
-          <div className="flex flex-col justify-center items-center md:w-1/2 w-full px-2 py-4 md:py-0 relative z-30 md:order-2">
+          <div className="flex flex-col justify-center items-center md:w-1/2 w-full min-w-0 px-1 sm:px-2 md:pl-8 py-0 relative z-30 md:order-2">
             {/* Error Message */}
             {errors.general && (
               <motion.div
@@ -185,13 +174,13 @@ export default function LoginPage() {
                     <Mail className="h-4 w-4 text-[#d96f27] dark:text-[#94c47d]" />
                   </div>
                   <input
-                    type="email"
+                    type="text"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     className={`w-full pl-10 pr-3 py-3 sm:py-3 bg-transparent border-2 rounded-xl focus:ring-2 focus:ring-[#d96f27] focus:border-[#d96f27] dark:focus:ring-[#94c47d] dark:focus:border-[#94c47d] transition-all duration-300 text-gray-900 dark:text-white text-sm font-medium ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-[#f7cfa6] dark:border-[#23281a]'}`}
-                    placeholder="Enter your email"
-                    autoComplete="email"
+                    placeholder="Enter your username or email"
+                    autoComplete="username"
                     style={{ minHeight: '48px' }}
                   />
                 </div>
@@ -285,10 +274,10 @@ export default function LoginPage() {
                 </p>
                 <div className="flex flex-col gap-1 text-[#d96f27] dark:text-[#94c47d] text-xs">
                   <span>
-                    <strong>Email:</strong> Admin@company.com
+                    <strong>Admin:</strong> admin / password
                   </span>
                   <span>
-                    <strong>Password:</strong> AdminPass123!
+                    <strong>User:</strong> bravely / password
                   </span>
                 </div>
               </div>

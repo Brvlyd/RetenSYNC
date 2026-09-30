@@ -62,9 +62,9 @@ export default function AdminHeader({
   };
 
   return (
-    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 h-16 flex items-center justify-between px-4 sm:px-6 relative z-50 shadow-sm pt-4 pb-4">
+    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/60 dark:border-gray-700/60 h-16 flex items-center justify-between gap-2 px-4 sm:px-6 relative z-50 shadow-sm pt-4 pb-4">
       {/* Left Section */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 sm:space-x-4 min-w-0">
         {/* Sidebar Toggle */}
         <button
           onClick={onToggleSidebar}

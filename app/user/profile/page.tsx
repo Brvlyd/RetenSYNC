@@ -212,8 +212,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
-        <nav className="-mb-px flex space-x-8">
+      <div className="border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+        <nav className="-mb-px flex space-x-6 sm:space-x-8 min-w-max">
           {tabs.map(tab => (
             <button
               key={tab.id}

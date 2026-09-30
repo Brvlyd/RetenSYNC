@@ -87,19 +87,14 @@ export default function Analytics() {
   useEffect(() => {
     setAnimateProgress(true);
 
-    // Check if user is logged in and is admin
-    if (!user) {
-      router.push('/auth/login');
-      return;
-    }
-
-    if (user.role !== 'admin') {
-      router.push('/user/dashboard');
+    // Access control is handled by components/route-guard.tsx. Here we only
+    // wait until an admin session is actually available before loading data.
+    if (!user || user.role !== 'admin') {
       return;
     }
 
     loadPerformanceData();
-  }, [router, user]);
+  }, [user]);
 
   const loadPerformanceData = async () => {
     try {

@@ -16,6 +16,7 @@ import {
   User,
   LogOut,
   Sparkles,
+  Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -113,43 +114,52 @@ export default function HeaderNew({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 sm:py-4">
         {/* Left Section */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Menu button - opens the drawer on mobile */}
+          <button
+            onClick={onToggleSidebar}
+            aria-label="Open menu"
+            className="lg:hidden p-2 -ml-1 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex-shrink-0"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+
           {/* Page Title */}
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center space-x-2">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white truncate">
                 {pageTitle}
               </h1>
               {pageTitle === 'Dashboard' && (
-                <Sparkles className="w-5 h-5 text-yellow-500" />
+                <Sparkles className="w-5 h-5 text-yellow-500 flex-shrink-0 hidden sm:block" />
               )}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <p className="hidden sm:block text-sm text-gray-600 dark:text-gray-400 mt-1 truncate">
               {getGreeting()}, {user?.first_name || 'there'}! {pageDescription}
             </p>
           </div>
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center flex-shrink-0">
           {/* Quick Actions */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Search functionality removed to prevent header/sidebar collision */}
             {/* Messages */}
-            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
+            <button className="hidden md:block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
               <MessageSquare className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full"></span>
             </button>
 
             {/* Calendar */}
-            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button className="hidden md:block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
               <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
 
             {/* Notifications */}
-            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
+            <button className="hidden sm:block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               {notifications > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
@@ -171,7 +181,7 @@ export default function HeaderNew({
             </button>
 
             {/* Divider */}
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
+            <div className="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
 
             {/* Profile Dropdown */}
             <div className="relative">
@@ -193,7 +203,7 @@ export default function HeaderNew({
                 </div>
                 <ChevronDown
                   className={cn(
-                    'w-4 h-4 text-gray-400 transition-transform duration-200',
+                    'w-4 h-4 text-gray-400 transition-transform duration-200 hidden sm:block',
                     isProfileOpen && 'rotate-180'
                   )}
                 />

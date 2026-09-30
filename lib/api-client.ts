@@ -27,6 +27,18 @@ const API_BASE_URL =
   'https://turnover-api-hd7ze.ondigitalocean.app/api';
 
 /**
+ * Send the browser back to the login screen after the session was dropped.
+ * Never fires while already on an auth page, so a failing request on the login
+ * screen cannot reload it in a loop.
+ */
+const redirectToLogin = (): void => {
+  if (typeof window === 'undefined') return;
+  if (window.location.pathname.startsWith('/auth')) return;
+
+  window.location.replace('/auth/login');
+};
+
+/**
  * Custom fetch wrapper with automatic token handling
  */
 export const authenticatedFetch = async (
@@ -34,13 +46,10 @@ export const authenticatedFetch = async (
   options: RequestInit = {}
 ): Promise<Response> => {
   // Check if token is expired before making request
-  if (isTokenExpired()) {
+  if (isTokenExpired(0)) {
     console.warn('Token is expired, redirecting to login');
     removeAuthToken();
-    // Redirect to login - you can customize this based on your routing
-    if (typeof window !== 'undefined') {
-      window.location.href = '/auth/login';
-    }
+    redirectToLogin();
     throw new Error('Authentication token has expired');
   }
 
@@ -71,10 +80,7 @@ export const authenticatedFetch = async (
   if (response.status === 401) {
     console.warn('Authentication failed, removing invalid token');
     removeAuthToken();
-
-    if (typeof window !== 'undefined') {
-      window.location.href = '/auth/login';
-    }
+    redirectToLogin();
 
     throw new Error('Authentication failed. Please login again.');
   }

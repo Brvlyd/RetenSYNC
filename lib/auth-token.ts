@@ -26,16 +26,21 @@ const USER_INFO_COOKIE_NAME = 'user_info';
 const COOKIE_MAX_AGE = 7; // 7 days
 const FALLBACK_STORAGE_KEY = 'retensync_auth_data';
 
-// Cookie options for security
-const getCookieOptions = (
-  isProduction: boolean = process.env.NODE_ENV === 'production'
-) => ({
-  expires: COOKIE_MAX_AGE,
-  secure: isProduction, // Only use secure cookies in production (HTTPS)
-  sameSite: 'strict' as const,
-  path: '/',
-  domain: isProduction ? undefined : undefined, // Set domain in production if needed
-});
+// Cookie options for security.
+// `secure` is decided by the actual protocol, not by NODE_ENV: a production
+// build served over plain HTTP (e.g. `next start` locally) would otherwise
+// silently drop every auth cookie and log the user straight back out.
+const getCookieOptions = () => {
+  const isHttps =
+    typeof window !== 'undefined' && window.location.protocol === 'https:';
+
+  return {
+    expires: COOKIE_MAX_AGE,
+    secure: isHttps,
+    sameSite: 'lax' as const, // 'strict' drops the cookie on external returns
+    path: '/',
+  };
+};
 
 /**
  * Safely access document and localStorage only on client side
@@ -117,9 +122,9 @@ export const getAuthToken = (): StoredTokenInfo => {
 
   try {
     // Try to get from cookies first (most secure)
-    let token = Cookies.get(TOKEN_COOKIE_NAME);
-    let role = Cookies.get(ROLE_COOKIE_NAME);
-    let userInfoStr = Cookies.get(USER_INFO_COOKIE_NAME);
+    let token: string | null = Cookies.get(TOKEN_COOKIE_NAME) ?? null;
+    let role: string | null = Cookies.get(ROLE_COOKIE_NAME) ?? null;
+    const userInfoStr = Cookies.get(USER_INFO_COOKIE_NAME) ?? null;
 
     let userId: string | null = null;
     let email: string | null = null;
@@ -175,6 +180,15 @@ export const getAuthToken = (): StoredTokenInfo => {
         email: null,
         expiresAt: null,
       };
+    }
+
+    // A session recovered from a partial fallback (e.g. sessionStorage only)
+    // can be missing its expiry metadata. That is not the same as "expired",
+    // so we keep the session and only backfill the missing field.
+    if (token && role && !expiresAt) {
+      expiresAt = new Date(
+        Date.now() + COOKIE_MAX_AGE * 24 * 60 * 60 * 1000
+      ).toISOString();
     }
 
     const isValid = !!(token && role);
@@ -309,8 +323,15 @@ export const getAuthHeaders = (): HeadersInit => {
 export const isTokenExpired = (bufferMinutes: number = 5): boolean => {
   const authInfo = getAuthToken();
 
-  if (!authInfo.isValid || !authInfo.expiresAt) {
+  // No session at all counts as expired...
+  if (!authInfo.isValid) {
     return true;
+  }
+
+  // ...but a valid session whose expiry we simply do not know does not.
+  // Returning true here used to log users out roughly a minute after login.
+  if (!authInfo.expiresAt) {
+    return false;
   }
 
   const expirationTime = new Date(authInfo.expiresAt).getTime();

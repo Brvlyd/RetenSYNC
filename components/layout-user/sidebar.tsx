@@ -39,7 +39,7 @@ export default function Sidebar({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   // Define navigation item type to include optional isParent and isChild
@@ -160,9 +160,11 @@ export default function Sidebar({
     onCollapseChange?.(!isSidebarExpanded);
   }, [isSidebarExpanded, onCollapseChange]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    router.push('/auth/login');
+  const handleLogout = async () => {
+    // Clear the real session (cookies + storage) through the auth context.
+    // Removing only localStorage['user'] left the token in place, so the guard
+    // immediately sent the user back into the app.
+    await logout();
   };
 
   const handleBurgerClick = () => {

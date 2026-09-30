@@ -2,14 +2,21 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth, getDashboardPathForRole } from '@/contexts/auth-context';
 
 export default function Home() {
   const router = useRouter();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   useEffect(() => {
-    // Always redirect to login page when the app loads
-    router.push('/auth/login');
-  }, [router]);
+    // Wait for the stored session to be restored before deciding where to go,
+    // otherwise a signed-in user is bounced to the login screen on every visit.
+    if (isLoading) return;
+
+    router.replace(
+      isAuthenticated ? getDashboardPathForRole(user?.role) : '/auth/login'
+    );
+  }, [isLoading, isAuthenticated, user?.role, router]);
 
   // Show loading while redirecting
   return (

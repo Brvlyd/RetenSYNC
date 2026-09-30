@@ -21,6 +21,7 @@ import {
   Settings,
   Bell,
   Calendar,
+  X,
 } from 'lucide-react';
 
 const navigation = [
@@ -83,29 +84,45 @@ const quickActions = [
   },
 ];
 
-export default function SidebarNew() {
+interface SidebarNewProps {
+  /** Mobile only - the drawer is always visible from `lg` upwards. */
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function SidebarNew({ isOpen = false, onClose }: SidebarNewProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { logout, user } = useAuth();
 
   const handleLogout = async () => {
+    // logout() already redirects to /auth/login.
     await logout();
-    router.push('/auth/login');
+  };
+
+  // On mobile the sidebar is an overlay, so close it once we have navigated.
+  const navigate = (href: string) => {
+    router.push(href);
+    onClose?.();
   };
 
   const isActive = (href: string) => pathname === href;
 
   return (
     <div
+      data-sidebar="user"
       className={cn(
-        'fixed left-0 top-0 h-full bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 ease-in-out z-20 flex flex-col',
-        'w-72', // Always use full width
+        'fixed left-0 top-0 h-full bg-white/98 dark:bg-gray-900/98 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 transition-transform duration-300 ease-in-out z-[60] lg:z-30 flex flex-col',
+        'w-72 max-w-[85vw]',
+        // Off-canvas on phones/tablets, pinned open on large screens.
+        isOpen ? 'translate-x-0' : '-translate-x-full',
+        'lg:translate-x-0',
         'shadow-xl shadow-black/5 dark:shadow-black/20'
       )}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-700/50">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 min-w-0">
           <div className="relative w-8 h-8 flex-shrink-0">
             <Image
               src="/assets/Logo.png"
@@ -121,6 +138,15 @@ export default function SidebarNew() {
             </h1>
           </div>
         </div>
+
+        {/* Close button - mobile only */}
+        <button
+          onClick={onClose}
+          aria-label="Close menu"
+          className="lg:hidden p-2 -mr-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* User Profile */}
@@ -142,7 +168,7 @@ export default function SidebarNew() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 overflow-y-auto px-4 space-y-2 pb-4">
         {/* Main Navigation */}
         <div className="space-y-1">
           {navigation.map(item => {
@@ -150,7 +176,7 @@ export default function SidebarNew() {
             return (
               <button
                 key={item.name}
-                onClick={() => router.push(item.href)}
+                onClick={() => navigate(item.href)}
                 className={cn(
                   'w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-left transition-all duration-200 group relative',
                   active
@@ -202,7 +228,7 @@ export default function SidebarNew() {
               return (
                 <button
                   key={item.name}
-                  onClick={() => router.push(item.href)}
+                  onClick={() => navigate(item.href)}
                   className={cn(
                     'w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-all duration-200 group',
                     active

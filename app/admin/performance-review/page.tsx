@@ -204,12 +204,12 @@ export default function PerformanceReview() {
       </motion.div>
 
       {/* Enhanced Navigation Tabs */}
-      <div className="flex space-x-2 bg-white dark:bg-gray-800 rounded-2xl p-2 border border-gray-100 dark:border-gray-700 shadow-lg">
+      <div className="flex space-x-2 overflow-x-auto bg-white dark:bg-gray-800 rounded-2xl p-2 border border-gray-100 dark:border-gray-700 shadow-lg">
         {sections.map(section => (
           <button
             key={section.id}
             onClick={() => setActiveSection(section.id)}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
+            className={`flex flex-shrink-0 items-center space-x-2 px-4 sm:px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
               activeSection === section.id
                 ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/25 scale-105'
                 : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
